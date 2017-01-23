@@ -47,7 +47,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
                         .Type(Types.Parse("organisationdocument"))
                         .From(0)
-                        .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
                         .Take(take)
                         .MatchAll());
 
@@ -56,7 +55,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed query all organisations");
             }
 
-            return results.Documents.Select(organisation => _assessmentOrgsMapping.MapToOrganisationDto(organisation)).ToList();
+            return results.Documents.OrderBy(x => x.EpaOrganisationIdentifier).Select(organisation => _assessmentOrgsMapping.MapToOrganisationDto(organisation)).ToList();
         }
 
         public Organisation GetOrganisationById(string organisationId)
