@@ -28,7 +28,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _providerMapping = providerMapping;
         }
 
-        public ApprenticeshipDetails GetCourseByStandardCode(int ukprn, int locationId, string standardCode)
+        public ApprenticeshipDetails GetCourseByStandardCode(int ukprn, int locationId, string standardCode, bool hasNonLevyContract)
         {
             try
             {
@@ -37,6 +37,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         q =>
                         q.Term(t => t.Ukprn, ukprn)
                         && q.Term(t => t.StandardCode, standardCode)
+                        && q.Term(t => t.HasNonLevyContract, hasNonLevyContract)
                         && q.Nested(n => n
                             .Path(p => p.TrainingLocations)
                             .Query(nq => nq.Term(nt => nt.TrainingLocations.First().LocationId, locationId))));
@@ -51,7 +52,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
         }
 
-        public ApprenticeshipDetails GetCourseByFrameworkId(int ukprn, int locationId, string frameworkId)
+        public ApprenticeshipDetails GetCourseByFrameworkId(int ukprn, int locationId, string frameworkId, bool hasNonLevyContract)
         {
             try
             {
@@ -60,6 +61,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         q =>
                         q.Term(t => t.Ukprn, ukprn)
                         && q.Term(t => t.FrameworkId, frameworkId)
+                        && q.Term(t => t.HasNonLevyContract, hasNonLevyContract)
                         && q.Nested(n => n
                             .Path(p => p.TrainingLocations)
                             .Query(nq => nq.Term(nt => nt.TrainingLocations.First().LocationId, locationId))));

@@ -170,12 +170,13 @@
         [Route("standards/{standardCode}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
-        public ApprenticeshipDetails GetStandardProviderDetails(string standardCode, int ukprn, int location)
+        public ApprenticeshipDetails GetStandardProviderDetails(string standardCode, int ukprn, int location, bool hasNonLevyContract = false)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByStandardCode(
                 ukprn,
                 location,
-                standardCode);
+                standardCode,
+                hasNonLevyContract);
 
             if (model != null)
             {
@@ -192,12 +193,13 @@
         [Route("frameworks/{frameworkId}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
-        public ApprenticeshipDetails GetFrameworkProviderDetails(string frameworkId, int ukprn, int location)
+        public ApprenticeshipDetails GetFrameworkProviderDetails(string frameworkId, int ukprn, int location, bool hasNonLevyContract = false)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByFrameworkId(
                 ukprn,
                 location,
-                frameworkId);
+                frameworkId,
+                hasNonLevyContract);
 
             if (model != null)
             {

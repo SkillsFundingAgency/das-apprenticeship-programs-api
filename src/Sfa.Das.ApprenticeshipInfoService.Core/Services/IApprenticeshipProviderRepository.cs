@@ -4,8 +4,8 @@
 
     public interface IApprenticeshipProviderRepository
     {
-        ApprenticeshipDetails GetCourseByStandardCode(int ukprn, int locationId, string standardCode);
+        ApprenticeshipDetails GetCourseByStandardCode(int ukprn, int locationId, string standardCode, bool hasNonLevyContract);
 
-        ApprenticeshipDetails GetCourseByFrameworkId(int ukprn, int locationId, string frameworkId);
+        ApprenticeshipDetails GetCourseByFrameworkId(int ukprn, int locationId, string frameworkId, bool hasNonLevyContract);
     }
 }
