@@ -122,10 +122,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetByUkprn")]
+        [SwaggerOperation("GetByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("providers/standard/{standardId}")]
+        [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ExceptionHandling]
         public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviders(string standardId)
         {
@@ -146,10 +146,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="apprenticeshipId">Framework id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetByUkprn")]
+        [SwaggerOperation("GetByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("providers/framework/{frameworkId}")]
+        [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
         [ExceptionHandling]
         public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviders(string frameworkId)
         {

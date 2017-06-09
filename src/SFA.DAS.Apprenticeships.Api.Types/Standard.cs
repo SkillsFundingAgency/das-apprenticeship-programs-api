@@ -47,5 +47,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public string ProfessionalRegistration { get; set; }
 
         public string OverviewOfRole { get; set; }
+        public ProvidersHref Providers { get; set; }
     }
 }
