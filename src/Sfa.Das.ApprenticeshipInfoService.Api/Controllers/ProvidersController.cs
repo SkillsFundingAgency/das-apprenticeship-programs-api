@@ -115,6 +115,54 @@
             Get(ukprn);
         }
 
+        /// <summary>
+        /// Get a list of providers for an specific standard
+        /// </summary>
+        /// <param name="apprenticeshipId">Standard id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetByUkprn")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("providers/standard/{standardId}")]
+        [ExceptionHandling]
+        public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviders(string standardId)
+        {
+            var response = _getProviders.GetProvidersByStandardId(standardId);
+
+            if (response == null || !response.Any())
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"No providers found by standard with id {standardId}");
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Get a list of providers for an specific framework
+        /// </summary>
+        /// <param name="apprenticeshipId">Framework id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetByUkprn")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("providers/framework/{frameworkId}")]
+        [ExceptionHandling]
+        public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviders(string frameworkId)
+        {
+            var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
+
+            if (response == null || !response.Any())
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"No providers found by standard with id {frameworkId}");
+            }
+
+            return response;
+        }
+
         // GET standards/5/providers?lat=<latitude>&long=<longitude>&page=#
         [SwaggerOperation("GetByStandardIdAndLocation")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<StandardProviderSearchResultsItem>))]
