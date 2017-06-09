@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using System.Linq;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System;
     using System.Collections.Generic;
