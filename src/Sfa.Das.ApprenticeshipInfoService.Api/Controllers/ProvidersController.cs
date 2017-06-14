@@ -122,12 +122,68 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetByStandardId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
+        [SwaggerOperation("GetProvidersByStandardId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ExceptionHandling]
-        public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviders(string standardId)
+        public IEnumerable<Provider> GetStandardProviders(string standardId)
+        {
+            var response = _getProviders.GetProvidersByStandardId(standardId);
+
+            if (response == null || !response.Any())
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"No providers found by standard with id {standardId}");
+            }
+
+            var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
+
+            var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long) dummy).ToList();
+
+            return _getProviders.GetProviderByUkprnList(ukprns);
+        }
+
+        /// <summary>
+        /// Get a list of providers for an specific framework
+        /// </summary>
+        /// <param name="apprenticeshipId">Framework id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetProvidersByFrameworkId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
+        [ExceptionHandling]
+        public IEnumerable<Provider> GetFrameworkProviders(string frameworkId)
+        {
+            var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
+
+            if (response == null || !response.Any())
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"No providers found by framework with id {frameworkId}");
+            }
+
+            var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
+
+            var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long)dummy).ToList();
+
+            return _getProviders.GetProviderByUkprnList(ukprns);
+        }
+
+        /// <summary>
+        /// Get a list of providers locations for an specific standard
+        /// </summary>
+        /// <param name="apprenticeshipId">Standard id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetProviderLocationByStandardId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("providers/standardLocation/{standardId}", Name = "GetStandardProviderLocations")]
+        [ExceptionHandling]
+        public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviderLocations(string standardId)
         {
             var response = _getProviders.GetProvidersByStandardId(standardId);
 
@@ -142,16 +198,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         }
 
         /// <summary>
-        /// Get a list of providers for an specific framework
+        /// Get a list of providers locations for an specific framework
         /// </summary>
         /// <param name="apprenticeshipId">Framework id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetByFrameworkId")]
+        [SwaggerOperation("GetProviderLocationByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
+        [Route("providers/frameworkLocation/{frameworkId}", Name = "GetFrameworkProviderLocations")]
         [ExceptionHandling]
-        public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviders(string frameworkId)
+        public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviderLocations(string frameworkId)
         {
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
 
@@ -159,7 +215,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             {
                 throw HttpResponseFactory.RaiseException(
                     HttpStatusCode.NotFound,
-                    $"No providers found by standard with id {frameworkId}");
+                    $"No providers found by framework with id {frameworkId}");
             }
 
             return response;

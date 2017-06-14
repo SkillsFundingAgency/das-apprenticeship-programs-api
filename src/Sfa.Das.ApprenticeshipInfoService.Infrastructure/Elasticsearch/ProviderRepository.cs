@@ -1,20 +1,18 @@
-﻿using System.Collections.Generic;
-
-using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
-    using Nest;
     using FeatureToggle.Core.Fluent;
+    using Nest;
     using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
     using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
     using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
+    using SFA.DAS.NLog.Logger;
 
     public sealed class ProviderRepository : IGetProviders
     {
@@ -67,15 +65,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var results =
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
-                    s.Index(_applicationSettings.ProviderIndexAlias)
-                        .Type(Types.Parse(_providerDocumentType))
-                        .From(0)
-                        .Sort(sort => sort.Ascending(f => f.Ukprn))
-                        .Take(100)
-                        .Query(q => q
-                            .Terms(t => t
-                                .Field(f => f.Ukprn)
-                                .Terms(ukprn))));
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse(_providerDocumentType))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.Ukprn))
+                            .Take(100)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.Ukprn)
+                                    .Terms(ukprn))));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -88,6 +86,35 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
 
             return results.Documents.FirstOrDefault();
+        }
+
+        public IEnumerable<Provider> GetProviderByUkprnList(List<long> ukprns)
+        {
+            var take = GetAmountProvidersForUkprnList(ukprns);
+            var results =
+                _elasticsearchCustomClient.Search<Provider>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse(_providerDocumentType))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.Ukprn))
+                            .Take(take)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.Ukprn)
+                                    .Terms(ukprns))));
+
+            if (results.ApiCall.HttpStatusCode != 200)
+            {
+                throw new ApplicationException("Failed query provider by ukprn");
+            }
+
+            if (results.Documents.Count() > 1)
+            {
+                _applicationLogger.Warn($"found {results.Documents.Count()} providers for the ukprns provided");
+            }
+
+            return results.Documents;
         }
 
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page)
@@ -216,6 +243,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                 .Terms(t => t
                                     .Field(f => f.StandardCode)
                                     .Terms(int.Parse(standardId)))));
+
+            return (int)results.HitsMetaData.Total;
+        }
+
+        private int GetAmountProvidersForUkprnList(List<long> ukprns)
+        {
+            var results =
+                _elasticsearchCustomClient.Search<Provider>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse(_providerDocumentType))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.Ukprn))
+                            .Take(100)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.Ukprn)
+                                    .Terms(ukprns))));
 
             return (int)results.HitsMetaData.Total;
         }

@@ -13,6 +13,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
 
         Provider GetProviderByUkprn(long ukprn);
 
+        IEnumerable<Provider> GetProviderByUkprnList(List<long> ukprns);
+
         List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page);
 
         List<FrameworkProviderSearchResultsItemResponse> GetByFrameworkIdAndLocation(int id, double lat, double lon, int page);
