@@ -90,7 +90,6 @@
 
         public IEnumerable<Provider> GetProviderByUkprnList(List<long> ukprns)
         {
-            var take = GetAmountProvidersForUkprnList(ukprns);
             var results =
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
@@ -98,7 +97,7 @@
                             .Type(Types.Parse(_providerDocumentType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(take)
+                            .Take(ukprns.Count)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
@@ -243,24 +242,6 @@
                                 .Terms(t => t
                                     .Field(f => f.StandardCode)
                                     .Terms(int.Parse(standardId)))));
-
-            return (int)results.HitsMetaData.Total;
-        }
-
-        private int GetAmountProvidersForUkprnList(List<long> ukprns)
-        {
-            var results =
-                _elasticsearchCustomClient.Search<Provider>(
-                    s =>
-                        s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(_providerDocumentType))
-                            .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(100)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprns))));
 
             return (int)results.HitsMetaData.Total;
         }
