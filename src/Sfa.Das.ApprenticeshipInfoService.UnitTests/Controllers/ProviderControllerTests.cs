@@ -39,8 +39,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
                 _mockControllerHelper.Object,
-                _mockApprenticeshipProviderRepository.Object,
-                _mockLogger.Object);
+                _mockApprenticeshipProviderRepository.Object);
             _sut.Request = new HttpRequestMessage
             {
                 RequestUri = new Uri("http://localhost/providers")

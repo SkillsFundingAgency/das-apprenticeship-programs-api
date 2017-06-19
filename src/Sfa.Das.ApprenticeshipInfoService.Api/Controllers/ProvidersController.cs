@@ -11,7 +11,6 @@
     using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.NLog.Logger;
     using Swashbuckle.Swagger.Annotations;
     using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
 
@@ -20,18 +19,15 @@
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
-        private readonly ILog _logger;
 
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository,
-            ILog logger)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
-            _logger = logger;
         }
 
         /// <summary>
