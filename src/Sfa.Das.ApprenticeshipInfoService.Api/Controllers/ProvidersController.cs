@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using System.Text.RegularExpressions;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -19,6 +21,9 @@
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
+
+        private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
+        private const string BadUkprnMessage = "the ukprn wasn't 8 digits long";
 
         public ProvidersController(
             IGetProviders getProviders,
@@ -63,9 +68,9 @@
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
-            if (ukprn.ToString().Length != 8)
+            if (!UkprnPattern.IsMatch(ukprn.ToString()))
             {
-                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, "The UKPRN should be 8 digits long");
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
             }
 
             var response = _getProviders.GetProviderByUkprn(ukprn);
