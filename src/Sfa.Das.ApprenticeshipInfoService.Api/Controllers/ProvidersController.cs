@@ -58,10 +58,16 @@
         [SwaggerOperation("GetByUkprn")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
+            if (ukprn.ToString().Length != 8)
+            {
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, "The UKPRN should be 8 digits long");
+            }
+
             var response = _getProviders.GetProviderByUkprn(ukprn);
 
             if (response == null)
@@ -95,6 +101,7 @@
         /// <param name="ukprn">UKPRN</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public void Head(long ukprn)
