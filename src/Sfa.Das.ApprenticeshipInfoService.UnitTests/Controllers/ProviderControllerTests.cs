@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Routing;
@@ -58,30 +59,33 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         [Test]
         public void ShouldReturnProvider()
         {
-            var expected = new Provider() { Ukprn = 1 };
+            var ukprn = 12345678;
+            var expected = new Provider() { Ukprn = ukprn };
 
             _mockGetProviders.Setup(
                 x =>
-                    x.GetProviderByUkprn(1)).Returns(expected);
+                    x.GetProviderByUkprn(ukprn)).Returns(expected);
 
-            var actual = _sut.Get(1);
+            var actual = _sut.Get(ukprn);
 
             actual.ShouldBeEquivalentTo(expected);
-            actual.Uri.Should().Be("http://localhost/providers/1");
+            actual.Uri.Should().Be($"http://localhost/providers/{ukprn}");
         }
 
         [Test]
         public void ShouldReturnProvidersNotFound()
         {
-            var expected = new Provider() { Ukprn = 1 };
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(12345679));
 
-            _mockGetProviders.Setup(
-                x =>
-                    x.GetProviderByUkprn(1)).Returns(expected);
+            Assert.AreEqual(HttpStatusCode.NotFound, ex.Response?.StatusCode);
+        }
 
-            ActualValueDelegate<object> test = () => _sut.Get(-2);
+        [Test]
+        public void AnInvalidUkprnShouldReturnABadRequest()
+        {
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(123456));
 
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            Assert.AreEqual(HttpStatusCode.BadRequest, ex.Response?.StatusCode);
         }
 
         [Test]
