@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using System.Text.RegularExpressions;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +13,6 @@
     using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.NLog.Logger;
     using Swashbuckle.Swagger.Annotations;
     using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
 
@@ -20,18 +21,18 @@
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
-        private readonly ILog _logger;
+
+        private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
+        private const string BadUkprnMessage = "the ukprn wasn't 8 digits long";
 
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository,
-            ILog logger)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
-            _logger = logger;
         }
 
         /// <summary>
@@ -62,10 +63,16 @@
         [SwaggerOperation("GetByUkprn")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
+            if (!UkprnPattern.IsMatch(ukprn.ToString()))
+            {
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+            }
+
             var response = _getProviders.GetProviderByUkprn(ukprn);
 
             if (response == null)
@@ -99,6 +106,7 @@
         /// <param name="ukprn">UKPRN</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public void Head(long ukprn)
