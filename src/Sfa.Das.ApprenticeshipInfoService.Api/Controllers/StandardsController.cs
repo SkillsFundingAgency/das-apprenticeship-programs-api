@@ -71,6 +71,7 @@
             }
 
             standard.Uri = Resolve(standard.StandardId);
+            standard.Providers = ResolveProvidersUrl(id);
             return standard;
         }
 
@@ -103,6 +104,14 @@
         private string Resolve(string id)
         {
             return Url.Link("DefaultApi", new { controller = "standards", id = id });
+        }
+
+        private ProvidersHref ResolveProvidersUrl(string id)
+        {
+            return new ProvidersHref
+            {
+                Href = Url.Link("GetStandardProviders", new { standardId = id })
+            };
         }
     }
 }

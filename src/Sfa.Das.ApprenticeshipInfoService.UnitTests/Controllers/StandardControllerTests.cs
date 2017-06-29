@@ -38,6 +38,10 @@
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetStandardProviders",
+                routeTemplate: "{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "standards" } });
