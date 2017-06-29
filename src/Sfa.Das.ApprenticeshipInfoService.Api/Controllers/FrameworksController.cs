@@ -65,6 +65,8 @@
             }
 
             response.Uri = Resolve(response.FrameworkId);
+            response.Providers = ResolveProvidersUrl(id);
+
             return response;
         }
 
@@ -97,6 +99,14 @@
         private string Resolve(string id)
         {
             return Url.Link("DefaultApi", new { controller = "frameworks", id = id });
+        }
+
+        private ProvidersHref ResolveProvidersUrl(string id)
+        {
+            return new ProvidersHref
+            {
+                Href = Url.Link("GetFrameworkProviders", new { frameworkId = id })
+            };
         }
     }
 }

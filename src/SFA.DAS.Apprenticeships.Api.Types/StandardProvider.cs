@@ -1,10 +1,9 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-    public sealed class StandardProviderSearchResultsItem : IApprenticeshipProviderSearchResultsItem
+namespace SFA.DAS.Apprenticeships.Api.Types
+{
+    public sealed class StandardProvider
     {
-        // TODO Add URI
         public int Ukprn { get; set; }
 
         public bool IsHigherEducationInstitute { get; set; }
@@ -12,7 +11,7 @@
         public string ProviderName { get; set; }
 
         public string LegalName { get; set; }
-
+        
         public int StandardCode { get; set; }
 
         public double? OverallAchievementRate { get; set; }

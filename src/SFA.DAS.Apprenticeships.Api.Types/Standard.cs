@@ -51,5 +51,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public double Ssa1 { get; set; }
 
         public double Ssa2 { get; set; }
+
+        public ProvidersHref Providers { get; set; }
     }
 }
