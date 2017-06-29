@@ -76,7 +76,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health.Elasticsearch
                     var catAliases = elasticClient
                         .CatAliases()
                         .Records
-                        .Where(m => m.Alias.StartsWith(environment));
+                        .Where(m => m.Alias.StartsWith(environment)).ToList();
 
                     var rawAliases = catAliases.Select(al => al.Alias.Replace(environment, string.Empty));
 
@@ -104,7 +104,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health.Elasticsearch
             }
             catch (Exception exception)
             {
-                _logger.Error(exception, "Not able to get aliases");
+                _logger.Warn(exception, "Not able to get aliases");
 
                 return new ElasticsearchResponse { ElasticsearchAliases = new List<ElasticsearchAlias>(), Exception = exception };
             }

@@ -1,10 +1,10 @@
-﻿using System.Linq;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
+    using System.Text.RegularExpressions;
     using System.Web.Http;
     using System.Web.Http.Description;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
@@ -13,7 +13,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.NLog.Logger;
     using Swashbuckle.Swagger.Annotations;
     using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
 
@@ -22,18 +21,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
-        private readonly ILog _logger;
+
+        private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
+        private const string BadUkprnMessage = "the ukprn wasn't 8 digits long";
 
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository,
-            ILog logger)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
-            _logger = logger;
         }
 
         /// <summary>
@@ -46,22 +45,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ExceptionHandling]
         public IEnumerable<ProviderSummary> Get()
         {
-            try
-            {
-                var response = _getProviders.GetAllProviders();
+            var response = _getProviders.GetAllProviders();
 
-                foreach (var provider in response)
-                {
-                    provider.Uri = Resolve(provider.Ukprn);
-                }
-
-                return response;
-            }
-            catch (Exception e)
+            foreach (var provider in response)
             {
-                _logger.Error(e, "/providers");
-                throw;
+                provider.Uri = Resolve(provider.Ukprn);
             }
+
+            return response;
         }
 
         /// <summary>
@@ -72,10 +63,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerOperation("GetByUkprn")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
+            if (!UkprnPattern.IsMatch(ukprn.ToString()))
+            {
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+            }
+
             var response = _getProviders.GetProviderByUkprn(ukprn);
 
             if (response == null)
@@ -109,11 +106,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <param name="ukprn">UKPRN</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public void Head(long ukprn)
         {
-
             Get(ukprn);
         }
 
@@ -229,27 +226,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("standards/{id}/providers")]
-        public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double? lat = null, double? lon = null, int page = 1)
+        public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double? lat = null,
+            double? lon = null, int page = 1)
         {
             // TODO 404 if standard doesn't exists
-            try
-            {
-                var actualPage = _controllerHelper.GetActualPage(page);
+            var actualPage = _controllerHelper.GetActualPage(page);
 
-                if (lat.HasValue && lon.HasValue)
-                {
-                    return _getProviders.GetByStandardIdAndLocation(id, lat.Value, lon.Value, actualPage);
-                }
-
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.BadRequest,
-                    "A valid Latitude and Longitude is required");
-            }
-            catch (Exception e)
+            if (lat.HasValue && lon.HasValue)
             {
-                _logger.Error(e, $"standards/{id}/providers");
-                throw;
+                return _getProviders.GetByStandardIdAndLocation(id, lat.Value, lon.Value, actualPage);
             }
+
+            throw HttpResponseFactory.RaiseException(
+                HttpStatusCode.BadRequest,
+                "A valid Latitude and Longitude is required");
         }
 
         // GET frameworks/5/providers?lat=<latitude>&long=<longitude>&page=#
@@ -259,27 +249,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [Route("frameworks/{id}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
-        public List<FrameworkProviderSearchResultsItemResponse> GetByFrameworkIdAndLocation(int id, double? lat = null, double? lon = null, int page = 1)
+        public List<FrameworkProviderSearchResultsItemResponse> GetByFrameworkIdAndLocation(int id, double? lat = null,
+            double? lon = null, int page = 1)
         {
             // TODO 404 if framework doesn't exists
-            try
-            {
-                var actualPage = _controllerHelper.GetActualPage(page);
+            var actualPage = _controllerHelper.GetActualPage(page);
 
-                if (lat.HasValue && lon.HasValue)
-                {
-                    return _getProviders.GetByFrameworkIdAndLocation(id, lat.Value, lon.Value, actualPage);
-                }
-
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.BadRequest,
-                    "A valid Latitude and Longitude is required");
-            }
-            catch (Exception e)
+            if (lat.HasValue && lon.HasValue)
             {
-                _logger.Error(e, $"frameworks/{id}/providers");
-                throw;
+                return _getProviders.GetByFrameworkIdAndLocation(id, lat.Value, lon.Value, actualPage);
             }
+
+            throw HttpResponseFactory.RaiseException(
+                HttpStatusCode.BadRequest,
+                "A valid Latitude and Longitude is required");
         }
 
         // GET standards/<standardId>/providers?ukprn=<ukprn>&location=<locationId>

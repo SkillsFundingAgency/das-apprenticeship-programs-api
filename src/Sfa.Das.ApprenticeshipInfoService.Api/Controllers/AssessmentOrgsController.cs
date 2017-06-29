@@ -65,25 +65,17 @@
         [ExceptionHandling]
         public Organisation Get(string id)
         {
-            try
+            var response = _getAssessmentOrgs.GetOrganisationById(id);
+
+            if (response == null)
             {
-                var response = _getAssessmentOrgs.GetOrganisationById(id);
-
-                if (response == null)
-                {
-                    throw HttpResponseFactory.RaiseException(HttpStatusCode.NotFound,
-                        $"No organisation with EpaOrganisationIdentifier {id} found");
-                }
-
-                response.Uri = Resolve(response.Id);
-
-                return response;
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.NotFound,
+                    $"No organisation with EpaOrganisationIdentifier {id} found");
             }
-            catch (Exception e)
-            {
-                _logger.Error(e, $"/assessment-organisations/{id}");
-                throw;
-            }
+
+            response.Uri = Resolve(response.Id);
+
+            return response;
         }
 
         /// <summary>
@@ -123,30 +115,22 @@
         [ExceptionHandling]
         public IEnumerable<Organisation> GetByStandardId(string id)
         {
-            try
+            var response = _getAssessmentOrgs.GetOrganisationsByStandardId(id);
+
+            if (response == null)
             {
-                var response = _getAssessmentOrgs.GetOrganisationsByStandardId(id);
-
-                if (response == null)
-                {
-                    throw HttpResponseFactory.RaiseException(
-                        HttpStatusCode.NotFound,
-                        $"No organisation with EpaOrganisationIdentifier {id} found");
-                }
-
-                response = response.ToList();
-                foreach (var organisation in response)
-                {
-                    organisation.Uri = Resolve(organisation.Id);
-                }
-
-                return response;
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"No organisation with EpaOrganisationIdentifier {id} found");
             }
-            catch (Exception e)
+
+            response = response.ToList();
+            foreach (var organisation in response)
             {
-                _logger.Error(e, $"/assessment-organisations/standards/{id}");
-                throw;
+                organisation.Uri = Resolve(organisation.Id);
             }
+
+            return response;
         }
 
         private string Resolve(string organisationId)

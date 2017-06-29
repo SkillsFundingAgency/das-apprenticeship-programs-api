@@ -345,6 +345,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AssessmentOrgsController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
+    <Compile Include="Extensions\ApplySchemaVendorExtensions.cs" />
     <Compile Include="Helpers\HttpResponseFactory.cs" />
     <Compile Include="Controllers\ProvidersController.cs" />
     <Compile Include="Controllers\StandardsController.cs" />

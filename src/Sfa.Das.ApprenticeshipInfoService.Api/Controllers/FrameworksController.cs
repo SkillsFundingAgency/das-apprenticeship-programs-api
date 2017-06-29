@@ -35,22 +35,14 @@
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> Get()
         {
-            try
-            {
-                var response = _getFrameworks.GetAllFrameworks().ToList();
+            var response = _getFrameworks.GetAllFrameworks().ToList();
 
-                foreach (var item in response)
-                {
-                    item.Uri = Resolve(item.Id);
-                }
-
-                return response;
-            }
-            catch (Exception e)
+            foreach (var item in response)
             {
-                _logger.Error(e, "/assessment-organisations");
-                throw;
+                item.Uri = Resolve(item.Id);
             }
+
+            return response;
         }
 
         /// <summary>
