@@ -48,7 +48,7 @@
         /// <summary>
         /// Get a framework
         /// </summary>
-        /// <param name="id">{FrameworkId}-{ProgType}-{PathwayId}</param>
+        /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         /// <returns>a framework</returns>
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
@@ -96,9 +96,65 @@
             Get(id);
         }
 
+        /// <summary>
+        /// Get a framework
+        /// </summary>
+        /// <param name="frameworkCode"></param>
+        /// <returns>a framework resume</returns>
+        [SwaggerOperation("GetByFrameworkCode")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkResume>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes")]
+        [ExceptionHandling]
+        public IEnumerable<FrameworkResume> GetAllFrameworkCodes()
+        {
+            var response = _getFrameworks.GetAllFrameworkCodes();
+
+            if (response == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            foreach (var item in response)
+            {
+                item.Uri = ResolveFrameworkResume(item.FrameworkCode);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Get a framework
+        /// </summary>
+        /// <param name="frameworkCode"></param>
+        /// <returns>a framework resume</returns>
+        [SwaggerOperation("GetByFrameworkCode")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes/{frameworkCode}", Name = "GetByFrameworkCode")]
+        [ExceptionHandling]
+        public FrameworkResume GetByFrameworkCode(string frameworkCode)
+        {
+            var response = _getFrameworks.GetFrameworkByCode(frameworkCode);
+
+            if (response == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            response.Uri = ResolveFrameworkResume(response.FrameworkCode);
+
+            return response;
+        }
+
         private string Resolve(string id)
         {
             return Url.Link("DefaultApi", new { controller = "frameworks", id = id });
+        }
+
+        private string ResolveFrameworkResume(int responseFrameworkCode)
+        {
+            return Url.Link("GetByFrameworkCode", new { frameworkCode = responseFrameworkCode });
         }
 
         private ProvidersHref ResolveProvidersUrl(string id)

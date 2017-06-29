@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssessmentOrgs\Address.cs" />
+    <Compile Include="FrameworkResume.cs" />
     <Compile Include="FrameworkProvider.cs" />
     <Compile Include="ProvidersHref.cs" />
     <Compile Include="Providers\ContactAddress.cs" />
