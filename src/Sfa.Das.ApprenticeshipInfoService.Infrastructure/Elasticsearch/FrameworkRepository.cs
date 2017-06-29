@@ -66,7 +66,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         .MatchAll());
             return (int) results.HitsMetaData.Total;
         }
-        
+
         public Framework GetFrameworkById(string id)
         {
             var results =

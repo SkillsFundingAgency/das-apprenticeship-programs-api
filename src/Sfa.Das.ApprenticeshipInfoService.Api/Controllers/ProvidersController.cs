@@ -126,6 +126,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
         public IEnumerable<Provider> GetStandardProviders(string standardId)
         {
@@ -154,6 +155,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
         public IEnumerable<Provider> GetFrameworkProviders(string frameworkId)
         {
