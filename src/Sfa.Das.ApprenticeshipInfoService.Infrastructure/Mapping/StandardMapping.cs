@@ -26,7 +26,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 WhatApprenticesWillLearn = document.WhatApprenticesWillLearn,
                 Qualifications = document.Qualifications,
                 ProfessionalRegistration = document.ProfessionalRegistration,
-                OverviewOfRole = document.OverviewOfRole
+                OverviewOfRole = document.OverviewOfRole,
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2
             };
         }
 
@@ -41,6 +43,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Duration = document.Duration,
                 MaxFunding = document.FundingCap,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2
             };
         }
     }

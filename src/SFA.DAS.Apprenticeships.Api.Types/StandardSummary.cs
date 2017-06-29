@@ -29,5 +29,9 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public int Level { get; set; }
 
         public bool IsPublished { get; set; }
+
+        public double Ssa1 { get; set; }
+
+        public double Ssa2 { get; set; }
     }
 }
