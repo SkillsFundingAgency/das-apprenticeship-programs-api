@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.Apprenticeships.Api.Client

@@ -1,6 +1,5 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
