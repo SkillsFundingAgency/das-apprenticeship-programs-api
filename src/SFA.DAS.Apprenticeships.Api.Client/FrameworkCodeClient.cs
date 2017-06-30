@@ -29,10 +29,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public FrameworkCodeSummary Get(int frameworkCode)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
-            {
-                return RequestAndDeserialise<FrameworkCodeSummary>(request);
-            }
+            return Get(frameworkCode.ToString());
         }
 
         public FrameworkCodeSummary Get(string frameworkCode)
@@ -45,10 +42,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public async Task<FrameworkCodeSummary> GetAsync(int frameworkCode)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
-            {
-                return await RequestAndDeserialiseAsync<FrameworkCodeSummary>(request);
-            }
+            return await GetAsync(frameworkCode.ToString());
         }
 
         public async Task<FrameworkCodeSummary> GetAsync(string frameworkCode)
@@ -61,10 +55,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public bool Exists(int frameworkCode)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Head, $"/frameworks/codes/{frameworkCode}"))
-            {
-                return Exists(request);
-            }
+            return Exists(frameworkCode.ToString());
         }
 
         public bool Exists(string frameworkCode)
@@ -77,10 +68,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public async Task<bool> ExistsAsync(int frameworkCode)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Head, $"/frameworks/codes/{frameworkCode}"))
-            {
-                return await ExistsAsync(request);
-            }
+            return await ExistsAsync(frameworkCode.ToString());
         }
 
         public async Task<bool> ExistsAsync(string frameworkCode)

@@ -116,7 +116,7 @@
 
             foreach (var item in response)
             {
-                item.Uri = ResolveFrameworkResume(item.FrameworkCode);
+                item.Uri = ResolveFrameworkCodeSummary(item.FrameworkCode);
             }
 
             return response;
@@ -141,7 +141,7 @@
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-            response.Uri = ResolveFrameworkResume(response.FrameworkCode);
+            response.Uri = ResolveFrameworkCodeSummary(response.FrameworkCode);
 
             return response;
         }
@@ -151,7 +151,7 @@
             return Url.Link("DefaultApi", new { controller = "frameworks", id = id });
         }
 
-        private string ResolveFrameworkResume(int responseFrameworkCode)
+        private string ResolveFrameworkCodeSummary(int responseFrameworkCode)
         {
             return Url.Link("GetByFrameworkCode", new { frameworkCode = responseFrameworkCode });
         }

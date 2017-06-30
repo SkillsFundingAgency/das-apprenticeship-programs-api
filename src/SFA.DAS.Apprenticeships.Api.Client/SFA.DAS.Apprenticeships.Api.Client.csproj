@@ -48,8 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiClientBase.cs" />
+    <Compile Include="FrameworkCodeClient.cs" />
     <Compile Include="FrameworkApiClient.cs" />
     <Compile Include="IFrameworkApiClient.cs" />
+    <Compile Include="IFrameworkCodeClient.cs" />
     <Compile Include="IStandardApiClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandardApiClient.cs" />

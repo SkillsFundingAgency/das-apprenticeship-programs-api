@@ -61,7 +61,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return framework;
         }
 
-        public FrameworkCodeSummary MapToFrameworkResume(FrameworkSearchResultsItem document)
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
         {
             return new FrameworkCodeSummary
             {
@@ -72,7 +72,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
-        public FrameworkCodeSummary MapToFrameworkResume(FrameworkSummary frameworkSummary)
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
         {
             return new FrameworkCodeSummary
             {
