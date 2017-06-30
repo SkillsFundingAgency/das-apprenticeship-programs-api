@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
-    public sealed class FrameworkResume
+    public sealed class FrameworkCodeSummary
     {
         /// <summary>
         /// a link to the framework information

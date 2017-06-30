@@ -89,14 +89,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return document != null ? _frameworkMapping.MapToFramework(document) : null;
         }
 
-        public IEnumerable<FrameworkResume> GetAllFrameworkCodes()
+        public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
         {
             var frameworks = GetAllFrameworks();
 
             return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkResume(frameworkSummary.First())).ToList();
         }
 
-        public FrameworkResume GetFrameworkByCode(string frameworkCode)
+        public FrameworkCodeSummary GetFrameworkByCode(string frameworkCode)
         {
             var results =
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(

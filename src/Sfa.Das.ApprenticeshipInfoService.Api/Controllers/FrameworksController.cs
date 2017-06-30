@@ -102,11 +102,11 @@
         /// <param name="frameworkCode"></param>
         /// <returns>a framework resume</returns>
         [SwaggerOperation("GetByFrameworkCode")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkResume>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkCodeSummary>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/codes")]
         [ExceptionHandling]
-        public IEnumerable<FrameworkResume> GetAllFrameworkCodes()
+        public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
         {
             var response = _getFrameworks.GetAllFrameworkCodes();
 
@@ -133,7 +133,7 @@
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/codes/{frameworkCode}", Name = "GetByFrameworkCode")]
         [ExceptionHandling]
-        public FrameworkResume GetByFrameworkCode(string frameworkCode)
+        public FrameworkCodeSummary GetByFrameworkCode(string frameworkCode)
         {
             var response = _getFrameworks.GetFrameworkByCode(frameworkCode);
 

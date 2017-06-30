@@ -10,8 +10,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
         FrameworkSummary MapToFrameworkSummary(FrameworkSearchResultsItem document);
 
-        FrameworkResume MapToFrameworkResume(FrameworkSearchResultsItem document);
+        FrameworkCodeSummary MapToFrameworkResume(FrameworkSearchResultsItem document);
 
-        FrameworkResume MapToFrameworkResume(FrameworkSummary frameworkSummary);
+        FrameworkCodeSummary MapToFrameworkResume(FrameworkSummary frameworkSummary);
     }
 }

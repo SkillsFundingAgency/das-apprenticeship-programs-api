@@ -61,9 +61,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return framework;
         }
 
-        public FrameworkResume MapToFrameworkResume(FrameworkSearchResultsItem document)
+        public FrameworkCodeSummary MapToFrameworkResume(FrameworkSearchResultsItem document)
         {
-            return new FrameworkResume
+            return new FrameworkCodeSummary
             {
                 FrameworkCode = document.FrameworkCode,
                 Ssa1 = document.SectorSubjectAreaTier1,
@@ -72,9 +72,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
-        public FrameworkResume MapToFrameworkResume(FrameworkSummary frameworkSummary)
+        public FrameworkCodeSummary MapToFrameworkResume(FrameworkSummary frameworkSummary)
         {
-            return new FrameworkResume
+            return new FrameworkCodeSummary
             {
                 FrameworkCode = frameworkSummary.FrameworkCode,
                 Ssa1 = frameworkSummary.Ssa1,

@@ -55,6 +55,38 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             }
         }
 
+        public IEnumerable<FrameworkCodeSummary> FindAllFrameworkCodes()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes"))
+            {
+                return RequestAndDeserialise<IEnumerable<FrameworkCodeSummary>>(request);
+            }
+        }
+
+        public async Task<IEnumerable<FrameworkCodeSummary>> FindAllFrameworkCodesAsync()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<FrameworkCodeSummary>>(request);
+            }
+        }
+
+        public async Task<FrameworkCodeSummary> GetFrameworkCodeAsync(string frameworkCode)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return await RequestAndDeserialiseAsync<FrameworkCodeSummary>(request, $"Could not find the framework code {frameworkCode}");
+            }
+        }
+
+        public FrameworkCodeSummary GetFrameworkCode(string frameworkCode)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return RequestAndDeserialise<FrameworkCodeSummary>(request, $"Could not find the framework code {frameworkCode}");
+            }
+        }
+
         public bool Exists(string frameworkId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Head, $"/frameworks/{frameworkId}"))
