@@ -1,24 +1,23 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Routing;
-using FluentAssertions;
-using NUnit.Framework.Constraints;
-
-using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
-
-namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Web.Http;
+    using System.Web.Http.Routing;
+    using Api.Controllers;
+    using Core.Helpers;
+    using Core.Models;
+    using Core.Models.Responses;
+    using Core.Services;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Controllers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using NUnit.Framework.Constraints;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
+    using SFA.DAS.NLog.Logger;
 
     [TestFixture]
     public class ProviderControllerTests
@@ -53,7 +52,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "providers" } });
-
         }
 
         [Test]
@@ -144,6 +142,112 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             response.First().ProviderName.Should().Be(element.ProviderName);
             response.First().LegalName.Should().Be(element.LegalName);
             response.First().ApprenticeshipInfoUrl.Should().Be(element.ApprenticeshipInfoUrl);
+        }
+
+        [Test]
+        public void ShouldReturnListOfUniqueProvidersForAStandard()
+        {
+            var data = new List<StandardProviderSearchResultsItem>
+            {
+                new StandardProviderSearchResultsItem { Ukprn = 10005214, StandardCode = 1 },
+                new StandardProviderSearchResultsItem { Ukprn = 10005214, StandardCode = 1 },
+                new StandardProviderSearchResultsItem { Ukprn = 10006214, StandardCode = 1 }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+
+            _sut.GetStandardProviders("1");
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { 10005214L, 10006214L }), Times.Once);
+        }
+
+        [Test]
+        public void ShouldReturnListOfUniqueProvidersForAFramework()
+        {
+            var data = new List<FrameworkProviderSearchResultsItem>
+            {
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10006214, FrameworkCode = 500 }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+
+            _sut.GetFrameworkProviders("500");
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { 10005214L, 10006214L }), Times.Once);
+        }
+
+        [Test]
+        public void ShouldReturnListOfAllProvidersWithLocationForAStandard()
+        {
+            var data = new List<StandardProviderSearchResultsItem>
+            {
+                new StandardProviderSearchResultsItem
+                {
+                    Ukprn = 10004214, StandardCode = 1,
+                    TrainingLocations = new List<TrainingLocation>
+                    {
+                        new TrainingLocation { LocationId = 1234 },
+                        new TrainingLocation { LocationId = 2345 },
+                        new TrainingLocation { LocationId = 3456 }
+                    }
+                },
+                new StandardProviderSearchResultsItem
+                {
+                    Ukprn = 10005214, StandardCode = 1,
+                    TrainingLocations = new List<TrainingLocation>
+                    {
+                        new TrainingLocation { LocationId = 4567 },
+                        new TrainingLocation { LocationId = 5678 }
+                    }
+                },
+                new StandardProviderSearchResultsItem
+                {
+                    Ukprn = 10006214, StandardCode = 1,
+                    TrainingLocations = new List<TrainingLocation>
+                    {
+                        new TrainingLocation { LocationId = 6789 }
+                    }
+                }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+
+            var response = _sut.GetStandardProviderLocations("1");
+
+            response.Should().NotBeNull();
+            response.Should().BeOfType<List<StandardProviderSearchResultsItem>>();
+            response.Should().NotBeEmpty();
+            response.Should().BeEquivalentTo(data);
+            response.First().Should().NotBe(null);
+            response.Count().Should().Be(3);
+            response.FirstOrDefault(c => c.Ukprn == 10004214).TrainingLocations.Count().Should().Be(3);
+        }
+
+        [Test]
+        public void ShouldReturnListOfAllProvidersWithLocationForAFramework()
+        {
+            var data = new List<FrameworkProviderSearchResultsItem>
+            {
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10006214, FrameworkCode = 500 }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+
+            var response = _sut.GetFrameworkProviderLocations("500");
+
+            response.Should().NotBeNull();
+            response.Should().BeOfType<List<FrameworkProviderSearchResultsItem>>();
+            response.Should().NotBeEmpty();
+            response.Should().BeEquivalentTo(data);
+            response.First().Should().NotBe(null);
+            response.Count().Should().Be(3);
+
         }
 
         [Test]
