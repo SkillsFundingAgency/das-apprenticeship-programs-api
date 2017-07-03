@@ -85,7 +85,7 @@
         /// <summary>
         /// framework exists?
         /// </summary>
-        /// <param name="id">{FrameworkId}-{ProgType}-{PathwayId}</param>
+        /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/{id}")]
@@ -144,6 +144,20 @@
             response.Uri = ResolveFrameworkCodeSummary(response.FrameworkCode);
 
             return response;
+        }
+
+        /// <summary>
+        /// Do we have frameworks?
+        /// </summary>
+        /// /// <param name="frameworkCode">Framework code</param>
+        [SwaggerResponse(HttpStatusCode.NoContent)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes/{frameworkCode}")]
+        [ExceptionHandling]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void Head(int frameworkCode)
+        {
+            GetByFrameworkCode(frameworkCode);
         }
 
         private string Resolve(string id)
