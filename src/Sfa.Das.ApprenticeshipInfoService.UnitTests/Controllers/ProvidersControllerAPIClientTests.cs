@@ -11,7 +11,7 @@
     [TestFixture]
     public class ProvidersControllerApiClientTests
     {
-        private readonly string _url = "http://das-prd-apprenticeshipinfoservice.cloudapp.net/";
+        private readonly string _url = string.Empty;
         private ProviderApiClient _sut;
 
         [OneTimeSetUp]
@@ -30,6 +30,7 @@
             frameworks.ForEach(x => Console.WriteLine($"{x.Id}"));
         }
 
+/*
         [Test]
         [Ignore("Adhoc tests to verify live provider information")]
         public void ShouldNotReturnMoreProvidersComparedToProviderLocationsForAStandard()
@@ -101,7 +102,7 @@
 
             Assert.IsTrue(error == 0, $"looks like there are more providers than providers locations for standards {string.Join(" , ", frameworksid)}");
         }
-
+        */
         [Test]
         [Ignore("Adhoc tests to verify live provider information")]
         public void ShouldAllProvidersHasContactInformation()
