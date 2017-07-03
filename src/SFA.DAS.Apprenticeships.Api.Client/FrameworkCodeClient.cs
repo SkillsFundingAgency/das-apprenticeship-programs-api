@@ -29,22 +29,34 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public FrameworkCodeSummary Get(int frameworkCode)
         {
-            return Get(frameworkCode.ToString());
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return RequestAndDeserialise<FrameworkCodeSummary>(request);
+            }
         }
 
         public async Task<FrameworkCodeSummary> GetAsync(int frameworkCode)
         {
-            return await GetAsync(frameworkCode.ToString());
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return await RequestAndDeserialiseAsync<FrameworkCodeSummary>(request);
+            }
         }
 
         public bool Exists(int frameworkCode)
         {
-            return Exists(frameworkCode.ToString());
+            using (var request = new HttpRequestMessage(HttpMethod.Head, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return Exists(request);
+            }
         }
 
         public async Task<bool> ExistsAsync(int frameworkCode)
         {
-            return await ExistsAsync(frameworkCode.ToString());
+            using (var request = new HttpRequestMessage(HttpMethod.Head, $"/frameworks/codes/{frameworkCode}"))
+            {
+                return await ExistsAsync(request);
+            }
         }
     }
 }
