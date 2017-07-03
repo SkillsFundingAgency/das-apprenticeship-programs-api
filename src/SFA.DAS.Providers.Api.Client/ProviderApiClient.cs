@@ -9,7 +9,7 @@ using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Providers.Api.Client
 {
-    public class ProviderApiClient : ApiClientBase, IProviderApiClient, IProviderApiClient1
+    public class ProviderApiClient : ApiClientBase, IProviderApiClient
     {
         public ProviderApiClient(string baseUri = null) : base(baseUri)
         {
