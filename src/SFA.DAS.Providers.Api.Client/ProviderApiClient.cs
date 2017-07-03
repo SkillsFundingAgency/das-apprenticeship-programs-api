@@ -9,7 +9,7 @@ using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Providers.Api.Client
 {
-    public class ProviderApiClient : ApiClientBase, IProviderApiClient
+    public class ProviderApiClient : ApiClientBase, IProviderApiClient, IProviderApiClient1
     {
         public ProviderApiClient(string baseUri = null) : base(baseUri)
         {
@@ -156,22 +156,6 @@ namespace SFA.DAS.Providers.Api.Client
         }
 
         public async Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(string frameworkId)
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
-            {
-                return await RequestAndDeserialiseAsync<IEnumerable<FrameworkProvider>>(request);
-            }
-        }
-
-        public IEnumerable<FrameworkProvider> GetFrameworkProviders(int frameworkId)
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
-            {
-                return RequestAndDeserialise<IEnumerable<FrameworkProvider>>(request);
-            }
-        }
-
-        public async Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(int frameworkId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
             {
