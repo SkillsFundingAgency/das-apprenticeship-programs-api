@@ -174,12 +174,14 @@
 
         /// <summary>
         /// Get a list of providers locations for an specific standard
+        /// TODO update url
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProviderLocationByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("providers/standardLocation/{standardId}", Name = "GetStandardProviderLocations")]
         [ExceptionHandling]
         public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviderLocations(string standardId)
@@ -198,12 +200,14 @@
 
         /// <summary>
         /// Get a list of providers locations for an specific framework
+        /// TODO update url
         /// </summary>
         /// <param name="apprenticeshipId">Framework id</param>
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProviderLocationByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("providers/frameworkLocation/{frameworkId}", Name = "GetFrameworkProviderLocations")]
         [ExceptionHandling]
         public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviderLocations(string frameworkId)
