@@ -18,7 +18,7 @@
         public void TestSetup()
         {
             // provider indexer api client defaults to production uri.
-            _sut = new ProviderApiClient(_url);
+            _sut = new ProviderApiClient();
         }
 
         [Test]
