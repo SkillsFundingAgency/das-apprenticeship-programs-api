@@ -9,7 +9,7 @@
 
         Framework GetFrameworkById(string id);
 
-        FrameworkCodeSummary GetFrameworkByCode(string frameworkCode);
+        FrameworkCodeSummary GetFrameworkByCode(int frameworkCode);
 
         IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes();
     }

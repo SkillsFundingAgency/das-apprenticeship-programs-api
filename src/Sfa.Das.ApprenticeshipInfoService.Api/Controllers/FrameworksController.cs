@@ -132,7 +132,7 @@
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/codes/{frameworkCode}", Name = "GetByFrameworkCode")]
         [ExceptionHandling]
-        public FrameworkCodeSummary GetByFrameworkCode(string frameworkCode)
+        public FrameworkCodeSummary GetByFrameworkCode(int frameworkCode)
         {
             var response = _getFrameworks.GetFrameworkByCode(frameworkCode);
 

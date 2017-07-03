@@ -96,7 +96,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkCodeSummary(frameworkSummary.First())).ToList();
         }
 
-        public FrameworkCodeSummary GetFrameworkByCode(string frameworkCode)
+        public FrameworkCodeSummary GetFrameworkByCode(int frameworkCode)
         {
             var results =
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
@@ -110,7 +110,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                     .Type(TextQueryType.Phrase)
                                     .Fields(fs => fs
                                         .Field(e => e.FrameworkCode))
-                                    .Query(frameworkCode))));
+                                    .Query(frameworkCode.ToString()))));
 
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
