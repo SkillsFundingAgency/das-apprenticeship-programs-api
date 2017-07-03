@@ -134,28 +134,28 @@ namespace SFA.DAS.Providers.Api.Client
 
         /// <summary>
         /// Get all the active provider locations for a specific standard
-        /// GET /providers/frameworks/{frameworkId}
+        /// GET /providers/standard/{standard code}
         /// </summary>
         /// <returns>a collection of Standard Providers</returns>
         IEnumerable<StandardProvider> GetStandardProviders(string standardId);
 
         /// <summary>
         /// Get all the active provider locations for a specific standard
-        /// GET /providers/frameworks/{frameworkId}
+        /// GET /providers/standard/{standard code}
         /// </summary>
         /// <returns>a collection of Standard Providers</returns>
         IEnumerable<StandardProvider> GetStandardProviders(int standardId);
 
         /// <summary>
         /// Get all the active provider locations for a specific standard
-        /// GET /providers/frameworks/{frameworkId}
+        /// GET /providers/standard/{standard code}
         /// </summary>
         /// <returns>a collection of Standard Providers</returns>
         Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(string standardId);
 
         /// <summary>
         /// Get all the active provider locations for a specific standard
-        /// GET /providers/frameworks/{frameworkId}
+        /// GET /providers/standard/{standard code}
         /// </summary>
         /// <returns>a collection of Standard Providers</returns>
         Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId);
