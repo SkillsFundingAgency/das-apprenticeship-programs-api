@@ -28,7 +28,7 @@
         private Mock<IApprenticeshipProviderRepository> _mockApprenticeshipProviderRepository;
         private Mock<ILog> _mockLogger;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init()
         {
             _mockGetProviders = new Mock<IGetProviders>();

@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IGetAssessmentOrgs> _mockGetAssessmentOrgs;
         private Mock<ILog> _mockLogger;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init()
         {
             _mockGetAssessmentOrgs = new Mock<IGetAssessmentOrgs>();
