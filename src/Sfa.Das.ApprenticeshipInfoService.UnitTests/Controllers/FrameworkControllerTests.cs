@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Linq;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -42,6 +44,10 @@
                 name: "GetFrameworkProviders",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetByFrameworkCode",
+                routeTemplate: "{controller}/codes/{frameworkCode}",
+                defaults: new { id = RouteParameter.Optional });
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "frameworks" } });
@@ -71,6 +77,42 @@
         }
 
         [Test]
+        public void ShouldReturnFrameworkCodes()
+        {
+            _mockGetFrameworks.Setup(m => m
+                .GetAllFrameworkCodes())
+                .Returns(
+                    new List<FrameworkCodeSummary>
+                    {
+                        new FrameworkCodeSummary
+                        {
+                            FrameworkCode = 1234,
+                            Title = "test title"
+                        }
+                    });
+
+            var frameworks = _sut.GetAllFrameworkCodes();
+
+            Assert.NotNull(frameworks);
+            frameworks.FirstOrDefault().FrameworkCode.Should().Be(1234);
+            frameworks.FirstOrDefault().Title.Should().Be("test title");
+            frameworks.FirstOrDefault().Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+        }
+
+        [Test]
+        public void ShouldReturnFrameworkCode()
+        {
+            _mockGetFrameworks.Setup(m => m.GetFrameworkByCode(1234)).Returns(new FrameworkCodeSummary { FrameworkCode = 1234, Title = "test title" });
+
+            var frameworkCodeSummary = _sut.GetByFrameworkCode(1234);
+
+            Assert.NotNull(frameworkCodeSummary);
+            frameworkCodeSummary.FrameworkCode.Should().Be(1234);
+            frameworkCodeSummary.Title.Should().Be("test title");
+            frameworkCodeSummary.Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+        }
+
+        [Test]
         public void ShouldthrowExceptionWhenServiceisDown()
         {
             _mockGetFrameworks.Setup(
@@ -81,7 +123,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetFrameworks.Setup(
                x =>
