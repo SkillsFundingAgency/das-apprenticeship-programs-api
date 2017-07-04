@@ -121,7 +121,7 @@
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProvidersByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -129,11 +129,11 @@
         {
             var response = _getProviders.GetProvidersByStandardId(standardId);
 
-            if (response == null || !response.Any())
+            if (response == null)
             {
                 throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by standard with id {standardId}");
+                    HttpStatusCode.InternalServerError,
+                    $"There was a problem with the query");
             }
 
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
@@ -150,7 +150,7 @@
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProvidersByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -158,11 +158,11 @@
         {
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
 
-            if (response == null || !response.Any())
+            if (response == null)
             {
                 throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by framework with id {frameworkId}");
+                    HttpStatusCode.InternalServerError,
+                    $"There was a problem with the query");
             }
 
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
@@ -174,51 +174,55 @@
 
         /// <summary>
         /// Get a list of providers locations for an specific standard
+        /// TODO update url
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetProviderLocationByStandardId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("providers/standardLocation/{standardId}", Name = "GetStandardProviderLocations")]
-        [ExceptionHandling]
-        public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviderLocations(string standardId)
-        {
-            var response = _getProviders.GetProvidersByStandardId(standardId);
+        //[SwaggerOperation("GetProviderLocationByStandardId")]
+        //[SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
+        //[SwaggerResponse(HttpStatusCode.NotFound)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //[Route("providers/standardLocation/{standardId}", Name = "GetStandardProviderLocations")]
+        //[ExceptionHandling]
+        //public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviderLocations(string standardId)
+        //{
+        //    var response = _getProviders.GetProvidersByStandardId(standardId);
 
-            if (response == null || !response.Any())
-            {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by standard with id {standardId}");
-            }
+        //    if (response == null || !response.Any())
+        //    {
+        //        throw HttpResponseFactory.RaiseException(
+        //            HttpStatusCode.NotFound,
+        //            $"No providers found by standard with id {standardId}");
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
 
         /// <summary>
         /// Get a list of providers locations for an specific framework
+        /// TODO update url
         /// </summary>
         /// <param name="apprenticeshipId">Framework id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetProviderLocationByFrameworkId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("providers/frameworkLocation/{frameworkId}", Name = "GetFrameworkProviderLocations")]
-        [ExceptionHandling]
-        public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviderLocations(string frameworkId)
-        {
-            var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
+        //[SwaggerOperation("GetProviderLocationByFrameworkId")]
+        //[SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
+        //[SwaggerResponse(HttpStatusCode.NotFound)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //[Route("providers/frameworkLocation/{frameworkId}", Name = "GetFrameworkProviderLocations")]
+        //[ExceptionHandling]
+        //public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviderLocations(string frameworkId)
+        //{
+        //    var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
 
-            if (response == null || !response.Any())
-            {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by framework with id {frameworkId}");
-            }
+        //    if (response == null || !response.Any())
+        //    {
+        //        throw HttpResponseFactory.RaiseException(
+        //            HttpStatusCode.NotFound,
+        //            $"No providers found by framework with id {frameworkId}");
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
 
         // GET standards/5/providers?lat=<latitude>&long=<longitude>&page=#
         [SwaggerOperation("GetByStandardIdAndLocation")]
