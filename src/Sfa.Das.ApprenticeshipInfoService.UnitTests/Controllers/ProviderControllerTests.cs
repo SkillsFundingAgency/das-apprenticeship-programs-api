@@ -171,6 +171,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnListOfEmptyProvidersForAStandard()
+        {
+            var standardCode = 1;
+            var data = new List<StandardProviderSearchResultsItem> { };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetStandards.Setup(x => x.GetStandardById(It.IsAny<string>())).Returns(new Standard());
+
+            var response = _sut.GetStandardProviders(standardCode.ToString());
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+
+            response.Should().NotBeNull();
+            response.Should().BeEmpty();
+        }
+
+        [Test]
         public void ShouldThrow404IfStandardIsMissing()
         {
             var standardCode = 1;
@@ -199,6 +217,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut.GetFrameworkProviders(frameworkId.ToString());
 
             _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { 10005214L, 10006214L }), Times.Once);
+        }
+
+        [Test]
+        public void ShouldReturnListOfEmptyProvidersForAFramework()
+        {
+            var frameworkId = "416-3-1";
+            var data = new List<FrameworkProviderSearchResultsItem> { };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetFrameworks.Setup(x => x.GetFrameworkById(It.IsAny<string>())).Returns(new Framework());
+
+            var response = _sut.GetFrameworkProviders(frameworkId);
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+
+            response.Should().NotBeNull();
+            response.Should().BeEmpty();
         }
 
         [Test]
