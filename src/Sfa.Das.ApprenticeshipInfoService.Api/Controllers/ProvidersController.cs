@@ -121,7 +121,7 @@
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProvidersByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -150,7 +150,7 @@
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProvidersByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
