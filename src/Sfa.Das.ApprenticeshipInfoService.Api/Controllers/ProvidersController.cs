@@ -129,11 +129,11 @@
         {
             var response = _getProviders.GetProvidersByStandardId(standardId);
 
-            if (response == null || !response.Any())
+            if (response == null)
             {
                 throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by standard with id {standardId}");
+                    HttpStatusCode.InternalServerError,
+                    $"There was a problem with the query");
             }
 
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
@@ -158,11 +158,11 @@
         {
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
 
-            if (response == null || !response.Any())
+            if (response == null)
             {
                 throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No providers found by framework with id {frameworkId}");
+                    HttpStatusCode.InternalServerError,
+                    $"There was a problem with the query");
             }
 
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
