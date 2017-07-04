@@ -20,6 +20,8 @@
     {
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
+        private readonly IGetStandards _getStandards;
+        private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
 
         private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
@@ -28,10 +30,14 @@
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
+            IGetStandards getStandards,
+            IGetFrameworks getFrameworks,
             IApprenticeshipProviderRepository apprenticeshipProviderRepository)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
+            _getStandards = getStandards;
+            _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
         }
 
@@ -127,6 +133,13 @@
         [ExceptionHandling]
         public IEnumerable<Provider> GetStandardProviders(string standardId)
         {
+            if (_getStandards.GetStandardById(standardId) == null)
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"The standard {standardId} is not found");
+            }
+
             var response = _getProviders.GetProvidersByStandardId(standardId);
 
             if (response == null)
@@ -156,6 +169,13 @@
         [ExceptionHandling]
         public IEnumerable<Provider> GetFrameworkProviders(string frameworkId)
         {
+            if (_getFrameworks.GetFrameworkById(frameworkId) == null)
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"The framework {frameworkId} is not found, it should be in the format {{framework code}}-{{program type}}-{{pathway code}}");
+            }
+
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
 
             if (response == null)
