@@ -1,24 +1,22 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Routing;
-using FluentAssertions;
-using NUnit.Framework.Constraints;
-
-using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
-
-namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Web.Http;
+    using System.Web.Http.Routing;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Constraints;
     using Sfa.Das.ApprenticeshipInfoService.Api.Controllers;
     using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
+    using SFA.DAS.NLog.Logger;
 
     [TestFixture]
     public class ProviderControllerTests
@@ -29,7 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IApprenticeshipProviderRepository> _mockApprenticeshipProviderRepository;
         private Mock<ILog> _mockLogger;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             _mockGetProviders = new Mock<IGetProviders>();
@@ -53,7 +51,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "providers" } });
-
         }
 
         [Test]

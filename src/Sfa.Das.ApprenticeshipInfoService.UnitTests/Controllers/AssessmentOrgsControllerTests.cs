@@ -23,7 +23,7 @@
         private Mock<IGetAssessmentOrgs> _mockGetAssessmentOrgs;
         private Mock<ILog> _mockLogger;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             _mockGetAssessmentOrgs = new Mock<IGetAssessmentOrgs>();

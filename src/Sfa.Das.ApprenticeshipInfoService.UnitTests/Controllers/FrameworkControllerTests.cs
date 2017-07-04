@@ -1,9 +1,8 @@
-﻿using System.Linq;
-
-namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Web.Http;
     using System.Web.Http.Routing;
@@ -24,7 +23,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IGetFrameworks> _mockGetFrameworks;
         private Mock<ILog> _mockLogger;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             _mockGetFrameworks = new Mock<IGetFrameworks>();

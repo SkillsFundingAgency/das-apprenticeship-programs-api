@@ -22,12 +22,11 @@
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<ILog> _mockLogger;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             _mockGetStandards = new Mock<IGetStandards>();
             _mockLogger = new Mock<ILog>();
-            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
             _sut = new StandardsController(_mockGetStandards.Object, _mockLogger.Object);
             _sut.Request = new HttpRequestMessage
             {
@@ -48,8 +47,10 @@
         }
 
         [Test]
-        public void ShouldReturnStandardkNotFound()
+        public void ShouldReturnStandardNotFound()
         {
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
+
             ActualValueDelegate<object> test = () => _sut.Get("-2");
 
             Assert.That(test, Throws.TypeOf<HttpResponseException>());
@@ -58,6 +59,8 @@
         [Test]
         public void ShouldReturnStandard()
         {
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
+
             var standard = _sut.Get("42");
 
             Assert.NotNull(standard);
