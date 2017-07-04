@@ -94,9 +94,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             var frameworks = _sut.GetAllFrameworkCodes();
 
             Assert.NotNull(frameworks);
-            frameworks.FirstOrDefault().FrameworkCode.Should().Be(1234);
-            frameworks.FirstOrDefault().Title.Should().Be("test title");
-            frameworks.FirstOrDefault().Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+            frameworks.First().FrameworkCode.Should().Be(1234);
+            frameworks.First().Title.Should().Be("test title");
+            frameworks.First().Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
         }
 
         [Test]
@@ -110,6 +110,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             frameworkCodeSummary.FrameworkCode.Should().Be(1234);
             frameworkCodeSummary.Title.Should().Be("test title");
             frameworkCodeSummary.Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+        }
+
+        [Test]
+        public void ShouldReturnFrameworkCodeNotFound()
+        {
+            _mockGetFrameworks.Setup(m => m.GetFrameworkByCode(1234)).Returns(new FrameworkCodeSummary() { FrameworkCode = 1234, Title = "test title" });
+
+            ActualValueDelegate<object> test = () => _sut.GetByFrameworkCode(-2);
+
+            Assert.That(test, Throws.TypeOf<HttpResponseException>());
         }
 
         [Test]
