@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -51,9 +53,8 @@
         {
             _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
 
-            ActualValueDelegate<object> test = () => _sut.Get("-2");
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("-2"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
@@ -70,7 +71,7 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetStandards.Setup(
                x =>
@@ -80,7 +81,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetStandards.Setup(
                x =>

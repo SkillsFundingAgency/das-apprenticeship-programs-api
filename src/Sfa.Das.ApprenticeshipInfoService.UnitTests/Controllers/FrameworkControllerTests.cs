@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -57,9 +59,8 @@
         {
             _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title" });
 
-            ActualValueDelegate<object> test = () => _sut.Get("-2");
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            HttpResponseException ex = Assert.Throws<HttpResponseException>(() => _sut.Get("-2"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
@@ -116,13 +117,12 @@
         {
             _mockGetFrameworks.Setup(m => m.GetFrameworkByCode(1234)).Returns(new FrameworkCodeSummary() { FrameworkCode = 1234, Title = "test title" });
 
-            ActualValueDelegate<object> test = () => _sut.GetByFrameworkCode(-2);
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.GetByFrameworkCode(-2));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetFrameworks.Setup(
                x =>

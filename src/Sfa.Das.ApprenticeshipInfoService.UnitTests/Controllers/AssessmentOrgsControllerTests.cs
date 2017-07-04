@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -71,9 +73,8 @@
                 x =>
                     x.GetOrganisationById("EPA0001")).Returns(expected);
 
-            ActualValueDelegate<object> test = () => _sut.Get("EPA0001x");
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("EPA0001x"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
@@ -99,7 +100,7 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetAssessmentOrgs.Setup(
                x =>
@@ -109,7 +110,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetAssessmentOrgs.Setup(
                x =>

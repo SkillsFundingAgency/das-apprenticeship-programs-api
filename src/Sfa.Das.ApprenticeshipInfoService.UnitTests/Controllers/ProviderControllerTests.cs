@@ -73,16 +73,14 @@
         public void ShouldReturnProvidersNotFound()
         {
             var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(12345679));
-
-            Assert.AreEqual(HttpStatusCode.NotFound, ex.Response?.StatusCode);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
         public void AnInvalidUkprnShouldReturnABadRequest()
         {
             var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(123456));
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, ex.Response?.StatusCode);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
 
         [Test]
@@ -164,7 +162,7 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetProviders.Setup(
                x =>
@@ -174,7 +172,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetProviders.Setup(
                x =>
