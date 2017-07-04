@@ -115,7 +115,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public IEnumerable<StandardProvider> GetStandardProviders(string standardId)
+        internal IEnumerable<StandardProvider> GetStandardProviders(string standardId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
             {
@@ -123,7 +123,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(string standardId)
+        internal async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(string standardId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
             {
@@ -131,7 +131,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public IEnumerable<StandardProvider> GetStandardProviders(int standardId)
+        internal IEnumerable<StandardProvider> GetStandardProviders(int standardId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
             {
@@ -139,7 +139,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId)
+        internal async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
             {
@@ -147,7 +147,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public IEnumerable<FrameworkProvider> GetFrameworkProviders(string frameworkId)
+        internal IEnumerable<FrameworkProvider> GetFrameworkProviders(string frameworkId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
             {
@@ -155,7 +155,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        public async Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(string frameworkId)
+        internal async Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(string frameworkId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
             {
