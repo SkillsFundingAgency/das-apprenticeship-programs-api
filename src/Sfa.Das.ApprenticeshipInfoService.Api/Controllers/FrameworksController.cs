@@ -96,10 +96,9 @@
         }
 
         /// <summary>
-        /// Get a framework
+        /// Get all the active frameworks
         /// </summary>
-        /// <param name="frameworkCode"></param>
-        /// <returns>a framework resume</returns>
+        /// <returns>a collection of framework codes</returns>
         [SwaggerOperation("GetByFrameworkCode")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkCodeSummary>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
