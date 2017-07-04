@@ -1,6 +1,5 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -48,7 +47,7 @@
         /// <summary>
         /// Get a framework
         /// </summary>
-        /// <param name="id">{FrameworkId}-{ProgType}-{PathwayId}</param>
+        /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         /// <returns>a framework</returns>
         [SwaggerOperation("GetById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
@@ -86,7 +85,7 @@
         /// <summary>
         /// framework exists?
         /// </summary>
-        /// <param name="id">{FrameworkId}-{ProgType}-{PathwayId}</param>
+        /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/{id}")]
@@ -96,9 +95,79 @@
             Get(id);
         }
 
+        /// <summary>
+        /// Get a framework
+        /// </summary>
+        /// <param name="frameworkCode"></param>
+        /// <returns>a framework resume</returns>
+        [SwaggerOperation("GetByFrameworkCode")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkCodeSummary>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes")]
+        [ExceptionHandling]
+        public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
+        {
+            var response = _getFrameworks.GetAllFrameworkCodes();
+
+            if (response == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            foreach (var item in response)
+            {
+                item.Uri = ResolveFrameworkCodeSummary(item.FrameworkCode);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Get a framework
+        /// </summary>
+        /// <param name="frameworkCode"></param>
+        /// <returns>a framework resume</returns>
+        [SwaggerOperation("GetByFrameworkCode")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes/{frameworkCode}", Name = "GetByFrameworkCode")]
+        [ExceptionHandling]
+        public FrameworkCodeSummary GetByFrameworkCode(int frameworkCode)
+        {
+            var response = _getFrameworks.GetFrameworkByCode(frameworkCode);
+
+            if (response == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            response.Uri = ResolveFrameworkCodeSummary(response.FrameworkCode);
+
+            return response;
+        }
+
+        /// <summary>
+        /// Do we have frameworks?
+        /// </summary>
+        /// /// <param name="frameworkCode">Framework code</param>
+        [SwaggerResponse(HttpStatusCode.NoContent)]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("frameworks/codes/{frameworkCode}")]
+        [ExceptionHandling]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void Head(int frameworkCode)
+        {
+            GetByFrameworkCode(frameworkCode);
+        }
+
         private string Resolve(string id)
         {
             return Url.Link("DefaultApi", new { controller = "frameworks", id = id });
+        }
+
+        private string ResolveFrameworkCodeSummary(int responseFrameworkCode)
+        {
+            return Url.Link("GetByFrameworkCode", new { frameworkCode = responseFrameworkCode });
         }
 
         private ProvidersHref ResolveProvidersUrl(string id)

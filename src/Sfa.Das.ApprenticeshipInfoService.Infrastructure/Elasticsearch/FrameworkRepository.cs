@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.NLog.Logger;
 
@@ -86,6 +87,34 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             return document != null ? _frameworkMapping.MapToFramework(document) : null;
+        }
+
+        public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
+        {
+            var frameworks = GetAllFrameworks();
+
+            return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkCodeSummary(frameworkSummary.First())).ToList();
+        }
+
+        public FrameworkCodeSummary GetFrameworkByCode(int frameworkCode)
+        {
+            var results =
+                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
+                    s =>
+                        s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                            .Type(Types.Parse("frameworkdocument"))
+                            .From(0)
+                            .Size(1)
+                            .Query(q => q
+                                .MultiMatch(m => m
+                                    .Type(TextQueryType.Phrase)
+                                    .Fields(fs => fs
+                                        .Field(e => e.FrameworkCode))
+                                    .Query(frameworkCode.ToString()))));
+
+            var document = results.Documents.Any() ? results.Documents.First() : null;
+
+            return document != null ? _frameworkMapping.MapToFrameworkCodeSummary(document) : null;
         }
     }
 }

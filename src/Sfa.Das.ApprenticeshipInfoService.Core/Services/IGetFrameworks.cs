@@ -8,5 +8,9 @@
         IEnumerable<FrameworkSummary> GetAllFrameworks();
 
         Framework GetFrameworkById(string id);
+
+        FrameworkCodeSummary GetFrameworkByCode(int frameworkCode);
+
+        IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes();
     }
 }
