@@ -95,6 +95,44 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return _assessmentOrgsMapping.MapToOrganisationsDetailsDto(organisations);
         }
 
+        public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId)
+        {
+            var take = GetStandardsByOrganisationIdentifierAmount(organisationId);
+            var results =
+                _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
+                    s =>
+                        s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
+                            .Type(Types.Parse("standardorganisationdocument"))
+                            .From(0)
+                            .Take(take)
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field(f => f.EpaOrganisationIdentifier)
+                                    .Query(organisationId))));
+
+            if (results.ApiCall.HttpStatusCode != 200)
+            {
+                throw new ApplicationException($"Failed query standards by organisation id");
+            }
+
+            return _assessmentOrgsMapping.MapToStandardOrganisationsSummary(results.Documents).OrderBy(x => x.StandardCode);
+        }
+
+        private int GetStandardsByOrganisationIdentifierAmount(string organisationId)
+        {
+            var results =
+                _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
+                    s =>
+                        s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
+                            .Type(Types.Parse("standardorganisationdocument"))
+                            .From(0)
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field(f => f.EpaOrganisationIdentifier)
+                                    .Query(organisationId))));
+            return (int)results.HitsMetaData.Total;
+        }
+
         private int GetOrganisationsAmountByStandardId(string standardId)
         {
             var results =

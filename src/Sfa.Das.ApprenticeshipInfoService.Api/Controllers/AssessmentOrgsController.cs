@@ -133,9 +133,42 @@
             return response;
         }
 
+        /// <summary>
+        /// Get standards by assessment organisation
+        /// </summary>
+        /// <returns>colllection of standards by specific organisation identifier</returns>
+        [SwaggerOperation("GetStandardsByOrganisationId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
+        [Route("assessment-organisations/{organisationId}/standards")]
+        [ExceptionHandling]
+        public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationId(string organisationId)
+        {
+            try
+            {
+                var response = _getAssessmentOrgs.GetStandardsByOrganisationIdentifier(organisationId).ToList();
+
+                foreach (var standardOrganisation in response)
+                {
+                    standardOrganisation.Uri = ResolveStandardUri(standardOrganisation.StandardCode);
+                }
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, $"/assessment-organisations/{organisationId}/standars");
+                throw;
+            }
+        }
+
         private string Resolve(string organisationId)
         {
             return Url.Link("DefaultApi", new { controller = "assessmentorgs", id = organisationId }).Replace("assessmentorgs", "assessment-organisations");
+        }
+
+        private string ResolveStandardUri(string standardCode)
+        {
+            return Url.Link("DefaultApi", new { controller = "Standards", id = standardCode });
         }
     }
 }
