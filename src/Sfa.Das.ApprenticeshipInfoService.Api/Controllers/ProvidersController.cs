@@ -143,13 +143,6 @@
 
             var response = _getProviders.GetProvidersByStandardId(standardId);
 
-            if (response == null)
-            {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.InternalServerError,
-                    $"There was a problem with the query");
-            }
-
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
 
             var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long) dummy).ToList();
@@ -179,13 +172,6 @@
             }
 
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
-
-            if (response == null)
-            {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.InternalServerError,
-                    $"There was a problem with the query");
-            }
 
             var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
 
