@@ -32,9 +32,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             Exception ex = Server.GetLastError().GetBaseException();
             var logger = DependencyResolver.Current.GetService<ILog>();
 
-            if (ex is HttpException && ((HttpException)ex).GetHttpCode() != 404)
+            var exception = ex as HttpException;
+            if (exception == null || exception.GetHttpCode() != 404)
             {
                 logger.Error(ex, ex.Message);
+            }
+            else
+            {
+                logger.Warn(ex, "App_Warn");
             }
         }
 
