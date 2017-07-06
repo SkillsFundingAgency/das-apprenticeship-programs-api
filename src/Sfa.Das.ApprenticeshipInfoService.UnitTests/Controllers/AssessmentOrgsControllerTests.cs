@@ -41,6 +41,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             };
             _sut.Configuration = new HttpConfiguration();
             _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetStandardsByOrganisationId",
+                routeTemplate: "assessment-organisations/{organisationId}/standards",
+                defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
