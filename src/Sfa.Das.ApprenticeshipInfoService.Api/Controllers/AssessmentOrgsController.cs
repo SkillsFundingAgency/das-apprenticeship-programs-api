@@ -75,6 +75,7 @@
             }
 
             response.Uri = Resolve(response.Id);
+            response.Links = ResolveLinks(response.Id);
 
             return response;
         }
