@@ -21,6 +21,7 @@
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IProviderLocationSearchProvider _providerLocationSearchProvider;
         private readonly IProviderMapping _providerMapping;
+        private readonly IQueryHelper _queryHelper;
         private readonly string _providerDocumentType;
 
         public ProviderRepository(
@@ -28,20 +29,22 @@
             ILog applicationLogger,
             IConfigurationSettings applicationSettings,
             IProviderLocationSearchProvider providerLocationSearchProvider,
-            IProviderMapping providerMapping)
+            IProviderMapping providerMapping,
+            IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationLogger = applicationLogger;
             _applicationSettings = applicationSettings;
             _providerLocationSearchProvider = providerLocationSearchProvider;
             _providerMapping = providerMapping;
+            _queryHelper = queryHelper;
 
             _providerDocumentType = Is<RoatpProvidersFeature>.Enabled ? "providerapidocument" : "providerdocument";
         }
 
         public IEnumerable<ProviderSummary> GetAllProviders()
         {
-            var take = GetProvidersTotalAmount();
+            var take = _queryHelper.GetProvidersTotalAmount();
             var results =
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
@@ -142,21 +145,9 @@
             return providers.Select(provider => _providerMapping.MapToFrameworkProviderResponse(provider)).ToList();
         }
 
-        private int GetProvidersTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<Provider>(
-                    s =>
-                    s.Index(_applicationSettings.ProviderIndexAlias)
-                        .Type(Types.Parse(_providerDocumentType))
-                        .From(0)
-                        .MatchAll());
-            return (int)results.HitsMetaData.Total;
-        }
-
         public IEnumerable<StandardProviderSearchResultsItem> GetProvidersByStandardId(string standardId)
         {
-            var take = GetProvidersByStandardTotalAmount(standardId);
+            var take = _queryHelper.GetProvidersByStandardTotalAmount(standardId);
 
             var results =
                 _elasticsearchCustomClient.Search<StandardProviderSearchResultsItem>(
@@ -185,7 +176,7 @@
 
         public IEnumerable<FrameworkProviderSearchResultsItem> GetProvidersByFrameworkId(string frameworkId)
         {
-            var take = GetProvidersByFrameworkTotalAmount(frameworkId);
+            var take = _queryHelper.GetProvidersByFrameworkTotalAmount(frameworkId);
 
             var results =
                 _elasticsearchCustomClient.Search<FrameworkProviderSearchResultsItem>(
@@ -210,40 +201,6 @@
             }
 
             return results.Documents;
-        }
-
-        private int GetProvidersByFrameworkTotalAmount(string frameworkId)
-        {
-            var results =
-                _elasticsearchCustomClient.Search<FrameworkProviderSearchResultsItem>(
-                    s =>
-                        s.Index(_applicationSettings.ProviderIndexAlias)
-                            .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(100)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.FrameworkId)
-                                    .Terms(frameworkId))));
-
-            return (int) results.HitsMetaData.Total;
-        }
-
-        private int GetProvidersByStandardTotalAmount(string standardId)
-        {
-            var results =
-                _elasticsearchCustomClient.Search<StandardProviderSearchResultsItem>(
-                    s =>
-                        s.Index(_applicationSettings.ProviderIndexAlias)
-                            .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(100)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.StandardCode)
-                                    .Terms(int.Parse(standardId)))));
-
-            return (int)results.HitsMetaData.Total;
         }
     }
 }
