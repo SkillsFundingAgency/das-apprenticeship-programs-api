@@ -90,7 +90,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed query organisations by standard id");
             }
 
-            var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date);
+            var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date && (x.EffectiveTo >= DateTime.UtcNow.Date || x.EffectiveTo == default(DateTime)));
 
             return _assessmentOrgsMapping.MapToOrganisationsDetailsDto(organisations);
         }
