@@ -11,7 +11,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a single organisation details
         /// GET /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>a organisation details based on id</returns>
         Organisation Get(string organisationId);
 
@@ -19,7 +19,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a single organisation details
         /// GET /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>a organisation details based on id</returns>
         Task<Organisation> GetAsync(string organisationId);
 
@@ -27,6 +27,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">an integer for the standard id</param>
         /// <returns>a collection of organisation</returns>
         IEnumerable<Organisation> ByStandard(int standardId);
 
@@ -34,6 +35,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">an integer for the standard id</param>
         /// <returns>a collection of organisation</returns>
         Task<IEnumerable<Organisation>> ByStandardAsync(int standardId);
 
@@ -41,6 +43,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">a string for the standard id</param>
         /// <returns>a collection of organisation</returns>
         IEnumerable<Organisation> ByStandard(string standardId);
 
@@ -48,6 +51,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">a string for the standard id</param>
         /// <returns>a collection of organisation</returns>
         Task<IEnumerable<Organisation>> ByStandardAsync(string standardId);
 
@@ -69,7 +73,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Check if a assessment organisation exists
         /// HEAD /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>bool</returns>
         bool Exists(string organisationId);
 
@@ -77,8 +81,24 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Check if a assessment organisation exists
         /// HEAD /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>bool</returns>
         Task<bool> ExistsAsync(string organisationId);
+
+        /// <summary>
+        /// Get a collection of standards
+        /// GET /assessment-organisations/{organisationId}/standards
+        /// </summary>
+        /// /// <param name="organisationId">a string for the organisation id</param>
+        /// <returns>a collection of standards</returns>
+        IEnumerable<StandardOrganisationSummary> FindAllStandardsByOrganisationId(string organisationId);
+
+        /// <summary>
+        /// Get a collection of standards
+        /// GET /assessment-organisations/{organisationId}/standards
+        /// </summary>
+        /// /// <param name="organisationId">a string for the organisation id</param>
+        /// <returns>a collection of standards</returns>
+        Task<IEnumerable<StandardOrganisationSummary>> FindAllStandardsByOrganisationIdAsync(string organisationId);
     }
 }
