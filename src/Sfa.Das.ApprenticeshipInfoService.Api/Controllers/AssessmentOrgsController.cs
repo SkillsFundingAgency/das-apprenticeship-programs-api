@@ -145,22 +145,14 @@
         [ExceptionHandling]
         public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationId(string organisationId)
         {
-            try
-            {
-                var response = _getAssessmentOrgs.GetStandardsByOrganisationIdentifier(organisationId).ToList();
+            var response = _getAssessmentOrgs.GetStandardsByOrganisationIdentifier(organisationId).ToList();
 
-                foreach (var standardOrganisation in response)
-                {
-                    standardOrganisation.Uri = ResolveStandardUri(standardOrganisation.StandardCode);
-                }
-
-                return response;
-            }
-            catch (Exception e)
+            foreach (var standardOrganisation in response)
             {
-                _logger.Error(e, $"/assessment-organisations/{organisationId}/standars");
-                throw;
+                standardOrganisation.Uri = ResolveStandardUri(standardOrganisation.StandardCode);
             }
+
+            return response;
         }
 
         private string Resolve(string organisationId)
