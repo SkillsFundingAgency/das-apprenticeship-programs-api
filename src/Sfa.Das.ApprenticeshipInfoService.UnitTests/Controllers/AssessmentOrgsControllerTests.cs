@@ -54,6 +54,68 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldNotThrowErrorIfOrganisationNotFound()
+        {
+            _mockGetAssessmentOrgs.Setup(x => x.GetStandardsByOrganisationIdentifier(It.IsAny<string>())).Returns(new List<StandardOrganisationSummary>() { });
+            Assert.DoesNotThrow(() => _sut.GetStandardsByOrganisationId("EPA0001x"));
+        }
+
+        [Test]
+        public void ShouldNotThrowErrorIfStandardNotFound()
+        {
+            _mockGetAssessmentOrgs.Setup(x => x.GetOrganisationsByStandardId(It.IsAny<string>())).Returns(new List<Organisation>() { });
+            Assert.DoesNotThrow(() => _sut.GetByStandardId("111"));
+        }
+
+        [Test]
+        public void ShouldReturnAllStandardsForAnOrganisation()
+        {
+            var data = new List<StandardOrganisationSummary>()
+            {
+                new StandardOrganisationSummary
+                {
+                    StandardCode = "1",
+                    Periods = new List<Period>()
+                    {
+                        new Period
+                        {
+                            EffectiveFrom = DateTime.Now.AddDays(-4),
+                            EffectiveTo = null
+                        }
+                    }
+                }
+            };
+
+            _mockGetAssessmentOrgs.Setup(x => x.GetStandardsByOrganisationIdentifier("EPA0005")).Returns(data);
+
+            var result = _sut.GetStandardsByOrganisationId("EPA0005");
+
+            result.ShouldBeEquivalentTo(data);
+            result.First().Uri.Should().Be("http://localhost/Standards/1");
+        }
+
+        [Test]
+        public void ShouldReturnAllOrganisationForAStandard()
+        {
+            var data = new List<Organisation>()
+            {
+                new Organisation
+                {
+                    Id = "EPA123456"
+                }
+            };
+
+            _mockGetAssessmentOrgs.Setup(x => x.GetOrganisationsByStandardId("5")).Returns(data);
+
+            var result = _sut.GetByStandardId("5");
+
+            result.ShouldBeEquivalentTo(data);
+            result.First().Uri.Should().Be("http://localhost/assessment-organisations/EPA123456");
+            result.First().Links.First().Title.Should().Be("Standards");
+            result.First().Links.First().Href.Should().Be("http://localhost/assessment-organisations/EPA123456/standards");
+        }
+
+        [Test]
         public void ShouldReturnAssessmentOrganisation()
         {
             var expected = new Organisation { Id = "EPA0001" };

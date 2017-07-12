@@ -70,7 +70,8 @@
 
             if (response == null)
             {
-                throw HttpResponseFactory.RaiseException(HttpStatusCode.NotFound,
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
                     $"No organisation with EpaOrganisationIdentifier {id} found");
             }
 
@@ -123,13 +124,14 @@
             {
                 throw HttpResponseFactory.RaiseException(
                     HttpStatusCode.NotFound,
-                    $"No organisation with EpaOrganisationIdentifier {id} found");
+                    $"No organisation found for Standard {id}");
             }
 
             response = response.ToList();
             foreach (var organisation in response)
             {
                 organisation.Uri = Resolve(organisation.Id);
+                organisation.Links = ResolveLinks(organisation.Id);
             }
 
             return response;
@@ -138,6 +140,7 @@
         /// <summary>
         /// Get standards by assessment organisation
         /// </summary>
+        /// <param name="organisationId">Assessment Organisation Id</param>
         /// <returns>colllection of standards by specific organisation identifier</returns>
         [SwaggerOperation("GetStandardsByOrganisationId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
