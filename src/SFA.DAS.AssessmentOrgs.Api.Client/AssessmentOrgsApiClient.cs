@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -17,7 +16,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a single organisation details
         /// GET /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>a organisation details based on id</returns>
         public Organisation Get(string organisationId)
         {
@@ -31,7 +30,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a single organisation details
         /// GET /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>a organisation details based on id</returns>
         public async Task<Organisation> GetAsync(string organisationId)
         {
@@ -71,6 +70,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">an integer for the standard id</param>
         /// <returns>a collection of organisation</returns>
         public IEnumerable<Organisation> ByStandard(int standardId)
         {
@@ -81,6 +81,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">an integer for the standard id</param>
         /// <returns>a collection of organisation</returns>
         public async Task<IEnumerable<Organisation>> ByStandardAsync(int standardId)
         {
@@ -91,6 +92,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">a string for the standard id</param>
         /// <returns>a collection of organisation</returns>
         public IEnumerable<Organisation> ByStandard(string standardId)
         {
@@ -104,6 +106,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Get a collection of organisations
         /// GET /assessment-organisations/standards/{standardId}
         /// </summary>
+        /// <param name="standardId">a string for the standard id</param>
         /// <returns>a collection of organisation</returns>
         public async Task<IEnumerable<Organisation>> ByStandardAsync(string standardId)
         {
@@ -117,7 +120,7 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Check if a assessment organisation exists
         /// HEAD /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>bool</returns>
         public bool Exists(string organisationId)
         {
@@ -131,13 +134,41 @@ namespace SFA.DAS.AssessmentOrgs.Api.Client
         /// Check if a assessment organisation exists
         /// HEAD /assessmentorgs/{organisationId}
         /// </summary>
-        /// <param name="organisationId">an integer for the organisation id</param>
+        /// <param name="organisationId">a string for the organisation id</param>
         /// <returns>bool</returns>
         public async Task<bool> ExistsAsync(string organisationId)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Head, $"/assessment-organisations/{organisationId}"))
             {
                 return await ExistsAsync(request);
+            }
+        }
+
+        /// <summary>
+        /// Get a collection of standards
+        /// GET /assessment-organisations/{organisationId}/standards
+        /// </summary>
+        /// /// <param name="organisationId">a string for the organisation id</param>
+        /// <returns>a collection of standards</returns>
+        public IEnumerable<StandardOrganisationSummary> FindAllStandardsByOrganisationId(string organisationId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/assessment-organisations/{organisationId}/standards"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardOrganisationSummary>>(request);
+            }
+        }
+
+        /// <summary>
+        /// Get a collection of standards
+        /// GET /assessment-organisations/{organisationId}/standards
+        /// </summary>
+        /// /// <param name="organisationId">a string for the organisation id</param>
+        /// <returns>a collection of standards</returns>
+        public async Task<IEnumerable<StandardOrganisationSummary>> FindAllStandardsByOrganisationIdAsync(string organisationId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/assessment-organisations/{organisationId}/standards"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<StandardOrganisationSummary>>(request);
             }
         }
     }

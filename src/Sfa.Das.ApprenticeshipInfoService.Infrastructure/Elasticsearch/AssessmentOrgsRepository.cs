@@ -15,20 +15,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IAssessmentOrgsMapping _assessmentOrgsMapping;
+        private readonly IQueryHelper _queryHelper;
 
         public AssessmentOrgsRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
-            IConfigurationSettings applicationSettings, 
-            IAssessmentOrgsMapping assessmentOrgsMapping)
+            IConfigurationSettings applicationSettings,
+            IAssessmentOrgsMapping assessmentOrgsMapping,
+            IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationSettings = applicationSettings;
             _assessmentOrgsMapping = assessmentOrgsMapping;
+            _queryHelper = queryHelper;
         }
 
         public IEnumerable<OrganisationSummary> GetAllOrganisations()
         {
-            var take = GetOrganisationsTotalAmount();
+            var take = _queryHelper.GetOrganisationsTotalAmount();
             var results =
                 _elasticsearchCustomClient.Search<OrganisationDocument>(
                     s =>
@@ -71,7 +74,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<Organisation> GetOrganisationsByStandardId(string standardId)
         {
-            var take = GetOrganisationsAmountByStandardId(standardId);
+            var take = _queryHelper.GetOrganisationsAmountByStandardId(standardId);
 
             var results =
                 _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
@@ -90,36 +93,32 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed query organisations by standard id");
             }
 
-            var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date);
+            var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date && (x.EffectiveTo == null || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)).ToList();
 
             return _assessmentOrgsMapping.MapToOrganisationsDetailsDto(organisations);
         }
 
-        private int GetOrganisationsAmountByStandardId(string standardId)
+        public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId)
         {
+            var take = _queryHelper.GetStandardsByOrganisationIdentifierAmount(organisationId);
             var results =
                 _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
                     s =>
-                    s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                        .Type(Types.Parse("standardorganisationdocument"))
-                        .From(0)
-                        .Query(q => q
-                            .Match(m => m
-                                .Field(f => f.StandardCode)
-                                .Query(standardId))));
-            return (int)results.HitsMetaData.Total;
-        }
+                        s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
+                            .Type(Types.Parse("standardorganisationdocument"))
+                            .From(0)
+                            .Take(take)
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field(f => f.EpaOrganisationIdentifier)
+                                    .Query(organisationId))));
 
-        private int GetOrganisationsTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<OrganisationDocument>(
-                    s =>
-                    s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                        .Type(Types.Parse("organisationdocument"))
-                        .From(0)
-                        .MatchAll());
-            return (int)results.HitsMetaData.Total;
+            if (results.ApiCall.HttpStatusCode != 200)
+            {
+                throw new ApplicationException($"Failed query standards by organisation id");
+            }
+
+            return _assessmentOrgsMapping.MapToStandardOrganisationsSummary(results.Documents).OrderBy(x => x.StandardCode);
         }
     }
 }

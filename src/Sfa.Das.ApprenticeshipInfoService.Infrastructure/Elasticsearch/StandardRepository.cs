@@ -16,20 +16,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IStandardMapping _standardMapping;
+        private readonly IQueryHelper _queryHelper;
 
         public StandardRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
-            IStandardMapping standardMapping)
+            IStandardMapping standardMapping,
+            IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationSettings = applicationSettings;
             _standardMapping = standardMapping;
+            _queryHelper = queryHelper;
         }
 
         public IEnumerable<StandardSummary> GetAllStandards()
         {
-            var take = GetStandardsTotalAmount();
+            var take = _queryHelper.GetStandardsTotalAmount();
 
             var results =
                 _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
@@ -65,18 +68,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             return document != null ? _standardMapping.MapToStandard(document) : null;
-        }
-
-        private int GetStandardsTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
-                    s =>
-                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("standarddocument"))
-                        .From(0)
-                        .MatchAll());
-            return (int)results.HitsMetaData.Total;
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         OrganisationSummary MapToOrganisationDto(OrganisationDocument organisation);
         Organisation MapToOrganisationDetailsDto(OrganisationDocument organisation);
         IEnumerable<Organisation> MapToOrganisationsDetailsDto(IEnumerable<OrganisationDocument> organisation);
+        IEnumerable<StandardOrganisationSummary> MapToStandardOrganisationsSummary(IEnumerable<StandardOrganisationDocument> standardOrganisations);
     }
 }

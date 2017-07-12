@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs
 {
     public class Organisation
     {
@@ -15,5 +17,7 @@
         public string Website { get; set; }
 
         public Address Address { get; set; }
+
+        public List<Link> Links { get; set; }
     }
 }

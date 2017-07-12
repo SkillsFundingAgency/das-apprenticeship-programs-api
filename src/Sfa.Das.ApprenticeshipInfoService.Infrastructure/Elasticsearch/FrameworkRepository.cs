@@ -19,22 +19,25 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly ILog _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IFrameworkMapping _frameworkMapping;
+        private readonly IQueryHelper _queryHelper;
 
         public FrameworkRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
             ILog applicationLogger,
             IConfigurationSettings applicationSettings,
-            IFrameworkMapping frameworkMapping)
+            IFrameworkMapping frameworkMapping,
+            IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationLogger = applicationLogger;
             _applicationSettings = applicationSettings;
             _frameworkMapping = frameworkMapping;
+            _queryHelper = queryHelper;
         }
 
         public IEnumerable<FrameworkSummary> GetAllFrameworks()
         {
-            var take = GetFrameworksTotalAmount();
+            var take = _queryHelper.GetFrameworksTotalAmount();
 
             var results =
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
@@ -54,18 +57,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var resultList = results.Documents.Select(frameworkSearchResultsItem => _frameworkMapping.MapToFrameworkSummary(frameworkSearchResultsItem)).ToList();
 
             return resultList;
-        }
-
-        private int GetFrameworksTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
-                    s =>
-                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("frameworkdocument"))
-                        .From(0)
-                        .MatchAll());
-            return (int) results.HitsMetaData.Total;
         }
 
         public Framework GetFrameworkById(string id)

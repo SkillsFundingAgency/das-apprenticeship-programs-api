@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
@@ -45,6 +46,49 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         public IEnumerable<Organisation> MapToOrganisationsDetailsDto(IEnumerable<OrganisationDocument> organisations)
         {
             return organisations.Select(MapToOrganisationDetailsDto);
+        }
+
+        public IEnumerable<StandardOrganisationSummary> MapToStandardOrganisationsSummary(IEnumerable<StandardOrganisationDocument> standardOrganisations)
+        {
+            var groupedStandardOrganisations = standardOrganisations.GroupBy(x => x.StandardCode);
+
+            var result = new List<StandardOrganisationSummary>();
+
+            foreach (var standardOrganisation in groupedStandardOrganisations)
+            {
+                result.Add(MapToStandardOrganisationSummary(standardOrganisation));
+            }
+
+            return result;
+        }
+
+        private StandardOrganisationSummary MapToStandardOrganisationSummary(IGrouping<string, StandardOrganisationDocument> standardOrganisation)
+        {
+            var result = new StandardOrganisationSummary
+            {
+                StandardCode = standardOrganisation.First().StandardCode
+            };
+
+            var periods = new List<Period>();
+
+            foreach (var standardOrganisationDocument in standardOrganisation)
+            {
+                var period = new Period
+                {
+                    EffectiveFrom = standardOrganisationDocument.EffectiveFrom
+                };
+
+                if (standardOrganisationDocument.EffectiveTo != null && standardOrganisationDocument.EffectiveTo != default(DateTime))
+                {
+                    period.EffectiveTo = standardOrganisationDocument.EffectiveTo;
+                }
+
+                periods.Add(period);
+            }
+
+            result.Periods = periods;
+
+            return result;
         }
     }
 }
