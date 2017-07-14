@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.NLog.Logger;
 
@@ -18,22 +19,25 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly ILog _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IFrameworkMapping _frameworkMapping;
+        private readonly IQueryHelper _queryHelper;
 
         public FrameworkRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
             ILog applicationLogger,
             IConfigurationSettings applicationSettings,
-            IFrameworkMapping frameworkMapping)
+            IFrameworkMapping frameworkMapping,
+            IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationLogger = applicationLogger;
             _applicationSettings = applicationSettings;
             _frameworkMapping = frameworkMapping;
+            _queryHelper = queryHelper;
         }
 
         public IEnumerable<FrameworkSummary> GetAllFrameworks()
         {
-            var take = GetFrameworksTotalAmount();
+            var take = _queryHelper.GetFrameworksTotalAmount();
 
             var results =
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
@@ -55,18 +59,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return resultList;
         }
 
-        private int GetFrameworksTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
-                    s =>
-                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("frameworkdocument"))
-                        .From(0)
-                        .MatchAll());
-            return (int) results.HitsMetaData.Total;
-        }
-        
         public Framework GetFrameworkById(string id)
         {
             var results =
@@ -86,6 +78,34 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             return document != null ? _frameworkMapping.MapToFramework(document) : null;
+        }
+
+        public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
+        {
+            var frameworks = GetAllFrameworks();
+
+            return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkCodeSummary(frameworkSummary.First())).ToList();
+        }
+
+        public FrameworkCodeSummary GetFrameworkByCode(int frameworkCode)
+        {
+            var results =
+                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
+                    s =>
+                        s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                            .Type(Types.Parse("frameworkdocument"))
+                            .From(0)
+                            .Size(1)
+                            .Query(q => q
+                                .MultiMatch(m => m
+                                    .Type(TextQueryType.Phrase)
+                                    .Fields(fs => fs
+                                        .Field(e => e.FrameworkCode))
+                                    .Query(frameworkCode.ToString()))));
+
+            var document = results.Documents.Any() ? results.Documents.First() : null;
+
+            return document != null ? _frameworkMapping.MapToFrameworkCodeSummary(document) : null;
         }
     }
 }

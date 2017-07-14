@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -39,12 +41,78 @@
             };
             _sut.Configuration = new HttpConfiguration();
             _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetStandardsByOrganisationId",
+                routeTemplate: "assessment-organisations/{organisationId}/standards",
+                defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "providers" } });
+        }
+
+        [Test]
+        public void ShouldNotThrowErrorIfOrganisationNotFound()
+        {
+            _mockGetAssessmentOrgs.Setup(x => x.GetStandardsByOrganisationIdentifier(It.IsAny<string>())).Returns(new List<StandardOrganisationSummary>() { });
+            Assert.DoesNotThrow(() => _sut.GetStandardsByOrganisationId("EPA0001x"));
+        }
+
+        [Test]
+        public void ShouldNotThrowErrorIfStandardNotFound()
+        {
+            _mockGetAssessmentOrgs.Setup(x => x.GetOrganisationsByStandardId(It.IsAny<string>())).Returns(new List<Organisation>() { });
+            Assert.DoesNotThrow(() => _sut.GetByStandardId("111"));
+        }
+
+        [Test]
+        public void ShouldReturnAllStandardsForAnOrganisation()
+        {
+            var data = new List<StandardOrganisationSummary>()
+            {
+                new StandardOrganisationSummary
+                {
+                    StandardCode = "1",
+                    Periods = new List<Period>()
+                    {
+                        new Period
+                        {
+                            EffectiveFrom = DateTime.Now.AddDays(-4),
+                            EffectiveTo = null
+                        }
+                    }
+                }
+            };
+
+            _mockGetAssessmentOrgs.Setup(x => x.GetStandardsByOrganisationIdentifier("EPA0005")).Returns(data);
+
+            var result = _sut.GetStandardsByOrganisationId("EPA0005");
+
+            result.ShouldBeEquivalentTo(data);
+            result.First().Uri.Should().Be("http://localhost/Standards/1");
+        }
+
+        [Test]
+        public void ShouldReturnAllOrganisationForAStandard()
+        {
+            var data = new List<Organisation>()
+            {
+                new Organisation
+                {
+                    Id = "EPA123456"
+                }
+            };
+
+            _mockGetAssessmentOrgs.Setup(x => x.GetOrganisationsByStandardId("5")).Returns(data);
+
+            var result = _sut.GetByStandardId("5");
+
+            result.ShouldBeEquivalentTo(data);
+            result.First().Uri.Should().Be("http://localhost/assessment-organisations/EPA123456");
+            result.First().Links.First().Title.Should().Be("Standards");
+            result.First().Links.First().Href.Should().Be("http://localhost/assessment-organisations/EPA123456/standards");
         }
 
         [Test]
@@ -71,9 +139,8 @@
                 x =>
                     x.GetOrganisationById("EPA0001")).Returns(expected);
 
-            ActualValueDelegate<object> test = () => _sut.Get("EPA0001x");
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("EPA0001x"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
@@ -99,7 +166,7 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetAssessmentOrgs.Setup(
                x =>
@@ -109,7 +176,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetAssessmentOrgs.Setup(
                x =>

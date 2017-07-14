@@ -36,5 +36,9 @@
         public string ProfessionalRegistration { get; set; }
 
         public string OverviewOfRole { get; set; }
+
+        public double SectorSubjectAreaTier1 { get; set; }
+
+        public double SectorSubjectAreaTier2 { get; set; }
     }
 }

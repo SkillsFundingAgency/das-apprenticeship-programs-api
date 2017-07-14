@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using Nest;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
@@ -21,6 +22,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProgType = document.ProgType,
                 Duration = document.Duration,
                 MaxFunding = document.FundingCap,
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2,
                 TypicalLength = new TypicalLength {From = document.Duration, To = document.Duration, Unit = "m"},
                 ExpiryDate = document.ExpiryDate,
                 JobRoleItems = document.JobRoleItems,
@@ -50,10 +53,34 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProgType = document.ProgType,
                 Duration = document.Duration,
                 MaxFunding = document.FundingCap,
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" }
             };
 
             return framework;
+        }
+
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
+        {
+            return new FrameworkCodeSummary
+            {
+                FrameworkCode = document.FrameworkCode,
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2,
+                Title = document.FrameworkName
+            };
+        }
+
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
+        {
+            return new FrameworkCodeSummary
+            {
+                FrameworkCode = frameworkSummary.FrameworkCode,
+                Ssa1 = frameworkSummary.Ssa1,
+                Ssa2 = frameworkSummary.Ssa2,
+                Title = frameworkSummary.FrameworkName
+            };
         }
     }
 }

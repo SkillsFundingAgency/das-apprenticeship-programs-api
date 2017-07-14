@@ -109,11 +109,16 @@
     <Compile Include="Controllers\StandardControllerTests.cs" />
     <Compile Include="Helpers\ControllerHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AssessmentOrgsRepositoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Api\Sfa.Das.ApprenticeshipInfoService.Api.csproj">
       <Project>{0E7FEF43-441C-4790-A935-C7A171D8C9DF}</Project>
       <Name>Sfa.Das.ApprenticeshipInfoService.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Application\Sfa.Das.ApprenticeshipInfoService.Application.csproj">
+      <Project>{9216D34B-0325-47F4-9C57-1795D2FCB75B}</Project>
+      <Name>Sfa.Das.ApprenticeshipInfoService.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Core\Sfa.Das.ApprenticeshipInfoService.Core.csproj">
       <Project>{00CEBB2D-C8DC-45E3-8AE0-A38E8BEB8509}</Project>
@@ -122,6 +127,10 @@
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Infrastructure\Sfa.Das.ApprenticeshipInfoService.Infrastructure.csproj">
       <Project>{3CF1B822-17E6-4F67-B5AB-A031390CB635}</Project>
       <Name>Sfa.Das.ApprenticeshipInfoService.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Apprenticeships.Api.Client\SFA.DAS.Apprenticeships.Api.Client.csproj">
+      <Project>{da7f312c-6132-4084-a38f-b053029226de}</Project>
+      <Name>SFA.DAS.Apprenticeships.Api.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Apprenticeships.Api.Types\SFA.DAS.Apprenticeships.Api.Types.csproj">
       <Project>{35CDF98E-A38F-42B7-ACCE-62B5BB4BA3F3}</Project>

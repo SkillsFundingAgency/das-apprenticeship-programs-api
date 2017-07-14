@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Providers.Api.Client
@@ -116,5 +117,47 @@ namespace SFA.DAS.Providers.Api.Client
         /// </summary>
         /// <returns>a collection of Providers</returns>
         Task<IEnumerable<ProviderSummary>> FindAllAsync();
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific framework
+        ///// GET /providers/frameworks/{frameworkId}
+        ///// </summary>
+        ///// <returns>a collection of Framework Providers</returns>
+        //IEnumerable<FrameworkProvider> GetFrameworkProviders(string frameworkId);
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific framework
+        ///// GET /providers/frameworks/{frameworkId}
+        ///// </summary>
+        ///// <returns>a collection of Framework Providers</returns>
+        //Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(string frameworkId);
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific standard
+        ///// GET /providers/standard/{standard code}
+        ///// </summary>
+        ///// <returns>a collection of Standard Providers</returns>
+        //IEnumerable<StandardProvider> GetStandardProviders(string standardId);
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific standard
+        ///// GET /providers/standard/{standard code}
+        ///// </summary>
+        ///// <returns>a collection of Standard Providers</returns>
+        //IEnumerable<StandardProvider> GetStandardProviders(int standardId);
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific standard
+        ///// GET /providers/standard/{standard code}
+        ///// </summary>
+        ///// <returns>a collection of Standard Providers</returns>
+        //Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(string standardId);
+
+        ///// <summary>
+        ///// Get all the active provider locations for a specific standard
+        ///// GET /providers/standard/{standard code}
+        ///// </summary>
+        ///// <returns>a collection of Standard Providers</returns>
+        //Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId);
     }
 }

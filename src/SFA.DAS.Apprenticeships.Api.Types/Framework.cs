@@ -56,5 +56,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public int ProgTye => ProgType;
 
         public int ProgType { get; set; }
+
+        public double Ssa1 { get; set; }
+
+        public double Ssa2 { get; set; }
+
+        public ProvidersHref Providers { get; set; }
     }
 }

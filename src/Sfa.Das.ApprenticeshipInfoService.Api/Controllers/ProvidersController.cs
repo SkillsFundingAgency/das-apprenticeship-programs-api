@@ -1,10 +1,10 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
+    using System.Text.RegularExpressions;
     using System.Web.Http;
     using System.Web.Http.Description;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
@@ -20,6 +20,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     {
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
+        private readonly IGetStandards _getStandards;
+        private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
 
         private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
@@ -28,10 +30,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
+            IGetStandards getStandards,
+            IGetFrameworks getFrameworks,
             IApprenticeshipProviderRepository apprenticeshipProviderRepository)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
+            _getStandards = getStandards;
+            _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
         }
 
@@ -113,6 +119,118 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         {
             Get(ukprn);
         }
+
+        /// <summary>
+        /// Get a list of providers for an specific standard
+        /// </summary>
+        /// <param name="apprenticeshipId">Standard id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetProvidersByStandardId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ExceptionHandling]
+        public IEnumerable<Provider> GetStandardProviders(string standardId)
+        {
+            if (_getStandards.GetStandardById(standardId) == null)
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"The standard {standardId} is not found");
+            }
+
+            var response = _getProviders.GetProvidersByStandardId(standardId);
+
+            var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
+
+            var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long) dummy).ToList();
+
+            return _getProviders.GetProviderByUkprnList(ukprns);
+        }
+
+        /// <summary>
+        /// Get a list of providers for an specific framework
+        /// </summary>
+        /// <param name="apprenticeshipId">Framework id</param>
+        /// <returns>A list of Providers</returns>
+        [SwaggerOperation("GetProvidersByFrameworkId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ExceptionHandling]
+        public IEnumerable<Provider> GetFrameworkProviders(string frameworkId)
+        {
+            if (_getFrameworks.GetFrameworkById(frameworkId) == null)
+            {
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
+                    $"The framework {frameworkId} is not found, it should be in the format {{framework code}}-{{program type}}-{{pathway code}}");
+            }
+
+            var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
+
+            var providersList = response.GroupBy(x => x.Ukprn).Select(x => x.First());
+
+            var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long)dummy).ToList();
+
+            return _getProviders.GetProviderByUkprnList(ukprns);
+        }
+
+        /// <summary>
+        /// Get a list of providers locations for an specific standard
+        /// TODO update url
+        /// </summary>
+        /// <param name="apprenticeshipId">Standard id</param>
+        /// <returns>A list of Providers</returns>
+        //[SwaggerOperation("GetProviderLocationByStandardId")]
+        //[SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
+        //[SwaggerResponse(HttpStatusCode.NotFound)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //[Route("providers/standardLocation/{standardId}", Name = "GetStandardProviderLocations")]
+        //[ExceptionHandling]
+        //public IEnumerable<StandardProviderSearchResultsItem> GetStandardProviderLocations(string standardId)
+        //{
+        //    var response = _getProviders.GetProvidersByStandardId(standardId);
+
+        //    if (response == null || !response.Any())
+        //    {
+        //        throw HttpResponseFactory.RaiseException(
+        //            HttpStatusCode.NotFound,
+        //            $"No providers found by standard with id {standardId}");
+        //    }
+
+        //    return response;
+        //}
+
+        /// <summary>
+        /// Get a list of providers locations for an specific framework
+        /// TODO update url
+        /// </summary>
+        /// <param name="apprenticeshipId">Framework id</param>
+        /// <returns>A list of Providers</returns>
+        //[SwaggerOperation("GetProviderLocationByFrameworkId")]
+        //[SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkProviderSearchResultsItem>))]
+        //[SwaggerResponse(HttpStatusCode.NotFound)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //[Route("providers/frameworkLocation/{frameworkId}", Name = "GetFrameworkProviderLocations")]
+        //[ExceptionHandling]
+        //public IEnumerable<FrameworkProviderSearchResultsItem> GetFrameworkProviderLocations(string frameworkId)
+        //{
+        //    var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
+
+        //    if (response == null || !response.Any())
+        //    {
+        //        throw HttpResponseFactory.RaiseException(
+        //            HttpStatusCode.NotFound,
+        //            $"No providers found by framework with id {frameworkId}");
+        //    }
+
+        //    return response;
+        //}
 
         // GET standards/5/providers?lat=<latitude>&long=<longitude>&page=#
         [SwaggerOperation("GetByStandardIdAndLocation")]

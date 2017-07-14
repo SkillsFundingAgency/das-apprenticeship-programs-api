@@ -12,5 +12,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
         Organisation GetOrganisationById(string organisationId);
 
         IEnumerable<Organisation> GetOrganisationsByStandardId(string standardId);
+
+        IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId);
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Web.Http;
     using System.Web.Http.Routing;
@@ -38,6 +41,14 @@
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetFrameworkProviders",
+                routeTemplate: "{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetByFrameworkCode",
+                routeTemplate: "{controller}/codes/{frameworkCode}",
+                defaults: new { id = RouteParameter.Optional });
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "frameworks" } });
@@ -48,9 +59,8 @@
         {
             _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title" });
 
-            ActualValueDelegate<object> test = () => _sut.Get("-2");
-
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            HttpResponseException ex = Assert.Throws<HttpResponseException>(() => _sut.Get("-2"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
@@ -67,7 +77,52 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldReturnFrameworkCodes()
+        {
+            _mockGetFrameworks.Setup(m => m
+                .GetAllFrameworkCodes())
+                .Returns(
+                    new List<FrameworkCodeSummary>
+                    {
+                        new FrameworkCodeSummary
+                        {
+                            FrameworkCode = 1234,
+                            Title = "test title"
+                        }
+                    });
+
+            var frameworks = _sut.GetAllFrameworkCodes();
+
+            Assert.NotNull(frameworks);
+            frameworks.First().FrameworkCode.Should().Be(1234);
+            frameworks.First().Title.Should().Be("test title");
+            frameworks.First().Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+        }
+
+        [Test]
+        public void ShouldReturnFrameworkCode()
+        {
+            _mockGetFrameworks.Setup(m => m.GetFrameworkByCode(1234)).Returns(new FrameworkCodeSummary { FrameworkCode = 1234, Title = "test title" });
+
+            var frameworkCodeSummary = _sut.GetByFrameworkCode(1234);
+
+            Assert.NotNull(frameworkCodeSummary);
+            frameworkCodeSummary.FrameworkCode.Should().Be(1234);
+            frameworkCodeSummary.Title.Should().Be("test title");
+            frameworkCodeSummary.Uri.ToLower().Should().Be("http://localhost/frameworks/codes/1234");
+        }
+
+        [Test]
+        public void ShouldReturnFrameworkCodeNotFound()
+        {
+            _mockGetFrameworks.Setup(m => m.GetFrameworkByCode(1234)).Returns(new FrameworkCodeSummary() { FrameworkCode = 1234, Title = "test title" });
+
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.GetByFrameworkCode(-2));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetFrameworks.Setup(
                x =>
@@ -77,7 +132,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetFrameworks.Setup(
                x =>

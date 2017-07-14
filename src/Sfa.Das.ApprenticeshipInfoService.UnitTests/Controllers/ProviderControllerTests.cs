@@ -1,24 +1,25 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Routing;
-using FluentAssertions;
-using NUnit.Framework.Constraints;
-
-using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
+﻿using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Web.Http;
+    using System.Web.Http.Routing;
+    using Api.Controllers;
+    using Core.Helpers;
+    using Core.Models;
+    using Core.Models.Responses;
+    using Core.Services;
+    using FluentAssertions;
     using Moq;
     using NUnit.Framework;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Controllers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using NUnit.Framework.Constraints;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
+    using SFA.DAS.NLog.Logger;
 
     [TestFixture]
     public class ProviderControllerTests
@@ -28,18 +29,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IControllerHelper> _mockControllerHelper;
         private Mock<IApprenticeshipProviderRepository> _mockApprenticeshipProviderRepository;
         private Mock<ILog> _mockLogger;
+        private Mock<IGetStandards> _mockGetStandards;
+        private Mock<IGetFrameworks> _mockGetFrameworks;
 
         [SetUp]
         public void Init()
         {
             _mockGetProviders = new Mock<IGetProviders>();
             _mockControllerHelper = new Mock<IControllerHelper>();
+            _mockGetStandards = new Mock<IGetStandards>();
+            _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
                 _mockControllerHelper.Object,
+                _mockGetStandards.Object,
+                _mockGetFrameworks.Object,
                 _mockApprenticeshipProviderRepository.Object);
             _sut.Request = new HttpRequestMessage
             {
@@ -53,7 +60,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "providers" } });
-
         }
 
         [Test]
@@ -76,16 +82,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         public void ShouldReturnProvidersNotFound()
         {
             var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(12345679));
-
-            Assert.AreEqual(HttpStatusCode.NotFound, ex.Response?.StatusCode);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
         public void AnInvalidUkprnShouldReturnABadRequest()
         {
             var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(123456));
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, ex.Response?.StatusCode);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
 
         [Test]
@@ -147,6 +151,174 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnListOfUniqueProvidersForAStandard()
+        {
+            var standardCode = 1;
+            var data = new List<StandardProviderSearchResultsItem>
+            {
+                new StandardProviderSearchResultsItem { Ukprn = 10005214, StandardCode = standardCode },
+                new StandardProviderSearchResultsItem { Ukprn = 10005214, StandardCode = standardCode },
+                new StandardProviderSearchResultsItem { Ukprn = 10006214, StandardCode = standardCode }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetStandards.Setup(x => x.GetStandardById(It.IsAny<string>())).Returns(new Standard());
+
+            _sut.GetStandardProviders(standardCode.ToString());
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { 10005214L, 10006214L }), Times.Once);
+        }
+
+        [Test]
+        public void ShouldReturnListOfEmptyProvidersForAStandard()
+        {
+            var standardCode = 1;
+            var data = new List<StandardProviderSearchResultsItem> { };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetStandards.Setup(x => x.GetStandardById(It.IsAny<string>())).Returns(new Standard());
+
+            var response = _sut.GetStandardProviders(standardCode.ToString());
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+
+            response.Should().NotBeNull();
+            response.Should().BeEmpty();
+        }
+
+        [Test]
+        public void ShouldThrow404IfStandardIsMissing()
+        {
+            var standardCode = 1;
+
+            TestDelegate action = () => _sut.GetStandardProviders(standardCode.ToString());
+
+            var ex = Assert.Throws<HttpResponseException>(action);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public void ShouldReturnListOfUniqueProvidersForAFramework()
+        {
+            var frameworkId = 500;
+            var data = new List<FrameworkProviderSearchResultsItem>
+            {
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = frameworkId },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = frameworkId },
+                new FrameworkProviderSearchResultsItem { Ukprn = 10006214, FrameworkCode = frameworkId }
+            };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetFrameworks.Setup(x => x.GetFrameworkById(frameworkId.ToString())).Returns(new Framework());
+
+            _sut.GetFrameworkProviders(frameworkId.ToString());
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { 10005214L, 10006214L }), Times.Once);
+        }
+
+        [Test]
+        public void ShouldReturnListOfEmptyProvidersForAFramework()
+        {
+            var frameworkId = "416-3-1";
+            var data = new List<FrameworkProviderSearchResultsItem> { };
+
+            _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+            _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
+            _mockGetFrameworks.Setup(x => x.GetFrameworkById(It.IsAny<string>())).Returns(new Framework());
+
+            var response = _sut.GetFrameworkProviders(frameworkId);
+
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+
+            response.Should().NotBeNull();
+            response.Should().BeEmpty();
+        }
+
+        [Test]
+        public void ShouldThrow404IfFrameworkIsMissing()
+        {
+            var frameworkId = 500;
+
+            TestDelegate action = () => _sut.GetFrameworkProviders(frameworkId.ToString());
+
+            var ex = Assert.Throws<HttpResponseException>(action);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        //[Test]
+        //public void ShouldReturnListOfAllProvidersWithLocationForAStandard()
+        //{
+        //    var data = new List<StandardProviderSearchResultsItem>
+        //    {
+        //        new StandardProviderSearchResultsItem
+        //        {
+        //            Ukprn = 10004214, StandardCode = 1,
+        //            TrainingLocations = new List<TrainingLocation>
+        //            {
+        //                new TrainingLocation { LocationId = 1234 },
+        //                new TrainingLocation { LocationId = 2345 },
+        //                new TrainingLocation { LocationId = 3456 }
+        //            }
+        //        },
+        //        new StandardProviderSearchResultsItem
+        //        {
+        //            Ukprn = 10005214, StandardCode = 1,
+        //            TrainingLocations = new List<TrainingLocation>
+        //            {
+        //                new TrainingLocation { LocationId = 4567 },
+        //                new TrainingLocation { LocationId = 5678 }
+        //            }
+        //        },
+        //        new StandardProviderSearchResultsItem
+        //        {
+        //            Ukprn = 10006214, StandardCode = 1,
+        //            TrainingLocations = new List<TrainingLocation>
+        //            {
+        //                new TrainingLocation { LocationId = 6789 }
+        //            }
+        //        }
+        //    };
+
+        //    _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
+
+        //    var response = _sut.GetStandardProviderLocations("1");
+
+        //    response.Should().NotBeNull();
+        //    response.Should().BeOfType<List<StandardProviderSearchResultsItem>>();
+        //    response.Should().NotBeEmpty();
+        //    response.Should().BeEquivalentTo(data);
+        //    response.First().Should().NotBe(null);
+        //    response.Count().Should().Be(3);
+        //    response.FirstOrDefault(c => c.Ukprn == 10004214).TrainingLocations.Count().Should().Be(3);
+        //}
+
+        //[Test]
+        //public void ShouldReturnListOfAllProvidersWithLocationForAFramework()
+        //{
+        //    var data = new List<FrameworkProviderSearchResultsItem>
+        //    {
+        //        new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+        //        new FrameworkProviderSearchResultsItem { Ukprn = 10005214, FrameworkCode = 500 },
+        //        new FrameworkProviderSearchResultsItem { Ukprn = 10006214, FrameworkCode = 500 }
+        //    };
+
+        //    _mockGetProviders.Setup(x => x.GetProvidersByFrameworkId(It.IsAny<string>())).Returns(data);
+
+        //    var response = _sut.GetFrameworkProviderLocations("500");
+
+        //    response.Should().NotBeNull();
+        //    response.Should().BeOfType<List<FrameworkProviderSearchResultsItem>>();
+        //    response.Should().NotBeEmpty();
+        //    response.Should().BeEquivalentTo(data);
+        //    response.First().Should().NotBe(null);
+        //    response.Count().Should().Be(3);
+
+        //}
+
+        [Test]
         public void ShouldThrowExceptionIfLatLonIsNullSearchingByStandardId()
         {
             _mockControllerHelper.Setup(x => x.GetActualPage(It.IsAny<int>())).Returns(1);
@@ -167,7 +339,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetProviders.Setup(
                x =>
@@ -177,7 +349,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetProviders.Setup(
                x =>

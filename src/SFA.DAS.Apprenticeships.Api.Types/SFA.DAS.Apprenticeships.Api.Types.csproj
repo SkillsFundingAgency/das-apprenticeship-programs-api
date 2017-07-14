@@ -44,9 +44,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssessmentOrgs\Address.cs" />
+    <Compile Include="AssessmentOrgs\Link.cs" />
+    <Compile Include="FrameworkCodeSummary.cs" />
+    <Compile Include="FrameworkProvider.cs" />
+    <Compile Include="ProvidersHref.cs" />
     <Compile Include="Providers\ContactAddress.cs" />
     <Compile Include="AssessmentOrgs\Organisation.cs" />
     <Compile Include="AssessmentOrgs\OrganisationSummary.cs" />
+    <Compile Include="AssessmentOrgs\Period.cs" />
+    <Compile Include="AssessmentOrgs\StandardOrganisationSummary.cs" />
     <Compile Include="Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Framework.cs" />
     <Compile Include="FrameworkSummary.cs" />
@@ -55,7 +61,9 @@
     <Compile Include="Providers\ProviderSummary.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Standard.cs" />
+    <Compile Include="StandardProvider.cs" />
     <Compile Include="StandardSummary.cs" />
+    <Compile Include="TrainingLocation.cs" />
     <Compile Include="TypicalLength.cs" />
     <Compile Include="Stats\VersionInformation.cs" />
   </ItemGroup>

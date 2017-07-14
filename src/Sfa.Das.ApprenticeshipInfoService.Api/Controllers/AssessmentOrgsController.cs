@@ -43,6 +43,7 @@
                 foreach (var organisation in response)
                 {
                     organisation.Uri = Resolve(organisation.Id);
+                    organisation.Links = ResolveLinks(organisation.Id);
                 }
 
                 return response;
@@ -69,11 +70,13 @@
 
             if (response == null)
             {
-                throw HttpResponseFactory.RaiseException(HttpStatusCode.NotFound,
+                throw HttpResponseFactory.RaiseException(
+                    HttpStatusCode.NotFound,
                     $"No organisation with EpaOrganisationIdentifier {id} found");
             }
 
             response.Uri = Resolve(response.Id);
+            response.Links = ResolveLinks(response.Id);
 
             return response;
         }
@@ -121,13 +124,35 @@
             {
                 throw HttpResponseFactory.RaiseException(
                     HttpStatusCode.NotFound,
-                    $"No organisation with EpaOrganisationIdentifier {id} found");
+                    $"No organisation found for Standard {id}");
             }
 
             response = response.ToList();
             foreach (var organisation in response)
             {
                 organisation.Uri = Resolve(organisation.Id);
+                organisation.Links = ResolveLinks(organisation.Id);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Get standards by assessment organisation
+        /// </summary>
+        /// <param name="organisationId">Assessment Organisation Id</param>
+        /// <returns>colllection of standards by specific organisation identifier</returns>
+        [SwaggerOperation("GetStandardsByOrganisationId")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
+        [Route("assessment-organisations/{organisationId}/standards", Name = "GetStandardsByOrganisationId")]
+        [ExceptionHandling]
+        public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationId(string organisationId)
+        {
+            var response = _getAssessmentOrgs.GetStandardsByOrganisationIdentifier(organisationId).ToList();
+
+            foreach (var standardOrganisation in response)
+            {
+                standardOrganisation.Uri = ResolveStandardUri(standardOrganisation.StandardCode);
             }
 
             return response;
@@ -136,6 +161,23 @@
         private string Resolve(string organisationId)
         {
             return Url.Link("DefaultApi", new { controller = "assessmentorgs", id = organisationId }).Replace("assessmentorgs", "assessment-organisations");
+        }
+
+        private string ResolveStandardUri(string standardCode)
+        {
+            return Url.Link("DefaultApi", new { controller = "Standards", id = standardCode });
+        }
+
+        private List<Link> ResolveLinks(string organisationId)
+        {
+            return new List<Link>
+            {
+                new Link
+                {
+                    Title = "Standards",
+                    Href = Url.Link("GetStandardsByOrganisationId", new { organisationId = organisationId })
+                }
+            };
         }
     }
 }

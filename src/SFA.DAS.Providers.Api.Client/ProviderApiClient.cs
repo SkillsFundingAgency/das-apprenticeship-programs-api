@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Providers.Api.Client
@@ -111,6 +112,54 @@ namespace SFA.DAS.Providers.Api.Client
             using (var request = new HttpRequestMessage(HttpMethod.Get, "/providers"))
             {
                 return await RequestAndDeserialiseAsync<IEnumerable<ProviderSummary>>(request);
+            }
+        }
+
+        internal IEnumerable<StandardProvider> GetStandardProviders(string standardId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardProvider>>(request);
+            }
+        }
+
+        internal async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(string standardId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<StandardProvider>>(request);
+            }
+        }
+
+        internal IEnumerable<StandardProvider> GetStandardProviders(int standardId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardProvider>>(request);
+            }
+        }
+
+        internal async Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/standard/{standardId}"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<StandardProvider>>(request);
+            }
+        }
+
+        internal IEnumerable<FrameworkProvider> GetFrameworkProviders(string frameworkId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
+            {
+                return RequestAndDeserialise<IEnumerable<FrameworkProvider>>(request);
+            }
+        }
+
+        internal async Task<IEnumerable<FrameworkProvider>> GetFrameworkProvidersAsync(string frameworkId)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/framework/{frameworkId}"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<FrameworkProvider>>(request);
             }
         }
     }

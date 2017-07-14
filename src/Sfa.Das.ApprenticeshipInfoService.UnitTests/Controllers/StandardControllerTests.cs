@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+﻿using System.Net;
+
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -27,7 +29,6 @@
         {
             _mockGetStandards = new Mock<IGetStandards>();
             _mockLogger = new Mock<ILog>();
-            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
             _sut = new StandardsController(_mockGetStandards.Object, _mockLogger.Object);
             _sut.Request = new HttpRequestMessage
             {
@@ -38,22 +39,29 @@
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+            _sut.Configuration.Routes.MapHttpRoute(
+                name: "GetStandardProviders",
+                routeTemplate: "{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "standards" } });
         }
 
         [Test]
-        public void ShouldReturnStandardkNotFound()
+        public void ShouldReturnStandardNotFound()
         {
-            ActualValueDelegate<object> test = () => _sut.Get("-2");
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
 
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("-2"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
         [Test]
         public void ShouldReturnStandard()
         {
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
+
             var standard = _sut.Get("42");
 
             Assert.NotNull(standard);
@@ -63,7 +71,7 @@
         }
 
         [Test]
-        public void ShouldthrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceisDown()
         {
             _mockGetStandards.Setup(
                x =>
@@ -73,7 +81,7 @@
         }
 
         [Test]
-        public void ShouldNotthrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceisUp()
         {
             _mockGetStandards.Setup(
                x =>
