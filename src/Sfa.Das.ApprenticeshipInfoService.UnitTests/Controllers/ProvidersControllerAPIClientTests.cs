@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
     using NUnit.Framework;
     using SFA.DAS.Apprenticeships.Api.Client;
     using SFA.DAS.Apprenticeships.Api.Types;
@@ -12,6 +15,12 @@
     public class ProvidersControllerApiClientTests
     {
         private readonly string _url = "http://das-prd-apprenticeshipinfoservice.cloudapp.net/";
+        private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
         private ProviderApiClient _sut;
 
         [OneTimeSetUp]
@@ -28,6 +37,43 @@
             var frameworkApiClient = new FrameworkApiClient(_url);
             var frameworks = frameworkApiClient.FindAll().ToList();
             frameworks.ForEach(x => Console.WriteLine($"{x.Id}"));
+        }
+
+        [Test]
+        [Ignore("Integraion tests to verify live framework information")]
+        public void ShouldHaveSameFrameworkName()
+        {
+            var frameworkApiClient = new FrameworkApiClient(_url);
+            var frameworks = frameworkApiClient.FindAll().ToList();
+            var errors = new List<string>();
+
+            foreach (var framework in frameworks)
+            {
+                var fsummary = frameworkApiClient.Get(framework.Id);
+                var jobTitlesfromApi = fsummary.JobRoleItems.Select(x => x.Title).ToList();
+                var jsonFile = $"{framework.Id}.json";
+                using (StreamReader r = new StreamReader(jsonFile))
+                {
+                    string json = r.ReadToEnd();
+                    dynamic array = JsonConvert.DeserializeObject(json, _jsonSettings);
+                    dynamic jobRoleItemsfromJsonFile = array.JobRoleItems;
+                    int titleCount = 0;
+                    foreach (var item in jobRoleItemsfromJsonFile)
+                    {
+                        titleCount++;
+                           var title = item.Title.Value;
+                        if (!jobTitlesfromApi.Contains(title))
+                        {
+                            // errors.Add($"framework job tilte did not match for {framework.Id} - from api - {string.Join(",", jobTitlesfromApi)} but in json file {title}");
+                            errors.Add($"framework job tilte did not match for {framework.Id} in json file {title}");
+                        }
+                    }
+
+                    Assert.AreEqual(jobTitlesfromApi.Count, titleCount, $"Title count did not match for {framework.Id} - from api - {jobTitlesfromApi.Count} but in json {titleCount}");
+                }
+            }
+
+            Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
         }
 
         [Test]
