@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="Y:\code\das-apprenticeship-programs-api\src\Sfa.Das.ApprenticeshipInfoService.UnitTests\bin\Release\Sfa.Das.ApprenticeshipInfoService.UnitTests.dll" total="47" errors="0" failures="0" not-run="5" inconclusive="0" ignored="5" skipped="0" invalid="0" date="2017-07-14" time="11:09:14">
+  <environment nunit-version="3.5.0.0" clr-version="4.0.30319.42000" os-version="Microsoft Windows NT 10.0.14393.0" platform="Win32NT" cwd="Y:\code\das-apprenticeship-programs-api\src" machine-name="DAVIDGOODYE7021" user="dg" user-domain="DAVIDGOODYE7021" />
+  <culture-info current-culture="en-GB" current-uiculture="en-GB" />
+  <test-suite type="Assembly" name="Y:\code\das-apprenticeship-programs-api\src\Sfa.Das.ApprenticeshipInfoService.UnitTests\bin\Release\Sfa.Das.ApprenticeshipInfoService.UnitTests.dll" executed="False" result="Ignored">
+    <properties>
+      <property name="_PID" value="7912" />
+      <property name="_APPDOMAIN" value="domain-" />
+    </properties>
+    <reason>
+      <message><![CDATA[One or more child tests were ignored]]></message>
+    </reason>
+    <results>
+      <test-suite type="TestSuite" name="Sfa" executed="False" result="Ignored">
+        <reason>
+          <message><![CDATA[One or more child tests were ignored]]></message>
+        </reason>
+        <results>
+          <test-suite type="TestSuite" name="Das" executed="False" result="Ignored">
+            <reason>
+              <message><![CDATA[One or more child tests were ignored]]></message>
+            </reason>
+            <results>
+              <test-suite type="TestSuite" name="ApprenticeshipInfoService" executed="False" result="Ignored">
+                <reason>
+                  <message><![CDATA[One or more child tests were ignored]]></message>
+                </reason>
+                <results>
+                  <test-suite type="TestSuite" name="UnitTests" executed="False" result="Ignored">
+                    <reason>
+                      <message><![CDATA[One or more child tests were ignored]]></message>
+                    </reason>
+                    <results>
+                      <test-suite type="TestSuite" name="Controllers" executed="False" result="Ignored">
+                        <reason>
+                          <message><![CDATA[One or more child tests were ignored]]></message>
+                        </reason>
+                        <results>
+                          <test-suite type="TestFixture" name="AssessmentOrgsControllerTests" executed="True" result="Success" success="True" time="1.832" asserts="6">
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldNotThrowErrorIfOrganisationNotFound" executed="True" result="Success" success="True" time="1.537" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldNotThrowErrorIfStandardNotFound" executed="True" result="Success" success="True" time="0.004" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldNotThrowExceptionWhenServiceisUp" executed="True" result="Success" success="True" time="0.031" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldReturnAllOrganisationForAStandard" executed="True" result="Success" success="True" time="0.124" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldReturnAllStandardsForAnOrganisation" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldReturnAssessmentOrganisation" executed="True" result="Success" success="True" time="0.003" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldReturnAssessmentOrganisationNotFound" executed="True" result="Success" success="True" time="0.053" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldReturnValidListOfAssessmentOrganisations" executed="True" result="Success" success="True" time="0.012" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.AssessmentOrgsControllerTests.ShouldThrowExceptionWhenServiceisDown" executed="True" result="Success" success="True" time="0.008" asserts="1" />
+                            </results>
+                          </test-suite>
+                          <test-suite type="TestFixture" name="FrameworkControllerTests" executed="True" result="Success" success="True" time="0.075" asserts="9">
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldNotThrowExceptionWhenServiceisUp" executed="True" result="Success" success="True" time="0.014" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldReturnFramework" executed="True" result="Success" success="True" time="0.010" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldReturnFrameworkCode" executed="True" result="Success" success="True" time="0.011" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldReturnFrameworkCodeNotFound" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldReturnFrameworkCodes" executed="True" result="Success" success="True" time="0.007" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldReturnFrameworkNotFound" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.FrameworkControllerTests.ShouldThrowExceptionWhenServiceisDown" executed="True" result="Success" success="True" time="0.004" asserts="1" />
+                            </results>
+                          </test-suite>
+                          <test-suite type="TestFixture" name="ProviderControllerTests" executed="True" result="Success" success="True" time="0.393" asserts="12">
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.AnInvalidUkprnShouldReturnABadRequest" executed="True" result="Success" success="True" time="0.045" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldNotThrowExceptionWhenServiceisUp" executed="True" result="Success" success="True" time="0.012" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnListOfEmptyProvidersForAFramework" executed="True" result="Success" success="True" time="0.095" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnListOfEmptyProvidersForAStandard" executed="True" result="Success" success="True" time="0.018" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnListOfUniqueProvidersForAFramework" executed="True" result="Success" success="True" time="0.044" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnListOfUniqueProvidersForAStandard" executed="True" result="Success" success="True" time="0.013" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnProvider" executed="True" result="Success" success="True" time="0.021" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnProvidersNotFound" executed="True" result="Success" success="True" time="0.003" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnValidListOfFrameworkProviders" executed="True" result="Success" success="True" time="0.038" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldReturnValidListOfStandardProviders" executed="True" result="Success" success="True" time="0.014" asserts="0" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldThrow404IfFrameworkIsMissing" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldThrow404IfStandardIsMissing" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldThrowExceptionIfLatLonIsNullSearchingByFrameworkId" executed="True" result="Success" success="True" time="0.011" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldThrowExceptionIfLatLonIsNullSearchingByStandardId" executed="True" result="Success" success="True" time="0.005" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProviderControllerTests.ShouldThrowExceptionWhenServiceisDown" executed="True" result="Success" success="True" time="0.007" asserts="1" />
+                            </results>
+                          </test-suite>
+                          <test-suite type="TestFixture" name="ProvidersControllerApiClientTests" executed="False" result="Ignored">
+                            <reason>
+                              <message><![CDATA[One or more child tests were ignored]]></message>
+                            </reason>
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProvidersControllerApiClientTests.ShouldAllProvidersHasContactInformation" executed="False" result="Ignored">
+                                <properties>
+                                  <property name="_SKIPREASON" value="Adhoc tests to verify live provider information" />
+                                </properties>
+                                <reason>
+                                  <message><![CDATA[Adhoc tests to verify live provider information]]></message>
+                                </reason>
+                              </test-case>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProvidersControllerApiClientTests.ShouldAllProvidersHasProviderName" executed="False" result="Ignored">
+                                <properties>
+                                  <property name="_SKIPREASON" value="Adhoc tests to verify live provider information" />
+                                </properties>
+                                <reason>
+                                  <message><![CDATA[Adhoc tests to verify live provider information]]></message>
+                                </reason>
+                              </test-case>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProvidersControllerApiClientTests.ShouldReturnFrameworks" executed="False" result="Ignored">
+                                <properties>
+                                  <property name="_SKIPREASON" value="Adhoc tests to verify live provider information" />
+                                </properties>
+                                <reason>
+                                  <message><![CDATA[Adhoc tests to verify live provider information]]></message>
+                                </reason>
+                              </test-case>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProvidersControllerApiClientTests.ShouldReturnUniqueProvidersForAFramework" executed="False" result="Ignored">
+                                <properties>
+                                  <property name="_SKIPREASON" value="Adhoc tests to verify live provider information" />
+                                </properties>
+                                <reason>
+                                  <message><![CDATA[Adhoc tests to verify live provider information]]></message>
+                                </reason>
+                              </test-case>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.ProvidersControllerApiClientTests.ShouldReturnUniqueProvidersForAStandard" executed="False" result="Ignored">
+                                <properties>
+                                  <property name="_SKIPREASON" value="Adhoc tests to verify live provider information" />
+                                </properties>
+                                <reason>
+                                  <message><![CDATA[Adhoc tests to verify live provider information]]></message>
+                                </reason>
+                              </test-case>
+                            </results>
+                          </test-suite>
+                          <test-suite type="TestFixture" name="StandardControllerTests" executed="True" result="Success" success="True" time="0.034" asserts="5">
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.StandardControllerTests.ShouldNotThrowExceptionWhenServiceisUp" executed="True" result="Success" success="True" time="0.010" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.StandardControllerTests.ShouldReturnStandard" executed="True" result="Success" success="True" time="0.003" asserts="1" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.StandardControllerTests.ShouldReturnStandardNotFound" executed="True" result="Success" success="True" time="0.005" asserts="2" />
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.StandardControllerTests.ShouldThrowExceptionWhenServiceisDown" executed="True" result="Success" success="True" time="0.003" asserts="1" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                      <test-suite type="TestSuite" name="Helpers" executed="True" result="Success" success="True" time="2.462" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="ControllerHelperTests" executed="True" result="Success" success="True" time="0.040" asserts="0">
+                            <results>
+                              <test-suite type="ParameterizedTest" name="ShouldReturnGivenPageOrOneIfLowerThanOne" executed="True" result="Success" success="True" time="0.023" asserts="0">
+                                <results>
+                                  <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnGivenPageOrOneIfLowerThanOne(0,1)" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                                  <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnGivenPageOrOneIfLowerThanOne(1,1)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnGivenPageOrOneIfLowerThanOne(3,3)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnGivenPageOrOneIfLowerThanOne(-3,1)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                  <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnGivenPageOrOneIfLowerThanOne(null,1)" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                                </results>
+                              </test-suite>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers.ControllerHelperTests.ShouldReturnOneIfPageIsNegative" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                      <test-suite type="TestSuite" name="Repositories" executed="True" result="Success" success="True" time="2.753" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="AssessmentOrgsRepositoryTests" executed="True" result="Success" success="True" time="0.288" asserts="0">
+                            <results>
+                              <test-case name="Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories.AssessmentOrgsRepositoryTests.ShouldReturnActiveStandardOrganisations" executed="True" result="Success" success="True" time="0.283" asserts="0" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
