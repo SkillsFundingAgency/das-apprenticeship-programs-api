@@ -4,15 +4,16 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using NUnit.Framework;
     using SFA.DAS.Apprenticeships.Api.Client;
-    using SFA.DAS.Apprenticeships.Api.Types;
     using SFA.DAS.Providers.Api.Client;
 
     [TestFixture]
-    public class ProvidersControllerApiClientTests
+    public class AdhocIntegrationTests
     {
         private readonly string _url = "http://das-prd-apprenticeshipinfoservice.cloudapp.net/";
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
@@ -74,6 +75,83 @@
             }
 
             Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+        }
+
+        [Test]
+        [Ignore("Integraion tests to verify live framework information")]
+        public void ShouldFindFramework()
+        {
+            var providers = _sut.GetStandardProviders("117");
+            Console.WriteLine("Standard Providers for 117" + Environment.NewLine);
+            Console.WriteLine(string.Join(Environment.NewLine, providers.OrderBy(t => t.Ukprn).Select(x => $"{x.Ukprn},{x.ProviderName}")));
+
+            providers = _sut.GetStandardProviders("11");
+            Console.WriteLine("Standard Providers for 11" + Environment.NewLine);
+            Console.WriteLine(string.Join(Environment.NewLine, providers.OrderBy(t => t.Ukprn).Select(x => $"{x.Ukprn},{x.ProviderName}")));
+
+            providers = _sut.GetStandardProviders("128");
+            Console.WriteLine("Standard Providers for 128" + Environment.NewLine);
+            Console.WriteLine(string.Join(Environment.NewLine, providers.OrderBy(t => t.Ukprn).Select(x => $"{x.Ukprn},{x.ProviderName}")));
+
+            Assert.AreEqual(true, true);
+        }
+
+        [Test]
+        [Ignore("Integraion tests to verify live provider information from Coursedirectory")]
+        public void ShouldFindProviderinCD()
+        {
+            string url = string.Empty;
+
+            List<string> message = new List<string>();
+            var fApiClient = new FrameworkApiClient(_url);
+            var sApiClient = new StandardApiClient(_url);
+
+            // set up request/response
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            var response = (HttpWebResponse)request.GetResponse();
+            var stream = response.GetResponseStream();
+            string content;
+
+            // read response content
+            using (var reader = new StreamReader(stream ?? new MemoryStream(), Encoding.UTF8))
+            {
+                content = reader.ReadToEnd();
+            }
+
+            // write to file on desktop
+            // string filewithPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CdResponse.txt");
+            // File.WriteAllText(filewithPath, content, Encoding.UTF8);
+            // Console.WriteLine($"File should be available in {filewithPath}");
+            dynamic providers = JsonConvert.DeserializeObject(content, _jsonSettings);
+            List<int> providerukprns = new List<int> { };
+            foreach (var provider in providers)
+            {
+                foreach (var ukprn in providerukprns)
+                {
+                    if (provider.ukprn == ukprn)
+                    {
+                        var frameworks = provider.frameworks;
+                        var standards = provider.standards;
+                        message.Add($"{Environment.NewLine}{ukprn} - {provider.name} Offers");
+                        foreach (var framework in frameworks)
+                        {
+                            var fid = $"{framework.frameworkCode}-{framework.pathwayCode}-{framework.progType}";
+                            var fname = fApiClient.Get(fid);
+                            message.Add($"Framework : {fname.FrameworkName} - {fid}");
+                        }
+
+                        foreach (var standard in standards)
+                        {
+                            var sCode = standard.standardCode;
+                            var sname = sApiClient.Get((int)sCode);
+                            message.Add($"Standard : {sname.Title} - {sCode}");
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine(string.Join(Environment.NewLine, message));
+            Assert.AreEqual(true, true);
         }
 
         [Test]
@@ -252,3 +330,4 @@
         }
     }
 }
+

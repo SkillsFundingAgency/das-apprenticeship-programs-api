@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AssessmentOrgsControllerTests.cs" />
-    <Compile Include="Controllers\ProvidersControllerApiClientTests.cs" />
+    <Compile Include="Controllers\AdhocIntegrationTests.cs" />
     <Compile Include="Controllers\ProviderControllerTests.cs" />
     <Compile Include="Controllers\FrameworkControllerTests.cs" />
     <Compile Include="Controllers\StandardControllerTests.cs" />
