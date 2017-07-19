@@ -5,6 +5,7 @@
       <Site name="Web">
         <Bindings>
           <Binding name="Endpoint" endpointName="Endpoint" />
+          <Binding name="Endpoint1" endpointName="Endpoint1" />
         </Bindings>
       </Site>
     </Sites>
@@ -13,6 +14,7 @@
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint" protocol="https" port="443" certificate="WebSslCert" />
+      <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
   </WebRole>
 </ServiceDefinition>

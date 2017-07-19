@@ -36,6 +36,7 @@
     <ServiceDefinition Include="ServiceDefinition.csdef" />
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
+    <ServiceConfiguration Include="ServiceConfiguration.Prod.cscfg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Api\Sfa.Das.ApprenticeshipInfoService.Api.csproj">
