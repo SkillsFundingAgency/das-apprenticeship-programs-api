@@ -20,7 +20,7 @@
       </AccessControl>
     </AccessControls>
     <EndpointAcls>
-      <EndpointAcl role="Sfa.Das.ApprenticeshipInfoService.Api" endPoint="Endpoint1" accessControl="RoleAccess" />
+      <EndpointAcl role="Sfa.Das.ApprenticeshipInfoService.Api" endPoint="Endpoint" accessControl="RoleAccess" />
     </EndpointAcls>
   </NetworkConfiguration>
 </ServiceConfiguration>
