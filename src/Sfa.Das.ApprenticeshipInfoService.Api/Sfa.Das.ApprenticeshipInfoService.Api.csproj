@@ -370,9 +370,6 @@
   <ItemGroup>
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Transform.NLog.config" />
-    <Content Include="Transform.ServiceConfiguration.Prod.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Transform.ServiceConfiguration.Cloud.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
