@@ -7,7 +7,7 @@
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="PP" thumbprint="97B682A76DB1581DBB450D1A5AB3B3075045F3B1" thumbprintAlgorithm="sha1" />
-      <Certificate name="PRD" thumbprint="97B682A76DB1581DBB450D1A5AB3B3075045F3B1" thumbprintAlgorithm="sha1" />
+ 
     </Certificates>
   </Role>
   <NetworkConfiguration>
