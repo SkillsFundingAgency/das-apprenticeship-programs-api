@@ -5,10 +5,6 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
-    <Certificates>
-      <Certificate name="PP" thumbprint="97B682A76DB1581DBB450D1A5AB3B3075045F3B1" thumbprintAlgorithm="sha1" />
- 
-    </Certificates>
   </Role>
   <NetworkConfiguration>
     <!-- Name of the target Virtual Network -->
