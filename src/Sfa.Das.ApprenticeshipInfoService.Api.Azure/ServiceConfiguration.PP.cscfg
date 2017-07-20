@@ -6,7 +6,7 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="97B682A76DB1581DBB450D1A5AB3B3075045F3B1" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="AC37585D2E5914C586C3C72B9D4DEF391D22913C" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
