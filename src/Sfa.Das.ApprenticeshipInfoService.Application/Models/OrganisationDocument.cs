@@ -17,5 +17,7 @@
         public string Phone { get; set; }
 
         public Address Address { get; set; }
+
+        public string EpaOrganisationIdentifierKeyword { get; set; }
     }
 }

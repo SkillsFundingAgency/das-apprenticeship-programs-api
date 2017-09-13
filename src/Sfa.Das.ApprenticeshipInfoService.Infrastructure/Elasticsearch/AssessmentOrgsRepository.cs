@@ -38,7 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
                         .Type(Types.Parse("organisationdocument"))
                         .From(0)
-                        .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
+                        .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
                         .Take(take)
                         .MatchAll());
 
