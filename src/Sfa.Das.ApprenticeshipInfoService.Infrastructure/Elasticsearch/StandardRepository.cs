@@ -40,7 +40,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                         .Type(Types.Parse("standarddocument"))
                         .From(0)
-                        .Sort(sort => sort.Ascending(f => f.StandardId))
+                        .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
                         .Take(take)
                         .MatchAll());
 

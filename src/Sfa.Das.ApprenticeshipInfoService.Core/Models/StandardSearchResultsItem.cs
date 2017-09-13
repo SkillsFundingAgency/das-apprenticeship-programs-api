@@ -40,5 +40,7 @@
         public double SectorSubjectAreaTier1 { get; set; }
 
         public double SectorSubjectAreaTier2 { get; set; }
+
+        public string StandardIdKeyword { get; set; }
     }
 }
