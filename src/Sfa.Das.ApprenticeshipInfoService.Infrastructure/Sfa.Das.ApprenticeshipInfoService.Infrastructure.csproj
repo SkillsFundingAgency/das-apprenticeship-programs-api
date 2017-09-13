@@ -120,6 +120,8 @@
     <Compile Include="Elasticsearch\ElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
+    <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
+    <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />
     <Compile Include="FeatureToggles\GaApiAnalyticsFeature.cs" />
     <Compile Include="FeatureToggles\RoatpProvidersFeature.cs" />
     <Compile Include="Helpers\ControllerHelper.cs" />
