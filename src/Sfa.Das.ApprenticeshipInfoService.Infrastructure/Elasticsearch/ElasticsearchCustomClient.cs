@@ -7,7 +7,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using System.Linq;
     using System.Runtime.CompilerServices;
     using Nest;
-    
     using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Logging;
 
     public class ElasticsearchCustomClient : IElasticsearchCustomClient

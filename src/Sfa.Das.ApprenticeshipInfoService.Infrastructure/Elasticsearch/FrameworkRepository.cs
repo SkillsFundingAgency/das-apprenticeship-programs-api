@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                         .Type(Types.Parse("frameworkdocument"))
                         .From(0)
-                        .Sort(sort => sort.Ascending(f => f.FrameworkId))
+                        .Sort(sort => sort.Ascending(f => f.FrameworkIdKeyword))
                         .Take(take)
                         .MatchAll());
 
