@@ -1,10 +1,8 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Text.RegularExpressions;
     using System.Web.Http;
     using System.Web.Http.Description;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
@@ -24,8 +22,7 @@
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
 
-        private static readonly Regex UkprnPattern = new Regex(@"^\d{8}");
-        private const string BadUkprnMessage = "the ukprn wasn't 8 digits long";
+        private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
         public ProvidersController(
             IGetProviders getProviders,
@@ -69,12 +66,12 @@
         [SwaggerOperation("GetByUkprn")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
         [Route("providers/{ukprn}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
-            if (!UkprnPattern.IsMatch(ukprn.ToString()))
+            if (ukprn.ToString().Length != 8)
             {
                 throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
             }
