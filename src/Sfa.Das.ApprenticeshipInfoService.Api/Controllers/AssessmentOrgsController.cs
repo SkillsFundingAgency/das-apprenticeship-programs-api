@@ -30,7 +30,7 @@
         /// Get all the assessment organisations
         /// </summary>
         /// <returns>colllection of assessment organisation summaries</returns>
-        [SwaggerOperation("GetAll")]
+        [SwaggerOperation("GetAllAssessmentOrgs")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<OrganisationSummary>))]
         [Route("assessment-organisations")]
         [ExceptionHandling]
@@ -60,7 +60,7 @@
         /// </summary>
         /// <param name="id">EPA00001</param>
         /// <returns>an organisation</returns>
-        [SwaggerOperation("GetOrganisation")]
+        [SwaggerOperation("GetAssessmentOrgById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Organisation))]
         [Route("assessment-organisations/{id}")]
         [ExceptionHandling]
@@ -112,7 +112,7 @@
         /// </summary>
         /// <param name="id">standard code</param>
         /// <returns>a collection of organisations</returns>
-        [SwaggerOperation("GetByStandard")]
+        [SwaggerOperation("GetAssessmentOrgByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Organisation>))]
         [Route("assessment-organisations/standards/{id}")]
         [ExceptionHandling]
@@ -142,7 +142,7 @@
         /// </summary>
         /// <param name="organisationId">Assessment Organisation Id</param>
         /// <returns>colllection of standards by specific organisation identifier</returns>
-        [SwaggerOperation("GetStandardsByOrganisationId")]
+        [SwaggerOperation("GetStandardsByAssessmentOrgId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
         [Route("assessment-organisations/{organisationId}/standards", Name = "GetStandardsByOrganisationId")]
         [ExceptionHandling]

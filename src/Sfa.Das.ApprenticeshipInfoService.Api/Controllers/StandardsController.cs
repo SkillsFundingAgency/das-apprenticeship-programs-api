@@ -27,7 +27,7 @@
         /// Get all the active standards
         /// </summary>
         /// <returns>a collection of standards</returns>
-        [SwaggerOperation("GetAll")]
+        [SwaggerOperation("GetAllStandards")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
         [Route("standards")]
         [ExceptionHandling]
@@ -56,7 +56,7 @@
         /// </summary>
         /// <param name="id">{standardid}</param>
         /// <returns>a standard</returns>
-        [SwaggerOperation("GetById")]
+        [SwaggerOperation("GetStandardById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Standard))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("standards/{id}")]
