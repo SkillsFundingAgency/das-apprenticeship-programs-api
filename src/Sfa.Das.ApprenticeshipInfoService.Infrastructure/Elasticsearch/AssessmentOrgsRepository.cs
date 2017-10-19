@@ -50,28 +50,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return results.Documents.Select(organisation => _assessmentOrgsMapping.MapToOrganisationDto(organisation)).ToList();
         }
 
-        private ISearchRequest GetAllAssessmentOrgsSearchDescriptor(int take)
-        {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<OrganisationDocument>()
-                    .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                    .Type(Types.Parse("organisationdocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
-            return new SearchDescriptor<OrganisationDocument>()
-                .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                .Type(Types.Parse("organisationdocument"))
-                .From(0)
-                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
-                .Take(take)
-                .MatchAll();
-        }
-
         public Organisation GetOrganisationById(string organisationId)
         {
             var results =
@@ -118,6 +96,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date && (x.EffectiveTo == null || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)).ToList();
 
             return _assessmentOrgsMapping.MapToOrganisationsDetailsDto(organisations);
+        }
+
+        private ISearchRequest GetAllAssessmentOrgsSearchDescriptor(int take)
+        {
+            if (Is<Elk5Feature>.Enabled)
+            {
+                return new SearchDescriptor<OrganisationDocument>()
+                    .Index(_applicationSettings.AssessmentOrgsIndexAlias)
+                    .Type(Types.Parse("organisationdocument"))
+                    .From(0)
+                    .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
+                    .Take(take)
+                    .MatchAll();
+            }
+
+            return new SearchDescriptor<OrganisationDocument>()
+                .Index(_applicationSettings.AssessmentOrgsIndexAlias)
+                .Type(Types.Parse("organisationdocument"))
+                .From(0)
+                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
+                .Take(take)
+                .MatchAll();
         }
 
         public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId)
