@@ -28,7 +28,7 @@
         /// Get all the active frameworks
         /// </summary>
         /// <returns>a collection of frameworks</returns>
-        [SwaggerOperation("GetAll")]
+        [SwaggerOperation("GetAllFrameworks")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
         [Route("frameworks")]
         [ExceptionHandling]
@@ -49,7 +49,7 @@
         /// </summary>
         /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         /// <returns>a framework</returns>
-        [SwaggerOperation("GetById")]
+        [SwaggerOperation("GetFrameworkById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/{id}")]
@@ -99,7 +99,7 @@
         /// Get all the active frameworks
         /// </summary>
         /// <returns>a collection of framework codes</returns>
-        [SwaggerOperation("GetByFrameworkCode")]
+        [SwaggerOperation("GetAllFrameworkCode")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkCodeSummary>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [Route("frameworks/codes")]

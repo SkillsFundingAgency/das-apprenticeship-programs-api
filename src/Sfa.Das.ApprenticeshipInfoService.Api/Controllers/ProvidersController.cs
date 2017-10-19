@@ -42,7 +42,7 @@
         /// Get all the active providers
         /// </summary>
         /// <returns>a collection of providers</returns>
-        [SwaggerOperation("GetAll")]
+        [SwaggerOperation("GetAllProviders")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSummary>))]
         [Route("providers")]
         [ExceptionHandling]
@@ -63,7 +63,7 @@
         /// </summary>
         /// <param name="ukprn">UKPRN</param>
         /// <returns>A Provider</returns>
-        [SwaggerOperation("GetByUkprn")]
+        [SwaggerOperation("GetProviderByUkprn")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
