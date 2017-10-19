@@ -123,6 +123,7 @@
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />
     <Compile Include="FeatureToggles\GaApiAnalyticsFeature.cs" />
+    <Compile Include="FeatureToggles\Elk5Feature.cs" />
     <Compile Include="FeatureToggles\RoatpProvidersFeature.cs" />
     <Compile Include="Helpers\ControllerHelper.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
