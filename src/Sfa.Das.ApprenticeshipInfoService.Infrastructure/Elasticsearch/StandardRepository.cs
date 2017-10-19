@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using FeatureToggle.Core.Fluent;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -34,15 +36,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             var take = _queryHelper.GetStandardsTotalAmount();
 
+            var searchDescriptor = GetAllStandardsSeachDescriptor(take);
+
             var results =
-                _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
-                    s =>
-                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("standarddocument"))
-                        .From(0)
-                        .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
-                        .Take(take)
-                        .MatchAll());
+                _elasticsearchCustomClient.Search<StandardSearchResultsItem>(s => searchDescriptor);
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -68,6 +65,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             return document != null ? _standardMapping.MapToStandard(document) : null;
+        }
+
+        private ISearchRequest GetAllStandardsSeachDescriptor(int take)
+        {
+            if (Is<Elk5Feature>.Enabled)
+            {
+                return new SearchDescriptor<StandardSearchResultsItem>()
+                    .Index(_applicationSettings.ApprenticeshipIndexAlias)
+                    .Type(Types.Parse("standarddocument"))
+                    .From(0)
+                    .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
+                    .Take(take)
+                    .MatchAll();
+            }
+
+            return new SearchDescriptor<StandardSearchResultsItem>()
+                .Index(_applicationSettings.ApprenticeshipIndexAlias)
+                .Type(Types.Parse("standarddocument"))
+                .From(0)
+                .Sort(sort => sort.Ascending(f => f.StandardId))
+                .Take(take)
+                .MatchAll();
         }
     }
 }
