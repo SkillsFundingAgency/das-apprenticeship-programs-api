@@ -19,19 +19,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IElasticClient Create()
         {
-            ConnectionSettings settings;
             if (Is<IgnoreSslCertificateFeature>.Enabled)
             {
-                settings = new ConnectionSettings(
+                using (var settings = new ConnectionSettings(
                     new StaticConnectionPool(_applicationSettings.ElasticServerUrls),
-                    new MyCertificateIgnoringHttpConnection());
-            }
-            else
-            {
-                settings = new ConnectionSettings(
-                    new StaticConnectionPool(_applicationSettings.ElasticServerUrls));
+                    new MyCertificateIgnoringHttpConnection()))
+                {
+                    SetDefaultSettings(settings);
+
+                    return new ElasticClient(settings);
+                }
             }
 
+            using (var settings = new ConnectionSettings(new StaticConnectionPool(_applicationSettings.ElasticServerUrls)))
+            {
+                SetDefaultSettings(settings);
+
+                return new ElasticClient(settings);
+            }
+        }
+
+        private void SetDefaultSettings(ConnectionSettings settings)
+        {
             if (Is<Elk5Feature>.Enabled)
             {
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
@@ -42,8 +51,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             settings.MapDefaultTypeNames(d => d.Add(typeof(FrameworkSearchResultsItem), "frameworkdocument"));
             settings.MapDefaultTypeNames(d => d.Add(typeof(StandardProviderSearchResultsItem), "standardprovider"));
             settings.MapDefaultTypeNames(d => d.Add(typeof(FrameworkProviderSearchResultsItem), "frameworkprovider"));
-
-            return new ElasticClient(settings);
         }
     }
 }
