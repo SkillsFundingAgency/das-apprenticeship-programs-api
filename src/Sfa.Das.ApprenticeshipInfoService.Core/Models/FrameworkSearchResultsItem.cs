@@ -48,5 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public double SectorSubjectAreaTier1 { get; set; }
 
         public double SectorSubjectAreaTier2 { get; set; }
+
+        public string FrameworkIdKeyword { get; set; }
     }
 }

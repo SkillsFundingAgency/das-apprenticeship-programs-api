@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using FeatureToggle.Core.Fluent;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.NLog.Logger;
 
@@ -39,15 +40,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             var take = _queryHelper.GetFrameworksTotalAmount();
 
+            var searchDescriptor = GetAllFrameworksSearchDescriptor(take);
+
             var results =
-                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
-                    s =>
-                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("frameworkdocument"))
-                        .From(0)
-                        .Sort(sort => sort.Ascending(f => f.FrameworkId))
-                        .Take(take)
-                        .MatchAll());
+                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(s => searchDescriptor);
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -104,6 +100,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             return document != null ? _frameworkMapping.MapToFrameworkCodeSummary(document) : null;
+        }
+
+        private ISearchRequest GetAllFrameworksSearchDescriptor(int take)
+        {
+            if (Is<Elk5Feature>.Enabled)
+            {
+                return new SearchDescriptor<FrameworkSearchResultsItem>()
+                    .Index(_applicationSettings.ApprenticeshipIndexAlias)
+                    .Type(Types.Parse("frameworkdocument"))
+                    .From(0)
+                    .Sort(sort => sort.Ascending(f => f.FrameworkIdKeyword))
+                    .Take(take)
+                    .MatchAll();
+            }
+
+            return new SearchDescriptor<FrameworkSearchResultsItem>()
+                .Index(_applicationSettings.ApprenticeshipIndexAlias)
+                .Type(Types.Parse("frameworkdocument"))
+                .From(0)
+                .Sort(sort => sort.Ascending(f => f.FrameworkId))
+                .Take(take)
+                .MatchAll();
         }
     }
 }

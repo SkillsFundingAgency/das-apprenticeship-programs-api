@@ -25,6 +25,10 @@
 
         public int ApprenticeshipProviderElements => int.Parse(ConfigurationManager.AppSettings["ApprenticeshipProviderElements"]);
 
+        public string ElasticsearchUsername => ConfigurationManager.AppSettings["ElasticsearchUsername"];
+
+        public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
+
         private IEnumerable<Uri> GetElasticSearchIps()
         {
             var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');

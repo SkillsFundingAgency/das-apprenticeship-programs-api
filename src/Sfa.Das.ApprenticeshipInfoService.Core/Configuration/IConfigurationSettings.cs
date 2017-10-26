@@ -20,5 +20,9 @@
         string GaTrackingCode { get; }
 
         int ApprenticeshipProviderElements { get; }
+
+        string ElasticsearchUsername { get; }
+
+        string ElasticsearchPassword { get; }
     }
 }
