@@ -31,7 +31,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                             .Type(Types.Parse("organisationdocument"))
                             .From(0)
                             .MatchAll());
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetOrganisationsAmountByStandardId(string standardId)
@@ -46,7 +46,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                 .Match(m => m
                                     .Field(f => f.StandardCode)
                                     .Query(standardId))));
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetStandardsByOrganisationIdentifierAmount(string organisationId)
@@ -61,7 +61,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                 .Match(m => m
                                     .Field(f => f.EpaOrganisationIdentifier)
                                     .Query(organisationId))));
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetFrameworksTotalAmount()
@@ -73,7 +73,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                             .Type(Types.Parse("frameworkdocument"))
                             .From(0)
                             .MatchAll());
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetProvidersTotalAmount()
@@ -85,7 +85,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                             .Type(Types.Parse(_providerDocumentType))
                             .From(0)
                             .MatchAll());
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetStandardsTotalAmount()
@@ -97,7 +97,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                             .Type(Types.Parse("standarddocument"))
                             .From(0)
                             .MatchAll());
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetProvidersByFrameworkTotalAmount(string frameworkId)
@@ -114,7 +114,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                     .Field(f => f.FrameworkId)
                                     .Terms(frameworkId))));
 
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
 
         public int GetProvidersByStandardTotalAmount(string standardId)
@@ -131,7 +131,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                     .Field(f => f.StandardCode)
                                     .Terms(int.Parse(standardId)))));
 
-            return (int)results.HitsMetaData.Total;
+            return (results.HitsMetaData?.Total).HasValue ? 0 : (int)results.HitsMetaData.Total;
         }
     }
 }
