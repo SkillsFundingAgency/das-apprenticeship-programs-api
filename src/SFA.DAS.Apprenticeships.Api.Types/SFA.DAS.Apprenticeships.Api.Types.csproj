@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="AssessmentOrgs\Address.cs" />
     <Compile Include="AssessmentOrgs\Link.cs" />
+    <Compile Include="enums\DeliveryMode.cs" />
+    <Compile Include="Exceptions\UnknownDeliveryModeException.cs" />
     <Compile Include="FrameworkCodeSummary.cs" />
     <Compile Include="FrameworkProvider.cs" />
     <Compile Include="ProvidersHref.cs" />

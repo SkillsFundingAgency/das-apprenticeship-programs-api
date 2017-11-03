@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+﻿using SFA.DAS.Apprenticeships.Api.Types.enums;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     using System.Collections.Generic;
 
@@ -6,7 +8,7 @@
     {
         string ContactUsUrl { get; set; }
 
-        List<string> DeliveryModes { get; set; }
+        List<DeliveryMode> DeliveryModes { get; set; }
 
         double Distance { get; set; }
 
@@ -29,7 +31,7 @@
         string ProviderName { get; set; }
 
         string LegalName { get; set; }
-        
+
         string Phone { get; set; }
 
         string ApprenticeshipInfoUrl { get; set; }
