@@ -108,6 +108,7 @@
     <Compile Include="Controllers\StandardControllerTests.cs" />
     <Compile Include="Helpers\ControllerHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ApprenticeshipProviderRepositoryTests.cs" />
     <Compile Include="Repositories\AssessmentOrgsRepositoryTests.cs" />
     <Compile Include="Repositories\ProviderRepositoryTests.cs" />
   </ItemGroup>

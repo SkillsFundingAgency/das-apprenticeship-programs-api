@@ -4,7 +4,6 @@ using System.Net;
 using Elasticsearch.Net;
 using Moq;
 using Nest;
-using NLog.Internal;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
