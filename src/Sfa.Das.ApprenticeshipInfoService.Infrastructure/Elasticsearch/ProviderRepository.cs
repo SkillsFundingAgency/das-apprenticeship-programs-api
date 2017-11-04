@@ -3,14 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Core.Configuration;
+    using Core.Models;
+    using Core.Models.Responses;
+    using Core.Services;
     using FeatureToggle.Core.Fluent;
+    using FeatureToggles;
+    using Mapping;
     using Nest;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using SFA.DAS.NLog.Logger;
 
@@ -57,6 +57,7 @@
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
+                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query all providers");
             }
 
@@ -80,6 +81,7 @@
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
+                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
@@ -108,6 +110,7 @@
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
+                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
@@ -163,6 +166,7 @@
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
+                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query providers by standard code");
             }
 
@@ -192,6 +196,7 @@
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
+                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query providers by standard code");
             }
 

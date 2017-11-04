@@ -6,13 +6,13 @@ using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
 {
-    using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings;
+    using Core.Configuration;
+    using Core.Helpers;
+    using Core.Services;
+    using Elasticsearch;
+    using Helpers;
+    using Mapping;
+    using Settings;
     using StructureMap;
 
     public sealed class InfrastructureRegistry : Registry
