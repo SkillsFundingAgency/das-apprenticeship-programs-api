@@ -8,7 +8,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
     {
         string ContactUsUrl { get; set; }
 
-        List<DeliveryMode> DeliveryModes { get; set; }
+        List<string> DeliveryModes { get; set; }
 
         double Distance { get; set; }
 

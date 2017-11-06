@@ -35,7 +35,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public string ApprenticeshipInfoUrl { get; set; }
 
-        public List<DeliveryMode> DeliveryModes { get; set; }
+        public List<string> DeliveryModes { get; set; }
 
         public string Website { get; set; }
 

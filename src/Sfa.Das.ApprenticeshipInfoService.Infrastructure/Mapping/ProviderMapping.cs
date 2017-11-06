@@ -166,7 +166,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                         ApprenticeshipMarketingInfo =
                                            item.ApprenticeshipMarketingInfo
                     },
-                    DeliveryModes = item.DeliveryModes,
+                    DeliveryModes = ConvertToEnumeratedDeliveryModes(item.DeliveryModes),
                     ProviderMarketingInfo = item.ProviderMarketingInfo,
                     EmployerSatisfaction = item.EmployerSatisfaction,
                     LearnerSatisfaction = item.LearnerSatisfaction,
