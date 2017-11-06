@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+﻿using System;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     using System.Collections.Generic;
     using SFA.DAS.Apprenticeships.Api.Types;
@@ -42,5 +44,9 @@
         public double SectorSubjectAreaTier2 { get; set; }
 
         public string StandardIdKeyword { get; set; }
+
+        public DateTime? EffectiveFrom { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
     }
 }

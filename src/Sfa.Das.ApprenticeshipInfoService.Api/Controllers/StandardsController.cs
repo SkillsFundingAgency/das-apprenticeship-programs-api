@@ -70,6 +70,11 @@
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
+            if (!standard.IsActiveStandard)
+            {
+                throw new HttpResponseException(HttpStatusCode.Gone);
+            }
+
             standard.Uri = Resolve(standard.StandardId);
             standard.Providers = ResolveProvidersUrl(id);
             return standard;
