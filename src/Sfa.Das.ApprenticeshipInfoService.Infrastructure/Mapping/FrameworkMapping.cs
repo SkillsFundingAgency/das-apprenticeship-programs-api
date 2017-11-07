@@ -1,4 +1,6 @@
-﻿using Nest;
+﻿using System;
+using Nest;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
@@ -33,7 +35,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProfessionalRegistration = document.ProfessionalRegistration,
                 CompetencyQualification = document.CompetencyQualification?.OrderBy(x => x),
                 KnowledgeQualification = document.KnowledgeQualification?.OrderBy(x => x),
-                CombinedQualification = document.CombinedQualification?.OrderBy(x => x)
+                CombinedQualification = document.CombinedQualification?.OrderBy(x => x),
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveFramework = CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -81,6 +86,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = frameworkSummary.Ssa2,
                 Title = frameworkSummary.FrameworkName
             };
+        }
+
+        private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
+        {
+            return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || false;
         }
     }
 }

@@ -64,9 +64,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnFrameworkGone()
+        {
+            _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title", IsActiveFramework = false});
+
+            HttpResponseException ex = Assert.Throws<HttpResponseException>(() => _sut.Get("1234"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.Gone));
+        }
+
+        [Test]
         public void ShouldReturnFramework()
         {
-            _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title" });
+            _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title", IsActiveFramework = true});
 
             var framework = _sut.Get("1234");
 
@@ -132,7 +141,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldNotThrowExceptionWhenServiceisUp()
+        public void ShouldNotThrowExceptionWhenServiceIsUp()
         {
             _mockGetFrameworks.Setup(
                x =>

@@ -50,5 +50,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public double SectorSubjectAreaTier2 { get; set; }
 
         public string FrameworkIdKeyword { get; set; }
+
+        public DateTime? EffectiveFrom { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
     }
 }
