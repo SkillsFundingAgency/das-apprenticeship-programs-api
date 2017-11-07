@@ -55,6 +55,19 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnAllActiveFrameworks()
+        {
+            _mockGetFrameworks.Setup(m => m.GetAllFrameworks()).Returns(LoadFrameworkSummaryData());
+
+            var frameworks = _sut.Get();
+
+            Assert.NotNull(frameworks);
+            frameworks.Count().Should().Be(2);
+            frameworks.First().FrameworkCode.Should().Be(1234);
+            frameworks.Last().FrameworkCode.Should().Be(1236);
+        }
+
+        [Test]
         public void ShouldReturnFrameworkNotFound()
         {
             _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title" });
@@ -131,7 +144,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldThrowExceptionWhenServiceisDown()
+        public void ShouldThrowExceptionWhenServiceIsDown()
         {
             _mockGetFrameworks.Setup(
                x =>
@@ -148,6 +161,31 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                    x.GetAllFrameworks()).Returns(new List<FrameworkSummary> { new FrameworkSummary { Id = "0001" }, new FrameworkSummary { Id = "0002" } });
 
             Assert.DoesNotThrow(() => _sut.Head());
+        }
+
+        private IEnumerable<FrameworkSummary> LoadFrameworkSummaryData()
+        {
+            return new List<FrameworkSummary>
+            {
+                new FrameworkSummary
+                {
+                    FrameworkCode = 1234,
+                    Title = "test title",
+                    IsActiveFramework = true
+                },
+                new FrameworkSummary
+                {
+                    FrameworkCode = 1235,
+                    Title = "test title 2",
+                    IsActiveFramework = false
+                },
+                new FrameworkSummary
+                {
+                    FrameworkCode = 1236,
+                    Title = "test title 3",
+                    IsActiveFramework = true
+                }
+            };
         }
     }
 }

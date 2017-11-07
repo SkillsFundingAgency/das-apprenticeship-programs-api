@@ -34,7 +34,7 @@
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> Get()
         {
-            var response = _getFrameworks.GetAllFrameworks().ToList();
+            var response = _getFrameworks.GetAllFrameworks().Where(x => x.IsActiveFramework).ToList();
 
             foreach (var item in response)
             {
