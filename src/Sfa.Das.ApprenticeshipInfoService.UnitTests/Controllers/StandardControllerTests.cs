@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -46,6 +47,44 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _sut.RequestContext.RouteData = new HttpRouteData(
                 route: new HttpRoute(),
                 values: new HttpRouteValueDictionary { { "controller", "standards" } });
+        }
+
+        [Test]
+        public void ShouldReturnAllActiveStandards()
+        {
+            _mockGetStandards.Setup(m => m.GetAllStandards()).Returns(LoadStandardSummaryData());
+
+            var standards = _sut.Get();
+
+            Assert.NotNull(standards);
+            standards.Count().Should().Be(2);
+            standards.First().Id.Should().Be("2");
+            standards.Last().Id.Should().Be("3");
+        }
+
+        private IEnumerable<StandardSummary> LoadStandardSummaryData()
+        {
+            return new List<StandardSummary>
+            {
+                new StandardSummary
+                {
+                    Id = "1",
+                    Title = "test title",
+                    IsActiveStandard = false
+                },
+                new StandardSummary
+                {
+                    Id = "2",
+                    Title = "test title 2",
+                    IsActiveStandard = true
+                },
+                new StandardSummary
+                {
+                    Id = "3",
+                    Title = "test title 3",
+                    IsActiveStandard = true
+                }
+            };
         }
 
         [Test]

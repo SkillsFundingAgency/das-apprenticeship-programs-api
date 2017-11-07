@@ -35,7 +35,7 @@
         {
             try
             {
-                var response = _getStandards.GetAllStandards().ToList();
+                var response = _getStandards.GetAllStandards().Where(s => s.IsActiveStandard);
 
                 foreach (var item in response)
                 {

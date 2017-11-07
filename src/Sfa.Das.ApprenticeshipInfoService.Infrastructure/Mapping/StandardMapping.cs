@@ -49,7 +49,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 MaxFunding = document.FundingCap,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 Ssa1 = document.SectorSubjectAreaTier1,
-                Ssa2 = document.SectorSubjectAreaTier2
+                Ssa2 = document.SectorSubjectAreaTier2,
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveStandard = CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
             };
         }
 
