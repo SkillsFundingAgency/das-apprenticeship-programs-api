@@ -37,11 +37,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
-        private bool CheckActiveStandard(string documentStandardId, DateTime? documentEffectiveFrom, DateTime? documentEffectiveTo)
-        {
-            return DateHelper.CheckEffectiveDates(documentEffectiveFrom, documentEffectiveTo) || false;
-        }
-
         public StandardSummary MapToStandardSummary(StandardSearchResultsItem document)
         {
             return new StandardSummary
@@ -56,6 +51,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2
             };
+        }
+
+        private bool CheckActiveStandard(string documentStandardId, DateTime? documentEffectiveFrom, DateTime? documentEffectiveTo)
+        {
+            return DateHelper.CheckEffectiveDates(documentEffectiveFrom, documentEffectiveTo) || false;
         }
     }
 }
