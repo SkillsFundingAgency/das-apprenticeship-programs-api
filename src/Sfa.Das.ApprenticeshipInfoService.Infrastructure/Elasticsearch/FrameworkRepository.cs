@@ -78,7 +78,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             var frameworks = GetAllFrameworks();
 
-            return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkCodeSummary(frameworkSummary.First())).ToList();
+            return frameworks.GroupBy(x => x.FrameworkCode).Select(frameworkSummary => _frameworkMapping.MapToFrameworkCodeSummary(frameworkSummary.OrderByDescending(x => x.EffectiveTo).First())).ToList();
         }
 
         public FrameworkCodeSummary GetFrameworkByCode(int frameworkCode)
@@ -97,7 +97,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                         .Field(e => e.FrameworkCode))
                                     .Query(frameworkCode.ToString()))));
 
-            var document = results.Documents.Any() ? results.Documents.First() : null;
+            var document = results.Documents.Any() ? results.Documents.OrderByDescending(x => x.EffectiveTo).First() : null;
 
             return document != null ? _frameworkMapping.MapToFrameworkCodeSummary(document) : null;
         }

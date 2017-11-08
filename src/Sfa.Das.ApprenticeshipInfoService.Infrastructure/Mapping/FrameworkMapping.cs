@@ -76,7 +76,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 FrameworkCode = document.FrameworkCode,
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
-                Title = document.FrameworkName
+                Title = document.FrameworkName,
+                EffectiveTo = document.EffectiveTo
             };
         }
 
@@ -87,7 +88,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 FrameworkCode = frameworkSummary.FrameworkCode,
                 Ssa1 = frameworkSummary.Ssa1,
                 Ssa2 = frameworkSummary.Ssa2,
-                Title = frameworkSummary.FrameworkName
+                Title = frameworkSummary.FrameworkName,
+                EffectiveTo = frameworkSummary.EffectiveTo
             };
         }
 
