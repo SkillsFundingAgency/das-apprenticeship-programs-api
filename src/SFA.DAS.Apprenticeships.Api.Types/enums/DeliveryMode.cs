@@ -7,11 +7,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types.enums
     [JsonConverter(typeof(StringEnumConverter))]
     public enum DeliveryMode
     {
-        [EnumMember(Value = "DayRelease")]
+        [EnumMember(Value = "dayrelease")]
         DayRelease,
-        [EnumMember(Value = "BlockRelease")]
+        [EnumMember(Value = "blockrelease")]
         BlockRelease,
-        [EnumMember(Value = "100PercentEmployer")]
+        [EnumMember(Value = "100percentemployer")]
         HundredPercentEmployer            
     }
 }
