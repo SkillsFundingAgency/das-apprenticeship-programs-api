@@ -1,5 +1,6 @@
 ﻿using System;
 using Nest;
+using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
@@ -10,6 +11,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
+        private readonly IConfigurationSettings _configurationSettings;
+
+        public FrameworkMapping(IConfigurationSettings configurationSettings)
+        {
+            _configurationSettings = configurationSettings;
+        }
+
         public Framework MapToFramework(FrameworkSearchResultsItem document)
         {
             var framework = new Framework
@@ -95,7 +103,19 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
         private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
         {
-            return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || false;
+            return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || IsSpecialLapsedFramework(frameworkId);
+        }
+
+        private bool IsSpecialLapsedFramework(string frameworkId)
+        {
+            var lapsedFrameworks = _configurationSettings.FrameworksExpiredRequired;
+
+            if (lapsedFrameworks == null || lapsedFrameworks.Count < 1)
+            {
+                return false;
+            }
+
+            return lapsedFrameworks.Any(lapsedFramework => lapsedFramework == frameworkId);
         }
     }
 }
