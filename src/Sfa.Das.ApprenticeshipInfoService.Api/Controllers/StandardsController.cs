@@ -35,7 +35,7 @@
         {
             try
             {
-                var response = _getStandards.GetAllStandards().ToList();
+                var response = _getStandards.GetAllStandards().Where(s => s.IsActiveStandard);
 
                 foreach (var item in response)
                 {
@@ -68,6 +68,11 @@
             if (standard == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            if (!standard.IsActiveStandard)
+            {
+                throw new HttpResponseException(HttpStatusCode.Gone);
             }
 
             standard.Uri = Resolve(standard.StandardId);

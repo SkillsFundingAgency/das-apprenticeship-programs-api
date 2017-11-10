@@ -24,5 +24,7 @@
         string ElasticsearchUsername { get; }
 
         string ElasticsearchPassword { get; }
+
+        List<string> FrameworksExpiredRequired { get; }
     }
 }

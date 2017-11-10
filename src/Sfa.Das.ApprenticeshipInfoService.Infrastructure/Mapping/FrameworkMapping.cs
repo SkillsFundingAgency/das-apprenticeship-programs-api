@@ -1,4 +1,7 @@
-﻿using Nest;
+﻿using System;
+using Nest;
+using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
@@ -8,6 +11,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
+        private readonly IConfigurationSettings _configurationSettings;
+
+        public FrameworkMapping(IConfigurationSettings configurationSettings)
+        {
+            _configurationSettings = configurationSettings;
+        }
+
         public Framework MapToFramework(FrameworkSearchResultsItem document)
         {
             var framework = new Framework
@@ -33,7 +43,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProfessionalRegistration = document.ProfessionalRegistration,
                 CompetencyQualification = document.CompetencyQualification?.OrderBy(x => x),
                 KnowledgeQualification = document.KnowledgeQualification?.OrderBy(x => x),
-                CombinedQualification = document.CombinedQualification?.OrderBy(x => x)
+                CombinedQualification = document.CombinedQualification?.OrderBy(x => x),
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveFramework = CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -55,7 +68,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 MaxFunding = document.FundingCap,
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
-                TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" }
+                TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveFramework = CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -68,7 +84,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 FrameworkCode = document.FrameworkCode,
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
-                Title = document.FrameworkName
+                Title = document.FrameworkName,
+                EffectiveTo = document.EffectiveTo
             };
         }
 
@@ -79,8 +96,26 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 FrameworkCode = frameworkSummary.FrameworkCode,
                 Ssa1 = frameworkSummary.Ssa1,
                 Ssa2 = frameworkSummary.Ssa2,
-                Title = frameworkSummary.FrameworkName
+                Title = frameworkSummary.FrameworkName,
+                EffectiveTo = frameworkSummary.EffectiveTo
             };
+        }
+
+        private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
+        {
+            return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || IsSpecialLapsedFramework(frameworkId);
+        }
+
+        private bool IsSpecialLapsedFramework(string frameworkId)
+        {
+            var lapsedFrameworks = _configurationSettings.FrameworksExpiredRequired;
+
+            if (lapsedFrameworks == null || lapsedFrameworks.Count < 1)
+            {
+                return false;
+            }
+
+            return lapsedFrameworks.Any(lapsedFramework => lapsedFramework == frameworkId);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using System;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
@@ -28,7 +30,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProfessionalRegistration = document.ProfessionalRegistration,
                 OverviewOfRole = document.OverviewOfRole,
                 Ssa1 = document.SectorSubjectAreaTier1,
-                Ssa2 = document.SectorSubjectAreaTier2
+                Ssa2 = document.SectorSubjectAreaTier2,
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveStandard = CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
             };
         }
 
@@ -44,8 +49,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 MaxFunding = document.FundingCap,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 Ssa1 = document.SectorSubjectAreaTier1,
-                Ssa2 = document.SectorSubjectAreaTier2
+                Ssa2 = document.SectorSubjectAreaTier2,
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                IsActiveStandard = CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
             };
+        }
+
+        private bool CheckActiveStandard(string documentStandardId, DateTime? documentEffectiveFrom, DateTime? documentEffectiveTo)
+        {
+            return DateHelper.CheckEffectiveDates(documentEffectiveFrom, documentEffectiveTo) || false;
         }
     }
 }

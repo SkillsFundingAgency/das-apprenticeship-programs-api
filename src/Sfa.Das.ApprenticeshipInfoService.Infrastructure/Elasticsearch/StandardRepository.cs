@@ -64,7 +64,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
-            return document != null ? _standardMapping.MapToStandard(document) : null;
+            var response = document != null ? _standardMapping.MapToStandard(document) : null;
+
+            return response;
         }
 
         private ISearchRequest GetAllStandardsSeachDescriptor(int take)

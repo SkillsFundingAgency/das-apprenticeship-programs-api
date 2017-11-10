@@ -34,7 +34,7 @@
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> Get()
         {
-            var response = _getFrameworks.GetAllFrameworks().ToList();
+            var response = _getFrameworks.GetAllFrameworks().Where(x => x.IsActiveFramework).ToList();
 
             foreach (var item in response)
             {
@@ -61,6 +61,11 @@
             if (response == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            if (!response.IsActiveFramework)
+            {
+                throw new HttpResponseException(HttpStatusCode.Gone);
             }
 
             response.Uri = Resolve(response.FrameworkId);

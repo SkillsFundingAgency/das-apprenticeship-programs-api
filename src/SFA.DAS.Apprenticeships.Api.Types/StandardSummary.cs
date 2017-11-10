@@ -33,5 +33,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public double Ssa1 { get; set; }
 
         public double Ssa2 { get; set; }
+
+        public DateTime? EffectiveFrom { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
+
+        public bool IsActiveStandard { get; set; }
     }
 }

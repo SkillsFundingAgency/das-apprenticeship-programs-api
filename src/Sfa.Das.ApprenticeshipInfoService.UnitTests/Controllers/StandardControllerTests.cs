@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -49,6 +50,44 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnAllActiveStandards()
+        {
+            _mockGetStandards.Setup(m => m.GetAllStandards()).Returns(LoadStandardSummaryData());
+
+            var standards = _sut.Get();
+
+            Assert.NotNull(standards);
+            standards.Count().Should().Be(2);
+            standards.First().Id.Should().Be("2");
+            standards.Last().Id.Should().Be("3");
+        }
+
+        private IEnumerable<StandardSummary> LoadStandardSummaryData()
+        {
+            return new List<StandardSummary>
+            {
+                new StandardSummary
+                {
+                    Id = "1",
+                    Title = "test title",
+                    IsActiveStandard = false
+                },
+                new StandardSummary
+                {
+                    Id = "2",
+                    Title = "test title 2",
+                    IsActiveStandard = true
+                },
+                new StandardSummary
+                {
+                    Id = "3",
+                    Title = "test title 3",
+                    IsActiveStandard = true
+                }
+            };
+        }
+
+        [Test]
         public void ShouldReturnStandardNotFound()
         {
             _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
@@ -58,9 +97,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnStandardGone()
+        {
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = false});
+
+            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("42"));
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.Gone));
+        }
+
+        [Test]
         public void ShouldReturnStandard()
         {
-            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = true});
 
             var standard = _sut.Get("42");
 
