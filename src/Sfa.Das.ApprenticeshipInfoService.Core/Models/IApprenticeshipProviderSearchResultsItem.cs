@@ -29,7 +29,7 @@
         string ProviderName { get; set; }
 
         string LegalName { get; set; }
-        
+
         string Phone { get; set; }
 
         string ApprenticeshipInfoUrl { get; set; }
