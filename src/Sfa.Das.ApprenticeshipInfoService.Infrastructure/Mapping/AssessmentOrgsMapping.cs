@@ -38,7 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                     Town = organisation.Address.Town,
                     Postcode = organisation.Address.Postcode
                 },
-                //Type = organisation.OrganisationType,
+                OrganisationType = organisation.OrganisationType,
                 Website = organisation.WebsiteLink
             };
         }

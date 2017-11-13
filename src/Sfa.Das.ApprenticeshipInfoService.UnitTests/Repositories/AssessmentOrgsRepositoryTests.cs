@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using Moq;
 using Nest;
@@ -9,7 +8,6 @@ using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
 
@@ -155,6 +153,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var result = _sut.GetOrganisationsByStandardId("1").ToList();
 
             result.Count.Should().Be(3);
+            result.Select(x => x.OrganisationType).Should().Contain("qwertyui");
+
         }
     }
 }
