@@ -44,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                throw new ApplicationException($"Failed query all organisations");
+                throw new ApplicationException("Failed query all organisations");
             }
 
             return results.Documents.Select(organisation => _assessmentOrgsMapping.MapToOrganisationDto(organisation)).ToList();
@@ -66,7 +66,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                throw new ApplicationException($"Failed query organisation by id");
+                throw new ApplicationException("Failed query organisation by id");
             }
 
             return _assessmentOrgsMapping.MapToOrganisationDetailsDto(results.Documents.FirstOrDefault());
@@ -90,7 +90,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                throw new ApplicationException($"Failed query organisations by standard id");
+                throw new ApplicationException("Failed query organisations by standard id");
             }
 
             var organisations = results.Documents.Where(x => x.EffectiveFrom.Date <= DateTime.UtcNow.Date && (x.EffectiveTo == null || x.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)).ToList();
@@ -137,7 +137,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                throw new ApplicationException($"Failed query standards by organisation id");
+                throw new ApplicationException("Failed query standards by organisation id");
             }
 
             return _assessmentOrgsMapping.MapToStandardOrganisationsSummary(results.Documents).OrderBy(x => x.StandardCode);
