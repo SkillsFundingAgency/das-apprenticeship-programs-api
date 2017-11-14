@@ -19,5 +19,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs
         public Address Address { get; set; }
 
         public List<Link> Links { get; set; }
+
+        public string OrganisationType { get; set; }
     }
 }

@@ -153,6 +153,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var result = _sut.GetOrganisationsByStandardId("1").ToList();
 
             result.Count.Should().Be(3);
+            result.Select(x => x.OrganisationType).Should().Contain("qwertyui");
+
         }
     }
 }
