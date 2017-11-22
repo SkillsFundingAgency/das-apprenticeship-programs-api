@@ -31,6 +31,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<ILog> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
+        private Mock<IActiveFrameworkChecker> _mockActiveFrameworkChecker;
 
         [SetUp]
         public void Init()
@@ -41,13 +42,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
+            _mockActiveFrameworkChecker = new Mock<IActiveFrameworkChecker>();
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
                 _mockControllerHelper.Object,
                 _mockGetStandards.Object,
                 _mockGetFrameworks.Object,
-                _mockApprenticeshipProviderRepository.Object);
+                _mockApprenticeshipProviderRepository.Object,
+                _mockActiveFrameworkChecker.Object);
             _sut.Request = new HttpRequestMessage
             {
                 RequestUri = new Uri("http://localhost/providers")

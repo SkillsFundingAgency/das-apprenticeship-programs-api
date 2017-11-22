@@ -1,6 +1,8 @@
 ﻿using System;
 using Nest;
+using Sfa.Das.ApprenticeshipInfoService.Core;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
@@ -11,11 +13,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
-        private readonly IConfigurationSettings _configurationSettings;
+         private readonly ActiveFrameworkChecker _activeFrameworkChecker;
 
-        public FrameworkMapping(IConfigurationSettings configurationSettings)
+        public FrameworkMapping(ActiveFrameworkChecker activeFrameworkChecker)
         {
-            _configurationSettings = configurationSettings;
+            _activeFrameworkChecker = activeFrameworkChecker;
         }
 
         public Framework MapToFramework(FrameworkSearchResultsItem document)
@@ -46,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 CombinedQualification = document.CombinedQualification?.OrderBy(x => x),
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeFrameworkChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -71,7 +73,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeFrameworkChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -99,23 +101,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Title = frameworkSummary.FrameworkName,
                 EffectiveTo = frameworkSummary.EffectiveTo
             };
-        }
-
-        private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
-        {
-            return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || IsSpecialLapsedFramework(frameworkId);
-        }
-
-        private bool IsSpecialLapsedFramework(string frameworkId)
-        {
-            var lapsedFrameworks = _configurationSettings.FrameworksExpiredRequired;
-
-            if (lapsedFrameworks == null || lapsedFrameworks.Count < 1)
-            {
-                return false;
-            }
-
-            return lapsedFrameworks.Any(lapsedFramework => lapsedFramework == frameworkId);
         }
     }
 }

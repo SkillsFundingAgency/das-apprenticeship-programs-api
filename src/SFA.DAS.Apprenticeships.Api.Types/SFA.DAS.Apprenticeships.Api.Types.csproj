@@ -65,6 +65,9 @@
     <Compile Include="FrameworkSummary.cs" />
     <Compile Include="JobRoleItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ProviderApprenticeship.cs" />
+    <Compile Include="Providers\ProviderFramework.cs" />
+    <Compile Include="Providers\ProviderStandard.cs" />
     <Compile Include="Providers\ProviderSummary.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Standard.cs" />

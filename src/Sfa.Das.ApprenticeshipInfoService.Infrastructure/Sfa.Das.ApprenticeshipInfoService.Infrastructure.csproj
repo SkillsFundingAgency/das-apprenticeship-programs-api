@@ -126,7 +126,6 @@
     <Compile Include="FeatureToggles\Elk5Feature.cs" />
     <Compile Include="FeatureToggles\RoatpProvidersFeature.cs" />
     <Compile Include="Helpers\ControllerHelper.cs" />
-    <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Logging\DependencyLogEntry.cs" />
     <Compile Include="Logging\ElasticSearchLogEntry.cs" />

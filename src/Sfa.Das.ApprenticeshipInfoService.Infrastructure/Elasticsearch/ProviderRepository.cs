@@ -122,6 +122,70 @@
             return results.Documents;
         }
 
+        public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
+        {
+
+            var providers =
+                _elasticsearchCustomClient.Search<Provider>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse(_providerDocumentType))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.Ukprn))
+                            .Take(1000)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.Ukprn)
+                                    .Terms(ukprn))));
+
+            if (providers.ApiCall.HttpStatusCode != 200)
+            {
+                _applicationLogger.Warn($"httpStatusCode was {providers.ApiCall.HttpStatusCode}");
+                throw new ApplicationException("Failed query frameworks by provider ukprn");
+            }
+
+            if (providers.Documents.Count() > 1)
+            {
+                _applicationLogger.Warn($"found {providers.Documents.Count()} providers (checking frameworks) for the ukprn {ukprn}");
+            }
+
+            var provider = providers.Documents.FirstOrDefault();
+
+            return provider?.Frameworks;
+        }
+
+        public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
+        {
+
+            var providers =
+                _elasticsearchCustomClient.Search<Provider>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse(_providerDocumentType))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.Ukprn))
+                            .Take(1000)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.Ukprn)
+                                    .Terms(ukprn))));
+
+            if (providers.ApiCall.HttpStatusCode != 200)
+            {
+                _applicationLogger.Warn($"httpStatusCode was {providers.ApiCall.HttpStatusCode}");
+                throw new ApplicationException("Failed query standards by provider ukprn");
+            }
+
+            if (providers.Documents.Count() > 1)
+            {
+                _applicationLogger.Warn($"found {providers.Documents.Count()} providers (checking standards) for the ukprn {ukprn}");
+            }
+
+            var provider = providers.Documents.FirstOrDefault();
+
+            return provider?.Standards;
+        }
+
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page)
         {
             var coordinates = new Coordinate
@@ -207,5 +271,7 @@
 
             return results.Documents;
         }
+
+       
     }
 }

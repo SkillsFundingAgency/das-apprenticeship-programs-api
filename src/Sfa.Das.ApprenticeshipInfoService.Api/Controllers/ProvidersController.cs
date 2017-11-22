@@ -1,18 +1,25 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using System;
+using NLog.LayoutRenderers;
+using Sfa.Das.ApprenticeshipInfoService.Core;
+using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Web.Http;
     using System.Web.Http.Description;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using Attributes;
+    using Core.Models;
+    using Core.Models.Responses;
+    using Core.Services;
+    using Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using Swashbuckle.Swagger.Annotations;
-    using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
+    using IControllerHelper = Core.Helpers.IControllerHelper;
 
     public class ProvidersController : ApiController
     {
@@ -21,6 +28,7 @@
         private readonly IGetStandards _getStandards;
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
+        private readonly IActiveFrameworkChecker _activeFrameworkChecker;
 
         private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
@@ -29,13 +37,15 @@
             IControllerHelper controllerHelper,
             IGetStandards getStandards,
             IGetFrameworks getFrameworks,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository, 
+            IActiveFrameworkChecker activeFrameworkChecker)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _getStandards = getStandards;
             _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
+            _activeFrameworkChecker = activeFrameworkChecker;
         }
 
         /// <summary>
@@ -117,6 +127,63 @@
             Get(ukprn);
         }
 
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderStandard>))]
+        [Route("providers/{providerId}/standards", Name = "GetProviderStandards")]
+        public IEnumerable<ProviderStandard> GetProviderStandards(long ukprn)
+        {
+            return _getProviders.GetStandardsByProviderUkprn(ukprn);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderFramework>))]
+        [Route("providers/{providerId}/frameworks", Name = "GetProviderFrameworks")]
+        public IEnumerable<ProviderFramework> GetProviderFrameworks(long ukprn)
+        {
+           return _getProviders.GetFrameworksByProviderUkprn(ukprn);
+        }
+
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderFramework>))]
+        [Route("providers/{ukprn}/active-apprenticeships", Name = "GetActiveApprenticeshipsByProvider")]
+        public IEnumerable<ProviderApprenticeship> GetActiveApprenticeshipsByProvider(long ukprn)
+        {
+            var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
+
+            //MFCMFC convert "Standard" to enum?
+            var apprenticeships = standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
+                .Select(standard => new ProviderApprenticeship
+                {
+                    Name = standard.Title,
+                    Level = standard.Level.ToString(),
+                    Type = "Standard",
+                    Identifier = standard.StandardId.ToString()
+                })
+                .ToList();
+
+            var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
+
+            //MFCMFC convert to enum?
+            // find active
+            // map level
+            // ProgType	ProgTypeDesc
+            // 2   Advanced Apprenticeship (Level 3)
+            // 3   Intermediate Apprenticeship (Level 2)
+            // 20  Higher Apprenticeship (Level 4)
+            // 21  Higher Apprenticeship (Level 5)
+            // 22  Higher Apprenticeship (Level 6)
+            // 23  Higher Apprenticeship (Level 7 +)
+            apprenticeships.AddRange(frameworks.Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Select(framework => new ProviderApprenticeship
+                {
+                    Name = framework.PathwayName,
+                    Level = framework.ProgType.ToString(),
+                    Type = "Framework",
+                    Identifier = framework.FrameworkId
+                }));
+
+            return apprenticeships.OrderBy(x => x.Name)
+                                    .ThenBy(x => x.Level)
+                                    .ThenBy(x => x.Type);
+        }
+        
         /// <summary>
         /// Get a list of providers for an specific standard
         /// </summary>

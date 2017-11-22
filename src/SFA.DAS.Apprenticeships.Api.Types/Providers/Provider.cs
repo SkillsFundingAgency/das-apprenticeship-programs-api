@@ -39,5 +39,9 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public double LearnerSatisfaction { get; set; }
 
         public IEnumerable<ContactAddress> Addresses { get; set; }
+
+        public IEnumerable<ProviderFramework> Frameworks { get; set; }
+        public IEnumerable<ProviderStandard> Standards { get; set; }
+
     }
 }
