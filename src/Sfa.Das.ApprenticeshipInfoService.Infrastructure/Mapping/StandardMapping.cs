@@ -1,5 +1,6 @@
 ﻿using System;
 using Sfa.Das.ApprenticeshipInfoService.Core;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 

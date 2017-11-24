@@ -63,7 +63,6 @@
     <Compile Include="Models\ApprenticeshipDetails.cs" />
     <Compile Include="Models\ApprenticeshipProduct.cs" />
     <Compile Include="Models\ApprenticeshipBasic.cs" />
-    <Compile Include="Models\ApprenticeshipTrainingType.cs" />
     <Compile Include="Models\DetailProviderResponse.cs" />
     <Compile Include="Models\ContactInformation.cs" />
     <Compile Include="Models\Responses\FrameworkProviderSearchResultsItemResponse.cs" />

@@ -36,6 +36,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IControllerHelper>().Use<ControllerHelper>();
             For<IAnalyticsService>().Use<AnalyticsService>();
             For<IQueryHelper>().Use<QueryHelper>();
+            For<IActiveFrameworkChecker>().Use<ActiveFrameworkChecker>();
         }
 
         private IDictionary<string, object> GetProperties()

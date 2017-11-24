@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -32,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
         private Mock<IActiveFrameworkChecker> _mockActiveFrameworkChecker;
-
+        private Mock<IConfigurationSettings> _mockConfigurationSettings;
         [SetUp]
         public void Init()
         {
@@ -43,6 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
             _mockActiveFrameworkChecker = new Mock<IActiveFrameworkChecker>();
+            _mockConfigurationSettings = new Mock<IConfigurationSettings>();
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
@@ -50,12 +52,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                 _mockGetStandards.Object,
                 _mockGetFrameworks.Object,
                 _mockApprenticeshipProviderRepository.Object,
-                _mockActiveFrameworkChecker.Object);
-            _sut.Request = new HttpRequestMessage
+                _mockActiveFrameworkChecker.Object,
+                _mockConfigurationSettings.Object)
             {
-                RequestUri = new Uri("http://localhost/providers")
+                Request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri("http://localhost/providers")
+                },
+                Configuration = new HttpConfiguration()
             };
-            _sut.Configuration = new HttpConfiguration();
+
             _sut.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",

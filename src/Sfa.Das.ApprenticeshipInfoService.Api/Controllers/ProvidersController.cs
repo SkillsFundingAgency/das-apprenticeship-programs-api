@@ -1,9 +1,6 @@
-﻿using System;
-using NLog.LayoutRenderers;
-using Sfa.Das.ApprenticeshipInfoService.Core;
-using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
@@ -19,7 +16,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using Swashbuckle.Swagger.Annotations;
-    using IControllerHelper = Core.Helpers.IControllerHelper;
+    using IControllerHelper = IControllerHelper;
 
     public class ProvidersController : ApiController
     {
@@ -29,6 +26,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
         private readonly IActiveFrameworkChecker _activeFrameworkChecker;
+        private readonly IConfigurationSettings _applicationSettings;
 
         private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
@@ -38,7 +36,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             IGetStandards getStandards,
             IGetFrameworks getFrameworks,
             IApprenticeshipProviderRepository apprenticeshipProviderRepository, 
-            IActiveFrameworkChecker activeFrameworkChecker)
+            IActiveFrameworkChecker activeFrameworkChecker, 
+            IConfigurationSettings applicationSettings)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
@@ -46,6 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
             _activeFrameworkChecker = activeFrameworkChecker;
+            _applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -127,63 +127,75 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             Get(ukprn);
         }
 
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderStandard>))]
-        [Route("providers/{providerId}/standards", Name = "GetProviderStandards")]
-        public IEnumerable<ProviderStandard> GetProviderStandards(long ukprn)
-        {
-            return _getProviders.GetStandardsByProviderUkprn(ukprn);
-        }
-
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderFramework>))]
-        [Route("providers/{providerId}/frameworks", Name = "GetProviderFrameworks")]
-        public IEnumerable<ProviderFramework> GetProviderFrameworks(long ukprn)
-        {
-           return _getProviders.GetFrameworksByProviderUkprn(ukprn);
-        }
-
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderFramework>))]
+        /// <summary>
+        /// Get list of active apprenticeships for a given provider
+        /// </summary>
+        /// <param name="ukprn">UKPRN</param>
+        /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderApprenticeship>))]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
         [Route("providers/{ukprn}/active-apprenticeships", Name = "GetActiveApprenticeshipsByProvider")]
+        [ExceptionHandling]
         public IEnumerable<ProviderApprenticeship> GetActiveApprenticeshipsByProvider(long ukprn)
         {
+            if (ukprn.ToString().Length != 8)
+            {
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+            }
+
             var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
 
-            //MFCMFC convert "Standard" to enum?
             var apprenticeships = standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
                 .Select(standard => new ProviderApprenticeship
                 {
                     Name = standard.Title,
                     Level = standard.Level.ToString(),
-                    Type = "Standard",
+                    Type = ApprenticeshipTrainingType.Standard.ToString(),
                     Identifier = standard.StandardId.ToString()
                 })
                 .ToList();
 
             var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
 
-            //MFCMFC convert to enum?
-            // find active
-            // map level
-            // ProgType	ProgTypeDesc
-            // 2   Advanced Apprenticeship (Level 3)
-            // 3   Intermediate Apprenticeship (Level 2)
-            // 20  Higher Apprenticeship (Level 4)
-            // 21  Higher Apprenticeship (Level 5)
-            // 22  Higher Apprenticeship (Level 6)
-            // 23  Higher Apprenticeship (Level 7 +)
             apprenticeships.AddRange(frameworks.Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
                 .Select(framework => new ProviderApprenticeship
                 {
                     Name = framework.PathwayName,
-                    Level = framework.ProgType.ToString(),
-                    Type = "Framework",
+                    Level = MapProgTypeToLevel(framework.ProgType),
+                    Type = ApprenticeshipTrainingType.Framework.ToString(),
                     Identifier = framework.FrameworkId
                 }));
+            var take = _applicationSettings.ProviderApprenticeshipsMaximum;
 
             return apprenticeships.OrderBy(x => x.Name)
+                                    .ThenBy(x => x.Type)
                                     .ThenBy(x => x.Level)
-                                    .ThenBy(x => x.Type);
+                                    .Take(take);
         }
-        
+
+        private static string MapProgTypeToLevel(int frameworkProgType)
+        {
+           switch (frameworkProgType)
+            {
+                case 2:
+                    return "3";
+                case 3:
+                    return "2";
+                case 20:
+                    return "4";
+                case 21:
+                    return "5";
+                case 22:
+                    return "6";
+                case 23:
+                    return "7+";
+                default:
+                    return "-";
+            }
+
+        }
+
         /// <summary>
         /// Get a list of providers for an specific standard
         /// </summary>

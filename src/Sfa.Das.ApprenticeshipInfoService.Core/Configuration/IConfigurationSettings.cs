@@ -26,5 +26,7 @@
         string ElasticsearchPassword { get; }
 
         List<string> FrameworksExpiredRequired { get; }
+
+        int ProviderApprenticeshipsMaximum { get; }
     }
 }

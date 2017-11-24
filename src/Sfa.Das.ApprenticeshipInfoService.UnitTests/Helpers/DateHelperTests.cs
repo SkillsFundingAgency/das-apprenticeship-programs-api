@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Core;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 

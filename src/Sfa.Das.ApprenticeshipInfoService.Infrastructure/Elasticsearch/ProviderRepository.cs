@@ -124,7 +124,7 @@
 
         public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
         {
-
+            var take = _applicationSettings.ProviderApprenticeshipsMaximum;
             var providers =
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
@@ -132,7 +132,7 @@
                             .Type(Types.Parse(_providerDocumentType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(1000)
+                            .Take(take)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
@@ -156,6 +156,7 @@
 
         public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
         {
+            var take = _applicationSettings.ProviderApprenticeshipsMaximum;
 
             var providers =
                 _elasticsearchCustomClient.Search<Provider>(
@@ -164,7 +165,7 @@
                             .Type(Types.Parse(_providerDocumentType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(1000)
+                            .Take(take)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)

@@ -29,6 +29,7 @@
 
         public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
         public List<string> FrameworksExpiredRequired => GetFrameworksExpiredList();
+        public int ProviderApprenticeshipsMaximum => int.Parse(ConfigurationManager.AppSettings["ProviderApprenticeshipsMaximum"]);
 
         private List<string> GetFrameworksExpiredList()
         {

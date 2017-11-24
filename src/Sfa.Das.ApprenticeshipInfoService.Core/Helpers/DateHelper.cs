@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Core
+namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
     public static class DateHelper
     {

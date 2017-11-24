@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApprenticeshipTrainingType.cs" />
     <Compile Include="AssessmentOrgs\Address.cs" />
     <Compile Include="AssessmentOrgs\Link.cs" />
     <Compile Include="enums\DeliveryMode.cs" />
