@@ -146,7 +146,7 @@
 
             if (providers.Documents.Count() > 1)
             {
-                _applicationLogger.Warn($"found {providers.Documents.Count()} providers (checking frameworks) for the ukprn {ukprn}");
+                _applicationLogger.Warn($"found {providers.Documents.Count()} providers documents (checking frameworks) for the ukprn {ukprn}");
             }
 
             var provider = providers.Documents.FirstOrDefault();

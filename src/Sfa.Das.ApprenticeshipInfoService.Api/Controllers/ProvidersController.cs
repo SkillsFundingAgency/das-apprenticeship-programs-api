@@ -150,7 +150,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                 .Select(standard => new ProviderApprenticeship
                 {
                     Name = standard.Title,
-                    Level = standard.Level.ToString(),
+                    Level = standard.Level,
                     Type = ApprenticeshipTrainingType.Standard.ToString(),
                     Identifier = standard.StandardId.ToString()
                 })
@@ -162,38 +162,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                 .Select(framework => new ProviderApprenticeship
                 {
                     Name = framework.PathwayName,
-                    Level = MapProgTypeToLevel(framework.ProgType),
+                    Level = framework.Level,
                     Type = ApprenticeshipTrainingType.Framework.ToString(),
                     Identifier = framework.FrameworkId
                 }));
             var take = _applicationSettings.ProviderApprenticeshipsMaximum;
 
             return apprenticeships.OrderBy(x => x.Name)
-                                    .ThenBy(x => x.Type)
                                     .ThenBy(x => x.Level)
                                     .Take(take);
-        }
-
-        private static string MapProgTypeToLevel(int frameworkProgType)
-        {
-           switch (frameworkProgType)
-            {
-                case 2:
-                    return "3";
-                case 3:
-                    return "2";
-                case 20:
-                    return "4";
-                case 21:
-                    return "5";
-                case 22:
-                    return "6";
-                case 23:
-                    return "7+";
-                default:
-                    return "-";
-            }
-
         }
 
         /// <summary>

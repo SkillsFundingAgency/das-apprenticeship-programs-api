@@ -5,7 +5,7 @@
         public string Name { get; set; }
         public string Type { get; set; }
 
-        public string Level { get; set; }
+        public int Level { get; set; }
         public string Identifier { get; set; }
     }
 }
