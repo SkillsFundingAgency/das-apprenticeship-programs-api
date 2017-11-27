@@ -1,15 +1,10 @@
-﻿using System;
-using Nest;
-using Sfa.Das.ApprenticeshipInfoService.Core;
-using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
-using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
     using System.Linq;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+    using Core.Models;
 
     public class FrameworkMapping : IFrameworkMapping
     {

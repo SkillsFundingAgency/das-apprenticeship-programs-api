@@ -106,6 +106,7 @@
     <Compile Include="Controllers\ProviderControllerTests.cs" />
     <Compile Include="Controllers\FrameworkControllerTests.cs" />
     <Compile Include="Controllers\StandardControllerTests.cs" />
+    <Compile Include="Helpers\ActiveFrameworkCheckerTests.cs" />
     <Compile Include="Helpers\ControllerHelperTests.cs" />
     <Compile Include="Helpers\DateHelperTests.cs" />
     <Compile Include="JsonEnumSerializerTests.cs" />

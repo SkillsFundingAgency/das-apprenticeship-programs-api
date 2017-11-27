@@ -187,7 +187,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         public void ShouldReturnActiveListOfProviderApprenticeshipsForUkprnInExpectedOrder()
         {
             const long ukprn = 10005214L;
-            var providerStandardArcheologistLev1 = new ProviderStandard() {StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerStandardArcheologistLev1 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
             var providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipsMaximum 
                 = new ProviderStandard() {StandardId = 10, Title = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
 
@@ -202,8 +202,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             };
 
-            var providerFrameworkAccountingLev3 = new ProviderFramework() { FrameworkId = "321-1-1", PathwayName = "Accounting", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3) };
-            var providerFrameworkAccountingLev2 = new ProviderFramework() { FrameworkId = "321-2-1", PathwayName = "Accounting", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), EffectiveTo = DateTime.Today.AddDays(2) };
+            var providerFrameworkAccountingLev3 = new ProviderFramework { FrameworkId = "321-1-1", PathwayName = "Accounting", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerFrameworkAccountingLev2 = new ProviderFramework { FrameworkId = "321-2-1", PathwayName = "Accounting", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), EffectiveTo = DateTime.Today.AddDays(2) };
             var providerFrameworkNoLongerActive = new ProviderFramework { FrameworkId = "234-3-2", PathwayName = "Active in the past", Level = 4, EffectiveFrom = DateTime.MinValue, EffectiveTo = DateTime.Today.AddDays(-2) };
 
             var frameworks = new List<ProviderFramework>
@@ -234,7 +234,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         public void ShouldReturnListOfEmptyProvidersForAStandard()
         {
             var standardCode = 1;
-            var data = new List<StandardProviderSearchResultsItem> { };
+            var data = new List<StandardProviderSearchResultsItem>();
 
             _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
             _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
@@ -242,7 +242,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var response = _sut.GetStandardProviders(standardCode.ToString());
 
-            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long>()), Times.Once);
 
             response.Should().NotBeNull();
             response.Should().BeEmpty();
