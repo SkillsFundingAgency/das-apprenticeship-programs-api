@@ -193,7 +193,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var providerStandardWithNoEffectiveFrom = new ProviderStandard { StandardId = 30, Title = "Absent because no effective from date", Level = 4, EffectiveFrom = null };
 
-
             var standards = new List<ProviderStandard>
             {
                 providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipsMaximum,
@@ -225,10 +224,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             var result = _sut.GetActiveApprenticeshipsByProvider(ukprn);
            var providerApprenticeships = result as ProviderApprenticeship[] ?? result.ToArray();
             Assert.AreEqual(ProviderApprenticeshipsMaximum, providerApprenticeships.Length);
-            Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId, $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
+            Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId, 
+                    $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
             Assert.AreEqual(providerApprenticeships[1].Identifier, providerFrameworkAccountingLev3.FrameworkId);
+            Assert.AreEqual(providerApprenticeships[1].TrainingType, ApprenticeshipTrainingType.Framework);
+            Assert.AreEqual(providerApprenticeships[1].Type, "Framework");
+            Assert.AreEqual(providerApprenticeships[1].Level, 3);
+            Assert.AreEqual(providerApprenticeships[1].Name, "Accounting");
             Assert.AreEqual(providerApprenticeships[2].Identifier, providerStandardArcheologistLev1.StandardId.ToString());
-   }
+            Assert.AreEqual(providerApprenticeships[2].TrainingType, ApprenticeshipTrainingType.Standard);
+            Assert.AreEqual(providerApprenticeships[2].Type, "Standard");
+            Assert.AreEqual(providerApprenticeships[2].Level, 1);
+            Assert.AreEqual(providerApprenticeships[2].Name, "Archeologist");
+        }
+
+        [Test]
+        public void ShouldReturnBadRequestIfRequestingActiveApprenticeshipsWithBadlyFormedUkprn()
+        {
+            TestDelegate action = () => _sut.GetActiveApprenticeshipsByProvider(1);
+            var ex = Assert.Throws<HttpResponseException>(action);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
 
         [Test]
         public void ShouldReturnListOfEmptyProvidersForAStandard()
