@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
+﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     using System;
     using System.Collections.Generic;
@@ -125,67 +127,92 @@
         public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
         {
             var take = _applicationSettings.ProviderApprenticeshipsMaximum;
-            var providers =
-                _elasticsearchCustomClient.Search<Provider>(
+
+            var matchedIds =
+                _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(_providerDocumentType))
+                            .Type(Types.Parse("frameworkprovider"))
                             .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(take)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
                                     .Terms(ukprn))));
 
-            if (providers.ApiCall.HttpStatusCode != 200)
+            if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {providers.ApiCall.HttpStatusCode}");
-                throw new ApplicationException("Failed query frameworks by provider ukprn");
+                _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider frameworks for ukprn [{ukprn}]");
+                throw new ApplicationException($"Failed to query provider frameworks for ukprn [{ukprn}]");
             }
 
-            if (providers.Documents.Count() > 1)
+            var providerFrameworks =
+                _elasticsearchCustomClient.Search<ProviderFramework>(
+                    s =>
+                        s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                            .Type(Types.Parse("frameworkdocument"))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.FrameworkId))
+                            .Take(take)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.FrameworkId)
+                                    .Terms(matchedIds.Documents.Select(x => x.FrameworkId)))));
+
+            if (providerFrameworks.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"found {providers.Documents.Count()} providers documents (checking frameworks) for the ukprn {ukprn}");
+                _applicationLogger.Warn($"httpStatusCode was {providerFrameworks.ApiCall.HttpStatusCode} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]");
+                throw new ApplicationException($"Failed to query provider frameworks apprenticeship details for ukprn [{ukprn}]");
             }
 
-            var provider = providers.Documents.FirstOrDefault();
-
-            return provider?.Frameworks;
+            return providerFrameworks.Documents;
         }
 
         public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
         {
-            var take = _applicationSettings.ProviderApprenticeshipsMaximum;
+        var take = _applicationSettings.ProviderApprenticeshipsMaximum;
 
-            var providers =
-                _elasticsearchCustomClient.Search<Provider>(
+        var matchedIds =
+                _elasticsearchCustomClient.Search<ProviderStandardDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(_providerDocumentType))
+                            .Type(Types.Parse("standardprovider"))
                             .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(take)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
                                     .Terms(ukprn))));
 
-            if (providers.ApiCall.HttpStatusCode != 200)
+         if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {providers.ApiCall.HttpStatusCode}");
-                throw new ApplicationException("Failed query standards by provider ukprn");
+                 _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider standards for ukprn [{ukprn}]");
+
+                throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
 
-            if (providers.Documents.Count() > 1)
+            var providerStandards =
+                _elasticsearchCustomClient.Search<ProviderStandard>(
+                    s =>
+                        s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                            .Type(Types.Parse("standarddocument"))
+                            .From(0)
+                            .Sort(sort => sort.Ascending(f => f.StandardId))
+                            .Take(take)
+                            .Query(q => q
+                                .Terms(t => t
+                                    .Field(f => f.StandardId)
+                                    .Terms(matchedIds.Documents.Select(x => x.StandardCode)))));
+
+            if (providerStandards.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"found {providers.Documents.Count()} providers (checking standards) for the ukprn {ukprn}");
+                _applicationLogger.Warn($"httpStatusCode was {providerStandards.ApiCall.HttpStatusCode} when querying provider standards apprenticeship details for ukprn [{ukprn}]");
+                throw new ApplicationException($"Failed to query provider standards apprenticeship details for ukprn [{ukprn}]");
             }
 
-            var provider = providers.Documents.FirstOrDefault();
-
-            return provider?.Standards;
+           return providerStandards.Documents;
         }
+
 
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page)
         {
@@ -272,7 +299,5 @@
 
             return results.Documents;
         }
-
-       
     }
 }

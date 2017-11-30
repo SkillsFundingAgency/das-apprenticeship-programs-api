@@ -35,7 +35,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IGetFrameworks> _mockGetFrameworks;
         private Mock<IActiveFrameworkChecker> _mockActiveFrameworkChecker;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
-      
+
         [SetUp]
         public void Init()
         {

@@ -138,6 +138,8 @@
     <Compile Include="Mapping\FrameworkMapping.cs" />
     <Compile Include="Mapping\IFrameworkMapping.cs" />
     <Compile Include="Models\GaRouteTrackingArg.cs" />
+    <Compile Include="Models\ProviderFrameworkDto.cs" />
+    <Compile Include="Models\ProviderStandardDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AnalyticsService.cs" />
     <Compile Include="Services\IAnalyticsService.cs" />

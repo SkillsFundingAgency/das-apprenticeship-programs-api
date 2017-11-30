@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using Elasticsearch.Net;
 using Moq;
@@ -9,6 +10,8 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.NLog.Logger;
 
@@ -59,6 +62,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
         }
 
+        //[Test]
+        //public void GetActiveApprenticeshipsByValidProvider()
+        //{
+        //    var logger = new NLogLogger();
+        //    var repo = new ProviderRepository(new ElasticsearchCustomClient(new ElasticsearchClientFactory(new ApplicationSettings()), logger),);
+        //};
+
         [Test]
         public void GetProviderByUkprnShouldLogWhenInvalidStatusCode()
         {
@@ -104,14 +114,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         }
 
         [Test]
-        public void GetProviderFrameworksByUkprnShouldLogWhenInvalidStatusCode()
+        public void GetProviderFrameworksByUkprnShouldLogWhenFrameworkDetailsNotAsExpected()
         {
-            var searchResponse = new Mock<ISearchResponse<Provider>>();
+            var ukprn = 1L;
+            var searchResponse = new Mock<ISearchResponse<ProviderFrameworkDto>>();
             var apiCall = new Mock<IApiCallDetails>();
             apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
             searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
 
-            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<Provider>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderFrameworkDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
@@ -120,50 +131,35 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object);
 
-            Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(1L));
+            Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks for ukprn [{ukprn}]"), Times.Once);
         }
 
         [Test]
-        public void GetProviderFrameworksByUkprnShouldWarnWhenMultipleProvidersAndReturnFirstProviderFrameworks()
+        public void GetProviderFrameworksByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
         {
-            var searchResponse = new Mock<ISearchResponse<Provider>>();
-            var apiCall = new Mock<IApiCallDetails>();
-            var providerFrameworks = new List<ProviderFramework>
-            {
-                new ProviderFramework
-                {
-                    EffectiveFrom = DateTime.Today,
-                    FrameworkId = "321-3-1",
-                    FworkCode = 321,
-                    Level = 2,
-                    PathwayName = "Test name",
-                    ProgType = 3,
-                    PwayCode = 1
-                },
-                new ProviderFramework
-                {
-                    EffectiveFrom = DateTime.Today,
-                    FrameworkId = "322-3-1",
-                    FworkCode = 322,
-                    Level = 2,
-                    PathwayName = "Test name 2",
-                    ProgType = 3,
-                    PwayCode = 1
-                }
-            };
+            var ukprn = 1L;
+            var searchResponseForFrameworkDtos = new Mock<ISearchResponse<ProviderFrameworkDto>>();
+            var apiCallForFrameworkDtos = new Mock<IApiCallDetails>();
+            var searchResponseForFrameworks = new Mock<ISearchResponse<ProviderFramework>>();
+            var apiCallForFrameworks = new Mock<IApiCallDetails>();
 
-            var provider = new Provider {Frameworks = providerFrameworks};
-            var provider2 = new Provider();
-            searchResponse.Setup(x => x.Documents).Returns(new List<Provider> { provider, provider2 });
+            var frameworkDto1 = new ProviderFrameworkDto {FrameworkId = "321-3-1", Ukprn = ukprn.ToString() };
+            var frameworkDto2 = new ProviderFrameworkDto { FrameworkId = "322-3-1", Ukprn = ukprn.ToString() };
+
+            searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto> { frameworkDto1, frameworkDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
             configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(2);
-            apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
-            searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
+            apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
-            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<Provider>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            apiCallForFrameworks.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
+            searchResponseForFrameworks.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworks.Object);
+
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderFrameworkDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForFrameworkDtos.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderFramework>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForFrameworks.Object);
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
@@ -172,21 +168,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object);
 
-            var res = repo.GetFrameworksByProviderUkprn(1L);
-
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
-            Assert.AreEqual(providerFrameworks, res);
+            Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
+            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]"), Times.Once);
         }
 
         [Test]
         public void GetProviderStandardsByUkprnShouldLogWhenInvalidStatusCode()
         {
-            var searchResponse = new Mock<ISearchResponse<Provider>>();
+            var ukprn = 1L;
+            var searchResponse = new Mock<ISearchResponse<ProviderStandardDto>>();
             var apiCall = new Mock<IApiCallDetails>();
             apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
             searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
 
-            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<Provider>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
@@ -195,44 +190,37 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object);
 
-            Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(1L));
+            Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
             _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
+
         }
 
         [Test]
-        public void GetProviderStandardsByUkprnShouldWarnWhenMultipleProvidersAndReturnFirstProviderStandards()
+        public void GetProviderStandardsByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
         {
-            var searchResponse = new Mock<ISearchResponse<Provider>>();
-            var apiCall = new Mock<IApiCallDetails>();
-            var providerStandards = new List<ProviderStandard>
-            {
-                new ProviderStandard
-                {
-                    EffectiveFrom = DateTime.Today,
-                    Level = 2,
-                    Title = "Test name",
-                    StandardId = 3
-                },
-                new ProviderStandard
-                {
-                    EffectiveFrom = DateTime.Today.AddDays(-1),
-                    Level = 2,
-                    Title = "Test name 2",
-                    StandardId = 3
-                }
-            };
+            var ukprn = 1L;
+            var searchResponseForStandardsDtos = new Mock<ISearchResponse<ProviderStandardDto>>();
+            var apiCallForStandardDtos = new Mock<IApiCallDetails>();
+            var searchResponseForStandards = new Mock<ISearchResponse<ProviderStandard>>();
+            var apiCallForFrameworks = new Mock<IApiCallDetails>();
 
-            var provider = new Provider { Standards = providerStandards };
-            var provider2 = new Provider();
-            searchResponse.Setup(x => x.Documents).Returns(new List<Provider> { provider, provider2 });
+            var standardDto1 = new ProviderStandardDto { StandardCode = 1, Ukprn = ukprn.ToString() };
+            var standardDto2 = new ProviderStandardDto { StandardCode = 2, Ukprn = ukprn.ToString() };
+
+            searchResponseForStandardsDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { standardDto1, standardDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
             configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(2);
-            apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
-            searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
+            apiCallForStandardDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            searchResponseForStandardsDtos.SetupGet(x => x.ApiCall).Returns(apiCallForStandardDtos.Object);
 
-            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<Provider>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            apiCallForFrameworks.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
+            searchResponseForStandards.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworks.Object);
+
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForStandardsDtos.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandard>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForStandards.Object);
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
@@ -241,10 +229,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object);
 
-            var res = repo.GetStandardsByProviderUkprn(1L);
-
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
-            Assert.AreEqual(providerStandards, res);
+            Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
+            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards apprenticeship details for ukprn [{ukprn}]"), Times.Once);
         }
 
         [Test]

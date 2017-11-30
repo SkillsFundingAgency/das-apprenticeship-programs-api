@@ -152,6 +152,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                     Name = standard.Title,
                     Level = standard.Level,
                     Type = ApprenticeshipTrainingType.Standard.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Standard,
                     Identifier = standard.StandardId.ToString()
                 })
                 .ToList();
@@ -164,6 +165,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                     Name = framework.PathwayName,
                     Level = framework.Level,
                     Type = ApprenticeshipTrainingType.Framework.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Framework,
                     Identifier = framework.FrameworkId
                 }));
             var take = _applicationSettings.ProviderApprenticeshipsMaximum;
