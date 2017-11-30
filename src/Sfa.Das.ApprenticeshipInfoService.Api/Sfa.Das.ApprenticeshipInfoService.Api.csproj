@@ -342,6 +342,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\ExceptionHandlingAttribute.cs" />
     <Compile Include="Attributes\GaActionFilterAttribute.cs" />
+    <Compile Include="Controllers\ApprenticeshipProgrammesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AssessmentOrgsController.cs" />
     <Compile Include="Controllers\StatsController.cs" />

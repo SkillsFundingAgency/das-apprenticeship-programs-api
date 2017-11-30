@@ -69,6 +69,7 @@
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="Standard.cs" />
     <Compile Include="StandardProvider.cs" />
+    <Compile Include="ApprenticeshipSummary.cs" />
     <Compile Include="StandardSummary.cs" />
     <Compile Include="TrainingLocation.cs" />
     <Compile Include="TypicalLength.cs" />

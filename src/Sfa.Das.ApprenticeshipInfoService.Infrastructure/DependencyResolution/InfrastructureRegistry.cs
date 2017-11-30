@@ -27,6 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IGetProviders>().Use<ProviderRepository>();
             For<IGetAssessmentOrgs>().Use<AssessmentOrgsRepository>();
             For<IApprenticeshipProviderRepository>().Use<ApprenticeshipProviderRepository>();
+            For<IApprenticeshipMapping>().Use<ApprenticeshipMapping>();
             For<IStandardMapping>().Use<StandardMapping>();
             For<IFrameworkMapping>().Use<FrameworkMapping>();
             For<IProviderMapping>().Use<ProviderMapping>();
