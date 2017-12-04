@@ -40,8 +40,6 @@
             }
         }
 
-        public int ProviderApprenticeshipsMaximum => int.Parse(ConfigurationManager.AppSettings["ProviderApprenticeshipsMaximum"]);
-
         private IEnumerable<Uri> GetElasticSearchIps()
         {
             var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');
