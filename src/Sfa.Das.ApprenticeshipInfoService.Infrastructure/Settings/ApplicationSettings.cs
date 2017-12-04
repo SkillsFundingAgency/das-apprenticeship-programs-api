@@ -33,7 +33,7 @@
 
         private List<string> GetFrameworksExpiredList()
         {
-            return CloudConfigurationManager.GetSetting("FrameworksExpiredRequired").Split(',').Where(s => s != string.Empty).ToList();
+            return CloudConfigurationManager.GetSetting("FrameworksExpiredRequired").Split(',').Where(s => s != string.Empty).Select(x => x.Trim()).ToList();
         }
 
         private IEnumerable<Uri> GetElasticSearchIps()
