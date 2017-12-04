@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using Core.Configuration;
     using Microsoft.Azure;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
     public sealed class ApplicationSettings : IConfigurationSettings
     {
