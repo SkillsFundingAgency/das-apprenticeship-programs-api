@@ -28,11 +28,16 @@
         public string ElasticsearchUsername => ConfigurationManager.AppSettings["ElasticsearchUsername"];
 
         public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
-        public List<string> FrameworksExpiredRequired => GetFrameworksExpiredList();
 
-        private List<string> GetFrameworksExpiredList()
-        {
-            return CloudConfigurationManager.GetSetting("FrameworksExpiredRequired").Split(',').Where(s => s != string.Empty).Select(x => x.Trim()).ToList();
+        public List<string> FrameworksExpiredRequired {
+            get
+            {
+                return
+                    CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
+                    ?.Split(',')
+                    .Where(s => s != string.Empty).ToList()
+                ?? new List<string>();
+            }
         }
 
         private IEnumerable<Uri> GetElasticSearchIps()
