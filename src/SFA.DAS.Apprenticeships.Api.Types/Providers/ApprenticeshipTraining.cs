@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Apprenticeships.Api.Types.Providers
 {
-    public class ProviderApprenticeship
+    public class ApprenticeshipTraining
     {
         public string Name { get; set; }
         public string Type { get; set; }

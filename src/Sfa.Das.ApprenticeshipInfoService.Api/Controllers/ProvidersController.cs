@@ -132,22 +132,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="ukprn">UKPRN</param>
         /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderApprenticeship>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("providers/{ukprn}/active-apprenticeships", Name = "GetActiveApprenticeshipsByProvider")]
+        [Route("providers/{ukprn}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
         [ExceptionHandling]
-        public IEnumerable<ProviderApprenticeship> GetActiveApprenticeshipsByProvider(long ukprn)
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
             if (ukprn.ToString().Length != 8)
             {
                 throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
             }
 
+            var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary {Ukprn = ukprn};
+
             var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
 
             var apprenticeships = standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
-                .Select(standard => new ProviderApprenticeship
+                .Select(standard => new ApprenticeshipTraining
                 {
                     Name = standard.Title,
                     Level = standard.Level,
@@ -160,7 +162,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
 
             apprenticeships.AddRange(frameworks.Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
-                .Select(framework => new ProviderApprenticeship
+                .Select(framework => new ApprenticeshipTraining
                 {
                     Name = framework.PathwayName,
                     Level = framework.Level,
@@ -168,11 +170,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                     TrainingType = ApprenticeshipTrainingType.Framework,
                     Identifier = framework.FrameworkId
                 }));
-            var take = _applicationSettings.ProviderApprenticeshipsMaximum;
+            var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
 
-            return apprenticeships.OrderBy(x => x.Name)
+            apprenticeshipTrainingSummary.Count = apprenticeships.Count;
+
+            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems 
+                                = apprenticeships.OrderBy(x => x.Name)
                                     .ThenBy(x => x.Level)
                                     .Take(take);
+
+            return apprenticeshipTrainingSummary;
         }
 
         /// <summary>

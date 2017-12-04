@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     [TestFixture]
     public class ProviderControllerTests
     {
-        private const int ProviderApprenticeshipsMaximum = 3;
+        private const int ProviderApprenticeshipTrainingMaximum = 3;
         private ProvidersController _sut;
         private Mock<IGetProviders> _mockGetProviders;
         private Mock<IControllerHelper> _mockControllerHelper;
@@ -47,8 +47,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockLogger = new Mock<ILog>();
             _mockActiveFrameworkChecker = new Mock<IActiveFrameworkChecker>();
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
-            _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum)
-                .Returns(ProviderApprenticeshipsMaximum);
+            _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum)
+                .Returns(ProviderApprenticeshipTrainingMaximum);
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
@@ -188,14 +188,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             const long ukprn = 10005214L;
             var providerStandardArcheologistLev1 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
-            var providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipsMaximum 
+            var providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum 
                 = new ProviderStandard() {StandardId = 10, Title = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
 
             var providerStandardWithNoEffectiveFrom = new ProviderStandard { StandardId = 30, Title = "Absent because no effective from date", Level = 4, EffectiveFrom = null };
 
             var standards = new List<ProviderStandard>
             {
-                providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipsMaximum,
+                providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum,
                 providerStandardArcheologistLev1,
                 providerStandardWithNoEffectiveFrom
 
@@ -221,11 +221,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetProviders.Setup(x => x.GetStandardsByProviderUkprn(ukprn)).Returns(standards);
             _mockGetProviders.Setup(x => x.GetFrameworksByProviderUkprn(ukprn)).Returns(frameworks);
 
-            var result = _sut.GetActiveApprenticeshipsByProvider(ukprn);
-           var providerApprenticeships = result as ProviderApprenticeship[] ?? result.ToArray();
-            Assert.AreEqual(ProviderApprenticeshipsMaximum, providerApprenticeships.Length);
+           var result = _sut.GetActiveApprenticeshipTrainingByProvider(ukprn);
+           var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
+           Assert.AreEqual(ProviderApprenticeshipTrainingMaximum, providerApprenticeships.Length);
+           Assert.AreEqual(4, result.Count);
+
             Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId, 
-                    $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
+                $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
             Assert.AreEqual(providerApprenticeships[1].Identifier, providerFrameworkAccountingLev3.FrameworkId);
             Assert.AreEqual(providerApprenticeships[1].TrainingType, ApprenticeshipTrainingType.Framework);
             Assert.AreEqual(providerApprenticeships[1].Type, "Framework");
@@ -241,7 +243,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         [Test]
         public void ShouldReturnBadRequestIfRequestingActiveApprenticeshipsWithBadlyFormedUkprn()
         {
-            TestDelegate action = () => _sut.GetActiveApprenticeshipsByProvider(1);
+            TestDelegate action = () => _sut.GetActiveApprenticeshipTrainingByProvider(1);
             var ex = Assert.Throws<HttpResponseException>(action);
             Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }

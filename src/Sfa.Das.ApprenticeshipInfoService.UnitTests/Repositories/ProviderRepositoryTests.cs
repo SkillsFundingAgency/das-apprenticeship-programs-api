@@ -143,7 +143,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto> { frameworkDto1, frameworkDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(2);
+            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(2);
             apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
@@ -185,7 +185,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworks.Setup(x => x.Documents).Returns(providerFrameworks);
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(10);
+            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(10);
             apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
@@ -247,7 +247,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForStandardsDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { standardDto1, standardDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(2);
+            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(2);
             apiCallForStandardDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForStandardsDtos.SetupGet(x => x.ApiCall).Returns(apiCallForStandardDtos.Object);
 
@@ -290,7 +290,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponse.Setup(x => x.Documents).Returns(providerStandards);
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipsMaximum).Returns(10);
+            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(10);
             apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int) HttpStatusCode.OK);
             searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
 

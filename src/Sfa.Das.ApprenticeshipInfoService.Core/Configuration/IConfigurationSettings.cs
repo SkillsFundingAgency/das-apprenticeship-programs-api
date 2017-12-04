@@ -27,6 +27,6 @@
 
         List<string> FrameworksExpiredRequired { get; }
 
-        int ProviderApprenticeshipsMaximum { get; }
+        int ProviderApprenticeshipTrainingMaximum { get; }
     }
 }
