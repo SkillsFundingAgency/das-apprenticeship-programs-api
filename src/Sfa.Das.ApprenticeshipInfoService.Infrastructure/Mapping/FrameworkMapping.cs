@@ -136,6 +136,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
 		private DateTime? GetLatestDate(List<FrameworkSummary> documents)
 		{
+			if (documents.Any(x => x.EffectiveTo == null))
+			{
+				return null;
+			}
+
 			return documents.Max(item => item.EffectiveTo);
 		}
 
@@ -146,6 +151,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 		
 	    private DateTime? GetLatestDate(List<FrameworkSearchResultsItem> documents)
 	    {
+		    if (documents.Any(x => x.EffectiveTo == null))
+		    {
+			    return null;
+		    }
+
 			return documents.Max(item => item.EffectiveTo);
 		}
 
