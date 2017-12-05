@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
@@ -77,19 +78,35 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return framework;
         }
 
-        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
-        {
-            return new FrameworkCodeSummary
-            {
-                FrameworkCode = document.FrameworkCode,
-                Ssa1 = document.SectorSubjectAreaTier1,
-                Ssa2 = document.SectorSubjectAreaTier2,
-                Title = document.FrameworkName,
-                EffectiveTo = document.EffectiveTo
-            };
-        }
+		public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
+		{
+			return new FrameworkCodeSummary
+			{
+				FrameworkCode = document.FrameworkCode,
+				Ssa1 = document.SectorSubjectAreaTier1,
+				Ssa2 = document.SectorSubjectAreaTier2,
+				Title = document.FrameworkName,
+				EffectiveTo = document.EffectiveTo
+			};
+		}
 
-        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
+	    public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSearchResultsItem> documents)
+	    {
+		    var earliestDate = GetEarliestDate(documents);
+		    var latestDate = GetLatestDate(documents);
+
+		    return new FrameworkCodeSummary
+		    {
+			    FrameworkCode = documents.First().FrameworkCode,
+			    Ssa1 = documents.First().SectorSubjectAreaTier1,
+			    Ssa2 = documents.First().SectorSubjectAreaTier2,
+			    Title = documents.First().FrameworkName,
+			    EffectiveFrom = earliestDate,
+			    EffectiveTo = latestDate
+		    };
+	    }
+
+		public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
         {
             return new FrameworkCodeSummary
             {
@@ -101,7 +118,95 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
-        private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
+	    public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSummary> documents)
+	    {
+		    var earliestDate = GetEarliestDate(documents);
+		    var latestDate = GetLatestDate(documents);
+
+		    return new FrameworkCodeSummary
+		    {
+			    FrameworkCode = documents.First().FrameworkCode,
+			    Ssa1 = documents.First().Ssa1,
+			    Ssa2 = documents.First().Ssa2,
+			    Title = documents.First().FrameworkName,
+			    EffectiveFrom = earliestDate,
+			    EffectiveTo = latestDate
+		    };
+	    }
+
+		private DateTime? GetLatestDate(List<FrameworkSummary> documents)
+		{
+			if (documents.Any(d => d.EffectiveTo == null))
+			{
+				return null;
+			}
+
+			DateTime? response = DateTime.MinValue;
+
+			foreach (var frameworkSearchResultsItem in documents)
+			{
+				if (response < frameworkSearchResultsItem.EffectiveTo)
+				{
+					response = frameworkSearchResultsItem.EffectiveTo;
+				}
+			}
+
+			return response;
+		}
+
+		private DateTime? GetEarliestDate(List<FrameworkSummary> documents)
+		{
+			DateTime? response = DateTime.MaxValue;
+
+			foreach (var frameworkSearchResultsItem in documents)
+			{
+				if (frameworkSearchResultsItem.EffectiveFrom != null
+				    && response > frameworkSearchResultsItem.EffectiveFrom)
+				{
+					response = frameworkSearchResultsItem.EffectiveFrom;
+				}
+			}
+
+			return response;
+		}
+		
+	    private DateTime? GetLatestDate(List<FrameworkSearchResultsItem> documents)
+	    {
+		    if (documents.Any(d => d.EffectiveTo == null))
+		    {
+			    return null;
+		    }
+
+		    DateTime? response = DateTime.MinValue;
+
+		    foreach (var frameworkSearchResultsItem in documents)
+		    {
+			    if (response < frameworkSearchResultsItem.EffectiveTo)
+			    {
+				    response = frameworkSearchResultsItem.EffectiveTo;
+			    }
+		    }
+
+		    return response;
+	    }
+
+	    private DateTime? GetEarliestDate(List<FrameworkSearchResultsItem> documents)
+	    {
+		    DateTime? response = DateTime.MaxValue;
+
+		    foreach (var frameworkSearchResultsItem in documents)
+		    {
+			    if (frameworkSearchResultsItem.EffectiveFrom != null
+			        && response > frameworkSearchResultsItem.EffectiveFrom)
+			    {
+				    response = frameworkSearchResultsItem.EffectiveFrom;
+			    }
+		    }
+
+		    return response;
+	    }
+
+		private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
         {
             return DateHelper.CheckEffectiveDates(effectiveFrom, effectiveTo) || IsSpecialLapsedFramework(frameworkId);
         }

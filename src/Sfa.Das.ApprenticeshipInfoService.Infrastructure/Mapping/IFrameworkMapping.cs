@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using System.Collections.Generic;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
@@ -13,5 +14,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document);
 
         FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary);
+
+	    FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSearchResultsItem> documents);
+
+		FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSummary> documents);
     }
 }
