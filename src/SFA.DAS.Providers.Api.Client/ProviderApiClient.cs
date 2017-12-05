@@ -162,5 +162,21 @@ namespace SFA.DAS.Providers.Api.Client
                 return await RequestAndDeserialiseAsync<IEnumerable<FrameworkProvider>>(request);
             }
         }
+
+        internal ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training"))
+            {
+                return RequestAndDeserialise<ApprenticeshipTrainingSummary>(request);
+            }
+        }
+
+        internal async Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training"))
+            {
+                return await RequestAndDeserialiseAsync<ApprenticeshipTrainingSummary>(request);
+            }
+        }
     }
 }
