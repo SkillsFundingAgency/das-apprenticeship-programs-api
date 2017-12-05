@@ -136,75 +136,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
 		private DateTime? GetLatestDate(List<FrameworkSummary> documents)
 		{
-			if (documents.Any(d => d.EffectiveTo == null))
-			{
-				return null;
-			}
-
-			DateTime? response = DateTime.MinValue;
-
-			foreach (var frameworkSearchResultsItem in documents)
-			{
-				if (response < frameworkSearchResultsItem.EffectiveTo)
-				{
-					response = frameworkSearchResultsItem.EffectiveTo;
-				}
-			}
-
-			return response;
+			return documents.Max(item => item.EffectiveTo);
 		}
 
 		private DateTime? GetEarliestDate(List<FrameworkSummary> documents)
 		{
-			DateTime? response = DateTime.MaxValue;
-
-			foreach (var frameworkSearchResultsItem in documents)
-			{
-				if (frameworkSearchResultsItem.EffectiveFrom != null
-				    && response > frameworkSearchResultsItem.EffectiveFrom)
-				{
-					response = frameworkSearchResultsItem.EffectiveFrom;
-				}
-			}
-
-			return response;
+			return documents.Min(item => item.EffectiveFrom);
 		}
 		
 	    private DateTime? GetLatestDate(List<FrameworkSearchResultsItem> documents)
 	    {
-		    if (documents.Any(d => d.EffectiveTo == null))
-		    {
-			    return null;
-		    }
-
-		    DateTime? response = DateTime.MinValue;
-
-		    foreach (var frameworkSearchResultsItem in documents)
-		    {
-			    if (response < frameworkSearchResultsItem.EffectiveTo)
-			    {
-				    response = frameworkSearchResultsItem.EffectiveTo;
-			    }
-		    }
-
-		    return response;
-	    }
+			return documents.Max(item => item.EffectiveTo);
+		}
 
 	    private DateTime? GetEarliestDate(List<FrameworkSearchResultsItem> documents)
 	    {
-		    DateTime? response = DateTime.MaxValue;
-
-		    foreach (var frameworkSearchResultsItem in documents)
-		    {
-			    if (frameworkSearchResultsItem.EffectiveFrom != null
-			        && response > frameworkSearchResultsItem.EffectiveFrom)
-			    {
-				    response = frameworkSearchResultsItem.EffectiveFrom;
-			    }
-		    }
-
-		    return response;
-	    }
+			return documents.Min(item => item.EffectiveFrom);
+		}
 
 		private bool CheckActiveFramework(string frameworkId, DateTime? effectiveFrom, DateTime? effectiveTo)
         {
