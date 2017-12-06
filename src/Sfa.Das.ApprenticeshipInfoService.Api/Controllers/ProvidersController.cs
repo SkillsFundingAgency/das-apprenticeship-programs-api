@@ -154,7 +154,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
 
             apprenticeshipTrainingSummary.Count = apprenticeships.Count;
-
             apprenticeshipTrainingSummary.ApprenticeshipTrainingItems 
                                 = apprenticeships.OrderBy(x => x.Name)
                                     .ThenBy(x => x.Level)
