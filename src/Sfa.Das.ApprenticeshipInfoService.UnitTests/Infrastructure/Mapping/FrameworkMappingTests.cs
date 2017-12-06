@@ -1,38 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Routing;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using Sfa.Das.ApprenticeshipInfoService.Api.Controllers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
 {
-	using Assert = NUnit.Framework.Assert;
-
     [TestFixture]
     public class FrameworkMappingTests
     {
         private FrameworkMapping _sut;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
+        private ActiveFrameworkChecker _activeFrameworkChecker;
 
         [SetUp]
         public void Init()
         {
 			_mockConfigurationSettings = new Mock<IConfigurationSettings>();
+            _activeFrameworkChecker = new ActiveFrameworkChecker(_mockConfigurationSettings.Object);
 
-            _sut = new FrameworkMapping(_mockConfigurationSettings.Object);
+            _sut = new FrameworkMapping(_activeFrameworkChecker);
 		}
 
 	    [Test]

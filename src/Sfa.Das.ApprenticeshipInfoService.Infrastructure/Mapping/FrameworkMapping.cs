@@ -1,4 +1,5 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+﻿using System;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using System.Collections.Generic;
 using SFA.DAS.Apprenticeships.Api.Types;
 
