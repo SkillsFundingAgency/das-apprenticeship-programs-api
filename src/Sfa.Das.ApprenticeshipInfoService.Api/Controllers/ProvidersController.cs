@@ -16,7 +16,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using Swashbuckle.Swagger.Annotations;
-    using IControllerHelper = IControllerHelper;
+    using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
 
     public class ProvidersController : ApiController
     {
@@ -146,30 +146,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 
             var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary {Ukprn = ukprn};
 
-            var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
+            var apprenticeships = new List<ApprenticeshipTraining>();
 
-            var apprenticeships = standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
-                .Select(standard => new ApprenticeshipTraining
-                {
-                    Name = standard.Title,
-                    Level = standard.Level,
-                    Type = ApprenticeshipTrainingType.Standard.ToString(),
-                    TrainingType = ApprenticeshipTrainingType.Standard,
-                    Identifier = standard.StandardId.ToString()
-                })
-                .ToList();
+            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
+            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
 
-            var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
-
-            apprenticeships.AddRange(frameworks.Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
-                .Select(framework => new ApprenticeshipTraining
-                {
-                    Name = framework.PathwayName,
-                    Level = framework.Level,
-                    Type = ApprenticeshipTrainingType.Framework.ToString(),
-                    TrainingType = ApprenticeshipTrainingType.Framework,
-                    Identifier = framework.FrameworkId
-                }));
             var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
 
             apprenticeshipTrainingSummary.Count = apprenticeships.Count;
@@ -180,6 +161,39 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                                     .Take(take);
 
             return apprenticeshipTrainingSummary;
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)
+        {
+            var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
+
+            return frameworks
+                .Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Select(framework => new ApprenticeshipTraining
+                {
+                    Name = framework.PathwayName,
+                    Level = framework.Level,
+                    Type = ApprenticeshipTrainingType.Framework.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Framework,
+                    Identifier = framework.FrameworkId
+                })
+                .ToList();
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveStandardsForUkprn(long ukprn)
+        {
+            var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
+
+            return standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
+                .Select(standard => new ApprenticeshipTraining
+                {
+                    Name = standard.Title,
+                    Level = standard.Level,
+                    Type = ApprenticeshipTrainingType.Standard.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Standard,
+                    Identifier = standard.StandardId.ToString()
+                })
+                .ToList();
         }
 
         /// <summary>
