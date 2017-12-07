@@ -89,7 +89,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.Documents.Count() > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count()} providers for the ukprn {ukprn}");
+                _applicationLogger.Debug($"found {results.Documents.Count()} providers for the ukprn {ukprn}");
             }
 
             return results.Documents.FirstOrDefault();
@@ -118,7 +118,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.Documents.Count() > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count()} providers for the ukprns provided");
+                _applicationLogger.Debug($"found {results.Documents.Count()} providers for the ukprns provided");
             }
 
             return results.Documents;
