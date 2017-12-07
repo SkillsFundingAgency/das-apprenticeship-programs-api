@@ -16,6 +16,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
     public sealed class ProviderRepository : IGetProviders
     {
+        private const string ProviderIndexType = "providerapidocument";
+
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly ILog _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
@@ -46,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                     s.Index(_applicationSettings.ProviderIndexAlias)
-                        .Type(Types.Parse("providerapidocument"))
+                        .Type(Types.Parse(ProviderIndexType))
                         .From(0)
                         .Sort(sort => sort.Ascending(f => f.Ukprn))
                         .Take(take)
@@ -67,7 +69,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("providerapidocument"))
+                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(100)
@@ -96,7 +98,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("providerapidocument"))
+                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(ukprns.Count)
