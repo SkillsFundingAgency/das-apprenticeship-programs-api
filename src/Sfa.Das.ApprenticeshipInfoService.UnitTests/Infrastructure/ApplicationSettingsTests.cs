@@ -19,8 +19,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure
             var expectedList = new List<string> { "123", "456", "768" };
 
             Assert.AreEqual(expectedList, frameworksExpired);
-
-
         }
     }
 }
