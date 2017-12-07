@@ -1,9 +1,8 @@
-﻿using FeatureToggle.Core.Fluent;
-using Nest;
+﻿using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
+
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -12,14 +11,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     {
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IConfigurationSettings _applicationSettings;
-        private readonly string _providerDocumentType;
 
         public QueryHelper(IElasticsearchCustomClient elasticsearchCustomClient, IConfigurationSettings applicationSettings)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationSettings = applicationSettings;
-
-            _providerDocumentType = Is<RoatpProvidersFeature>.Enabled ? "providerapidocument" : "providerdocument";
         }
 
         public int GetOrganisationsTotalAmount()
@@ -82,7 +78,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(_providerDocumentType))
+                            .Type(Types.Parse("providerapidocument"))
                             .From(0)
                             .MatchAll());
             return (int)results.HitsMetaData.Total;

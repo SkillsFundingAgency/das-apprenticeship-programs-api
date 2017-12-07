@@ -8,7 +8,6 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
@@ -25,8 +24,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         [SetUp]
         public void Setup()
         {
-            System.Configuration.ConfigurationManager.AppSettings["FeatureToggle.RoatpProvidersFeature"] = "true";
-
             _elasticClient = new Mock<IElasticsearchCustomClient>();
             _log = new Mock<ILog>();
             _log.Setup(x => x.Warn(It.IsAny<string>())).Verifiable();
