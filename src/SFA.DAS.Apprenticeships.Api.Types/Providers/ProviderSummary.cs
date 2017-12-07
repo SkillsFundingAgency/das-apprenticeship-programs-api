@@ -37,5 +37,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public double EmployerSatisfaction { get; set; }
 
         public double LearnerSatisfaction { get; set; }
+
+        public string MarketingInfo { get; set; }
     }
 }

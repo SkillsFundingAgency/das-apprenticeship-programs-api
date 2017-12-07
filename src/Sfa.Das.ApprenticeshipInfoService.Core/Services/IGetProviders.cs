@@ -4,8 +4,7 @@ using SFA.DAS.Apprenticeships.Api.Types.Providers;
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
 {
     using System.Collections.Generic;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-    using SFA.DAS.Apprenticeships.Api.Types;
+    using Models.Responses;
 
     public interface IGetProviders
     {
@@ -22,5 +21,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
         IEnumerable<StandardProviderSearchResultsItem> GetProvidersByStandardId(string standardId);
 
         IEnumerable<FrameworkProviderSearchResultsItem> GetProvidersByFrameworkId(string frameworkId);
+
+        IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn);
+        IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn);
     }
 }

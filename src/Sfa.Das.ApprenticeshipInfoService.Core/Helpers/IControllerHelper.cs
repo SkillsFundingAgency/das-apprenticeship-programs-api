@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
+﻿using SFA.DAS.Apprenticeships.Api.Types;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
     using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 

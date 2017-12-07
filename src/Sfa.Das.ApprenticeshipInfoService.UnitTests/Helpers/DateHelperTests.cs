@@ -1,8 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NUnit.Framework;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
 {

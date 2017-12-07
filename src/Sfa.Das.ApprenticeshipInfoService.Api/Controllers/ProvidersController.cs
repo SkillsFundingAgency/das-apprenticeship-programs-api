@@ -1,15 +1,19 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+using SFA.DAS.Apprenticeships.Api.Types;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Web.Http;
     using System.Web.Http.Description;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+    using Attributes;
+    using Core.Models;
+    using Core.Models.Responses;
+    using Core.Services;
+    using Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using Swashbuckle.Swagger.Annotations;
     using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
@@ -21,6 +25,8 @@
         private readonly IGetStandards _getStandards;
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
+        private readonly IActiveFrameworkChecker _activeFrameworkChecker;
+        private readonly IConfigurationSettings _applicationSettings;
 
         private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
@@ -29,13 +35,17 @@
             IControllerHelper controllerHelper,
             IGetStandards getStandards,
             IGetFrameworks getFrameworks,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository, 
+            IActiveFrameworkChecker activeFrameworkChecker, 
+            IConfigurationSettings applicationSettings)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _getStandards = getStandards;
             _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
+            _activeFrameworkChecker = activeFrameworkChecker;
+            _applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -115,6 +125,74 @@
         public void Head(long ukprn)
         {
             Get(ukprn);
+        }
+
+        /// <summary>
+        /// Get list of active apprenticeships for a given provider
+        /// </summary>
+        /// <param name="ukprn">UKPRN</param>
+        /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [Route("providers/{ukprn}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
+        [ExceptionHandling]
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
+        {
+            if (ukprn.ToString().Length != 8)
+            {
+                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+            }
+
+            var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary {Ukprn = ukprn};
+
+            var apprenticeships = new List<ApprenticeshipTraining>();
+
+            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
+            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
+
+            var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
+
+            apprenticeshipTrainingSummary.Count = apprenticeships.Count;
+            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems 
+                                = apprenticeships.OrderBy(x => x.Name)
+                                    .ThenBy(x => x.Level)
+                                    .Take(take);
+
+            return apprenticeshipTrainingSummary;
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)
+        {
+            var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
+
+            return frameworks
+                .Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Select(framework => new ApprenticeshipTraining
+                {
+                    Name = framework.PathwayName,
+                    Level = framework.Level,
+                    Type = ApprenticeshipTrainingType.Framework.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Framework,
+                    Identifier = framework.FrameworkId
+                })
+                .ToList();
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveStandardsForUkprn(long ukprn)
+        {
+            var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
+
+            return standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
+                .Select(standard => new ApprenticeshipTraining
+                {
+                    Name = standard.Title,
+                    Level = standard.Level,
+                    Type = ApprenticeshipTrainingType.Standard.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Standard,
+                    Identifier = standard.StandardId.ToString()
+                })
+                .ToList();
         }
 
         /// <summary>

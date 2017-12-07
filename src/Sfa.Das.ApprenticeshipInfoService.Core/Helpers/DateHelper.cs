@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers
+namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
-    public class DateHelper
+    public static class DateHelper
     {
         public static bool CheckEffectiveDates(DateTime? effectiveFrom, DateTime? effectiveTo)
         {

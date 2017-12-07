@@ -39,5 +39,8 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public double LearnerSatisfaction { get; set; }
 
         public IEnumerable<ContactAddress> Addresses { get; set; }
+
+        public string MarketingInfo { get; set; }
+
     }
 }

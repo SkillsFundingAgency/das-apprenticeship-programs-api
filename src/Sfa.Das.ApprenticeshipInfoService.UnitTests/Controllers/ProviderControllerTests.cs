@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -24,6 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     [TestFixture]
     public class ProviderControllerTests
     {
+        private const int ProviderApprenticeshipTrainingMaximum = 3;
         private ProvidersController _sut;
         private Mock<IGetProviders> _mockGetProviders;
         private Mock<IControllerHelper> _mockControllerHelper;
@@ -31,6 +33,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<ILog> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
+        private Mock<IActiveFrameworkChecker> _mockActiveFrameworkChecker;
+        private Mock<IConfigurationSettings> _mockConfigurationSettings;
 
         [SetUp]
         public void Init()
@@ -41,18 +45,27 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
+            _mockActiveFrameworkChecker = new Mock<IActiveFrameworkChecker>();
+            _mockConfigurationSettings = new Mock<IConfigurationSettings>();
+            _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum)
+                .Returns(ProviderApprenticeshipTrainingMaximum);
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
                 _mockControllerHelper.Object,
                 _mockGetStandards.Object,
                 _mockGetFrameworks.Object,
-                _mockApprenticeshipProviderRepository.Object);
-            _sut.Request = new HttpRequestMessage
+                _mockApprenticeshipProviderRepository.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockConfigurationSettings.Object)
             {
-                RequestUri = new Uri("http://localhost/providers")
+                Request = new HttpRequestMessage
+                {
+                    RequestUri = new Uri("http://localhost/providers")
+                },
+                Configuration = new HttpConfiguration()
             };
-            _sut.Configuration = new HttpConfiguration();
+
             _sut.Configuration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
@@ -171,10 +184,76 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
+        public void ShouldReturnActiveListOfProviderApprenticeshipsForUkprnInExpectedOrder()
+        {
+            const long ukprn = 10005214L;
+            var providerStandardArcheologistLev1 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum 
+                = new ProviderStandard() {StandardId = 10, Title = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
+
+            var providerStandardWithNoEffectiveFrom = new ProviderStandard { StandardId = 30, Title = "Absent because no effective from date", Level = 4, EffectiveFrom = null };
+
+            var standards = new List<ProviderStandard>
+            {
+                providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum,
+                providerStandardArcheologistLev1,
+                providerStandardWithNoEffectiveFrom
+
+            };
+
+            var providerFrameworkAccountingLev3 = new ProviderFramework { FrameworkId = "321-1-1", PathwayName = "Accounting", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerFrameworkAccountingLev2 = new ProviderFramework { FrameworkId = "321-2-1", PathwayName = "Accounting", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), EffectiveTo = DateTime.Today.AddDays(2) };
+            var providerFrameworkNoLongerActive = new ProviderFramework { FrameworkId = "234-3-2", PathwayName = "Active in the past", Level = 4, EffectiveFrom = DateTime.MinValue, EffectiveTo = DateTime.Today.AddDays(-2) };
+
+            var frameworks = new List<ProviderFramework>
+            {
+                providerFrameworkAccountingLev3,
+                providerFrameworkAccountingLev2,
+                providerFrameworkNoLongerActive
+            };
+
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveFramework(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveFramework("234-3-2", It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(false);
+            _mockGetProviders.Setup(x => x.GetStandardsByProviderUkprn(ukprn)).Returns(standards);
+            _mockGetProviders.Setup(x => x.GetFrameworksByProviderUkprn(ukprn)).Returns(frameworks);
+
+           var result = _sut.GetActiveApprenticeshipTrainingByProvider(ukprn);
+           var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
+           Assert.AreEqual(ProviderApprenticeshipTrainingMaximum, providerApprenticeships.Length);
+           Assert.AreEqual(4, result.Count);
+
+            Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId, 
+                $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
+            Assert.AreEqual(providerApprenticeships[1].Identifier, providerFrameworkAccountingLev3.FrameworkId);
+            Assert.AreEqual(providerApprenticeships[1].TrainingType, ApprenticeshipTrainingType.Framework);
+            Assert.AreEqual(providerApprenticeships[1].Type, "Framework");
+            Assert.AreEqual(providerApprenticeships[1].Level, 3);
+            Assert.AreEqual(providerApprenticeships[1].Name, "Accounting");
+            Assert.AreEqual(providerApprenticeships[2].Identifier, providerStandardArcheologistLev1.StandardId.ToString());
+            Assert.AreEqual(providerApprenticeships[2].TrainingType, ApprenticeshipTrainingType.Standard);
+            Assert.AreEqual(providerApprenticeships[2].Type, "Standard");
+            Assert.AreEqual(providerApprenticeships[2].Level, 1);
+            Assert.AreEqual(providerApprenticeships[2].Name, "Archeologist");
+        }
+
+        [Test]
+        public void ShouldReturnBadRequestIfRequestingActiveApprenticeshipsWithBadlyFormedUkprn()
+        {
+            TestDelegate action = () => _sut.GetActiveApprenticeshipTrainingByProvider(1);
+            var ex = Assert.Throws<HttpResponseException>(action);
+            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test]
         public void ShouldReturnListOfEmptyProvidersForAStandard()
         {
             var standardCode = 1;
-            var data = new List<StandardProviderSearchResultsItem> { };
+            var data = new List<StandardProviderSearchResultsItem>();
 
             _mockGetProviders.Setup(x => x.GetProvidersByStandardId(It.IsAny<string>())).Returns(data);
             _mockGetProviders.Setup(x => x.GetProviderByUkprnList(It.IsAny<List<long>>())).Returns(new List<Provider>());
@@ -182,7 +261,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var response = _sut.GetStandardProviders(standardCode.ToString());
 
-            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
+            _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long>()), Times.Once);
 
             response.Should().NotBeNull();
             response.Should().BeEmpty();

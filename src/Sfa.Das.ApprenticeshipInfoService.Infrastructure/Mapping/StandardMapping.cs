@@ -1,10 +1,10 @@
 ﻿using System;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
-    using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+    using Core.Models;
 
     public class StandardMapping : IStandardMapping
     {
