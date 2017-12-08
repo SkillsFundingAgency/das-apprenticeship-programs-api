@@ -159,5 +159,22 @@ namespace SFA.DAS.Providers.Api.Client
         ///// </summary>
         ///// <returns>a collection of Standard Providers</returns>
         //Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId);
+
+        /// <summary>
+        /// Get ApprenticeshipTrainingSummary for a provider
+        /// GET providers/{ukprn}/active-apprenticeship-training
+        /// </summary>
+        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, total count of active items</returns>
+        ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn);
+
+        /// <summary>
+        /// Get ApprenticeshipTrainingSummary for a provider
+        /// GET providers/{ukprn}/active-apprenticeship-training
+        /// </summary>
+        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, total count of active items</returns>
+        Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn);
+
+
+
     }
 }
