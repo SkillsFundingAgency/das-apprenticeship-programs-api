@@ -28,8 +28,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         [SetUp]
         public void Setup()
         {
-            System.Configuration.ConfigurationManager.AppSettings["FeatureToggle.RoatpProvidersFeature"] = "true";
-
             _elasticClient = new Mock<IElasticsearchCustomClient>();
             _log = new Mock<ILog>();
             _log.Setup(x => x.Warn(It.IsAny<string>())).Verifiable();
