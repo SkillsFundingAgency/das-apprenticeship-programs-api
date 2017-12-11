@@ -163,7 +163,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        internal ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training"))
             {
@@ -171,7 +171,7 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
-        internal async Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn)
+        public async Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training"))
             {
