@@ -63,11 +63,6 @@
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-            if (!response.IsActiveFramework)
-            {
-                throw new HttpResponseException(HttpStatusCode.Gone);
-            }
-
             response.Uri = Resolve(response.FrameworkId);
             response.Providers = ResolveProvidersUrl(id);
 
