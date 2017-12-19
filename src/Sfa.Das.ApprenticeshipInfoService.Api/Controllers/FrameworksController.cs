@@ -45,6 +45,26 @@
         }
 
         /// <summary>
+        /// Get all the active frameworks
+        /// </summary>
+        /// <returns>a collection of frameworks</returns>
+        [SwaggerOperation("GetAllFrameworks")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
+        [Route("frameworks/v2")]
+        [ExceptionHandling]
+        public IEnumerable<FrameworkSummary> GetAll()
+        {
+            var response = _getFrameworks.GetAllFrameworks().ToList();
+
+            foreach (var item in response)
+            {
+                item.Uri = Resolve(item.Id);
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// Get a framework
         /// </summary>
         /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
