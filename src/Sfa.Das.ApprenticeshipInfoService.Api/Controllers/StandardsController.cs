@@ -46,7 +46,7 @@
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/assessment-organisations");
+                _logger.Error(e, "/standards");
                 throw;
             }
         }
