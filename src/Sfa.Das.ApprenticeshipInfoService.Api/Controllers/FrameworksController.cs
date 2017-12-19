@@ -28,7 +28,7 @@
         /// Get all the active frameworks
         /// </summary>
         /// <returns>a collection of frameworks</returns>
-        [SwaggerOperation("GetAllFrameworks")]
+        [SwaggerOperation("GetAllActiveFrameworks")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
         [Route("frameworks")]
         [ExceptionHandling]
@@ -45,7 +45,7 @@
         }
 
         /// <summary>
-        /// Get all the active frameworks
+        /// Get all frameworks
         /// </summary>
         /// <returns>a collection of frameworks</returns>
         [SwaggerOperation("GetAllFrameworks")]
