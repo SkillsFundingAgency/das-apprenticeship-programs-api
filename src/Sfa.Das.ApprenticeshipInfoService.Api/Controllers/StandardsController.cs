@@ -27,7 +27,7 @@
         /// Get all the active standards
         /// </summary>
         /// <returns>a collection of standards</returns>
-        [SwaggerOperation("GetAllStandards")]
+        [SwaggerOperation("GetAllActiveStandards")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
         [Route("standards")]
         [ExceptionHandling]
@@ -46,7 +46,35 @@
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/assessment-organisations");
+                _logger.Error(e, "/standards");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get all standards
+        /// </summary>
+        /// <returns>a collection of standards</returns>
+        [SwaggerOperation("GetAllStandards")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
+        [Route("standards/v2")]
+        [ExceptionHandling]
+        public IEnumerable<StandardSummary> GetAll()
+        {
+            try
+            {
+                var response = _getStandards.GetAllStandards();
+
+                foreach (var item in response)
+                {
+                    item.Uri = Resolve(item.Id);
+                }
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "/standards");
                 throw;
             }
         }
@@ -68,11 +96,6 @@
             if (standard == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-
-            if (!standard.IsActiveStandard)
-            {
-                throw new HttpResponseException(HttpStatusCode.Gone);
             }
 
             standard.Uri = Resolve(standard.StandardId);

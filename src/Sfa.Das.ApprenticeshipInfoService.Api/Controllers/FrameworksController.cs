@@ -28,13 +28,33 @@
         /// Get all the active frameworks
         /// </summary>
         /// <returns>a collection of frameworks</returns>
-        [SwaggerOperation("GetAllFrameworks")]
+        [SwaggerOperation("GetAllActiveFrameworks")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
         [Route("frameworks")]
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> Get()
         {
             var response = _getFrameworks.GetAllFrameworks().Where(x => x.IsActiveFramework).ToList();
+
+            foreach (var item in response)
+            {
+                item.Uri = Resolve(item.Id);
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Get all frameworks
+        /// </summary>
+        /// <returns>a collection of frameworks</returns>
+        [SwaggerOperation("GetAllFrameworks")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
+        [Route("frameworks/v2")]
+        [ExceptionHandling]
+        public IEnumerable<FrameworkSummary> GetAll()
+        {
+            var response = _getFrameworks.GetAllFrameworks().ToList();
 
             foreach (var item in response)
             {
@@ -61,11 +81,6 @@
             if (response == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-
-            if (!response.IsActiveFramework)
-            {
-                throw new HttpResponseException(HttpStatusCode.Gone);
             }
 
             response.Uri = Resolve(response.FrameworkId);

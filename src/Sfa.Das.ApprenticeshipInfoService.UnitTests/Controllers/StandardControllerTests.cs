@@ -97,15 +97,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldReturnStandardGone()
-        {
-            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = false});
-
-            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("42"));
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.Gone));
-        }
-
-        [Test]
         public void ShouldReturnStandard()
         {
             _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = true});
