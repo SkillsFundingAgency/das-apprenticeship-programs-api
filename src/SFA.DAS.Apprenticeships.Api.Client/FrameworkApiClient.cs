@@ -37,6 +37,11 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             return Get(ConvertToCompositeId(frameworkCode, pathwayCode, programmeType));
         }
 
+        /// <summary>
+        /// Get all active frameworks
+        /// GET /frameworks
+        /// </summary>
+        /// <returns>a collection of framework summaries</returns>
         public IEnumerable<FrameworkSummary> FindAll()
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks"))
@@ -48,6 +53,27 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         public async Task<IEnumerable<FrameworkSummary>> FindAllAsync()
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<FrameworkSummary>>(request);
+            }
+        }
+
+        /// <summary>
+        /// Get all frameworks
+        /// GET /frameworks/v2
+        /// </summary>
+        /// <returns>a collection of framework summaries</returns>
+        public IEnumerable<FrameworkSummary> GetAll()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworksv2"))
+            {
+                return RequestAndDeserialise<IEnumerable<FrameworkSummary>>(request);
+            }
+        }
+
+        public async Task<IEnumerable<FrameworkSummary>> GetAllAsync()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/v2"))
             {
                 return await RequestAndDeserialiseAsync<IEnumerable<FrameworkSummary>>(request);
             }

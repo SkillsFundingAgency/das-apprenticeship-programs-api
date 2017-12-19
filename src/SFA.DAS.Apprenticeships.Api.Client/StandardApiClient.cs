@@ -64,7 +64,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         }
 
         /// <summary>
-        /// Get a collection of standards
+        /// Get all active standards
         /// GET /standards
         /// </summary>
         /// <returns>a collection of standard summaries</returns>
@@ -79,6 +79,27 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         public async Task<IEnumerable<StandardSummary>> FindAllAsync()
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<StandardSummary>>(request);
+            }
+        }
+
+        /// <summary>
+        /// Get all standards
+        /// GET /standards/v2
+        /// </summary>
+        /// <returns>a collection of standard summaries</returns>
+        public IEnumerable<StandardSummary> GetAll()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardSummary>>(request);
+            }
+        }
+
+        public async Task<IEnumerable<StandardSummary>> GetAllAsync()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
             {
                 return await RequestAndDeserialiseAsync<IEnumerable<StandardSummary>>(request);
             }
