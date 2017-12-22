@@ -39,5 +39,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public DateTime? EffectiveTo { get; set; }
 
         public bool IsActiveStandard { get; set; }
+
+        public int StandardSectorCode { get; set; }
     }
 }

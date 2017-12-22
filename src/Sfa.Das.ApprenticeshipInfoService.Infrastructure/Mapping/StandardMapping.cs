@@ -31,6 +31,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 OverviewOfRole = document.OverviewOfRole,
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
+                StandardSectorCode = document.StandardSectorCode,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
                 IsActiveStandard = CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
@@ -44,6 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Id = document.StandardId,
                 Title = document.Title,
                 Level = document.Level,
+                StandardSectorCode = document.StandardSectorCode,
                 IsPublished = document.Published,
                 Duration = document.Duration,
                 MaxFunding = document.FundingCap,
