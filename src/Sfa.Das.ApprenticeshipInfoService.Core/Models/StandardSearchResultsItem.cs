@@ -13,6 +13,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public int Level { get; set; }
 
+        public int StandardSectorCode { get; set; }
+
         public bool Published { get; set; }
 
         public string StandardPdf { get; set; }

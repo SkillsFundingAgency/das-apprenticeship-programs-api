@@ -44,6 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Id = document.StandardId,
                 Title = document.Title,
                 Level = document.Level,
+                StandardSectorCode = document.StandardSectorCode,
                 IsPublished = document.Published,
                 Duration = document.Duration,
                 MaxFunding = document.FundingCap,
