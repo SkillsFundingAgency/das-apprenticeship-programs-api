@@ -83,7 +83,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             if (results.ApiCall.HttpStatusCode != 200)
             {
                 throw new ApplicationException(
-                    $"Failed query standard with provider. HttpStatusCode was {results.ApiCall.HttpStatusCode}", 
+                    $"Failed query standard with provider. HttpStatusCode was {results.ApiCall.HttpStatusCode}",
                     results.ApiCall.OriginalException);
             }
 
