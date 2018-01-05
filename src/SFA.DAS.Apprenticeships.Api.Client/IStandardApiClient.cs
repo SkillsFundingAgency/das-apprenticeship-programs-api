@@ -52,6 +52,18 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         Task<IEnumerable<StandardSummary>> FindAllAsync();
 
         /// <summary>
+        /// Find all the active standards
+        /// </summary>
+        /// <returns>Collection of standard summaries</returns>
+        IEnumerable<StandardSummary> GetAll();
+
+        /// <summary>
+        /// Find all the active standards
+        /// </summary>
+        /// <returns>Collection of standard summaries</returns>
+        Task<IEnumerable<StandardSummary>> GetAllAsync();
+
+        /// <summary>
         /// Check if a standard exists
         /// HEAD /standards/{standard-code}
         /// </summary>

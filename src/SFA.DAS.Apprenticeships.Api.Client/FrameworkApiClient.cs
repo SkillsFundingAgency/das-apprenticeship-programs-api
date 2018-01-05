@@ -65,7 +65,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         /// <returns>a collection of framework summaries</returns>
         public IEnumerable<FrameworkSummary> GetAll()
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworksv2"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/frameworks/v2"))
             {
                 return RequestAndDeserialise<IEnumerable<FrameworkSummary>>(request);
             }

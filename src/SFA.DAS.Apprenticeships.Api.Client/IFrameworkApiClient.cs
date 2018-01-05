@@ -52,6 +52,20 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         /// <summary>
         /// Get a collection of frameworks
+        /// GET /frameworks/v2
+        /// </summary>
+        /// <returns>a collection of framework summaries</returns>
+        Task<IEnumerable<FrameworkSummary>> GetAllAsync();
+
+        /// <summary>
+        /// Get a collection of frameworks
+        /// GET /frameworks/v2
+        /// </summary>
+        /// <returns>a collection of framework summaries</returns>
+        IEnumerable<FrameworkSummary> GetAll();
+
+        /// <summary>
+        /// Get a collection of frameworks
         /// GET /frameworks
         /// </summary>
         /// <returns>a collection of framework summaries</returns>
