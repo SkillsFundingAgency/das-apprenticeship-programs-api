@@ -52,7 +52,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetCourseByStandardCode(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
             _log.Verify(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
         }
 
@@ -74,7 +73,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetCourseByFrameworkId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
             _log.Verify(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
         }
     }
