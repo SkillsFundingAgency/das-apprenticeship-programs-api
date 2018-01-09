@@ -30,14 +30,27 @@
         public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
         public int ProviderApprenticeshipTrainingMaximum => int.Parse(ConfigurationManager.AppSettings["ProviderApprenticeshipTrainingMaximum"]);
 
-        public List<string> FrameworksExpiredRequired {
+        public List<string> FrameworksExpiredRequired
+        {
             get
             {
                 return
                     CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
-                    ?.Split(',')
-                    .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
-                ?? new List<string>();
+                        ?.Split(',')
+                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
+                    ?? new List<string>();
+            }
+        }
+
+        public List<string> StandardsExpiredRequired
+        {
+            get
+            {
+                return
+                    CloudConfigurationManager.GetSetting("StandardsExpiredRequired")
+                        ?.Split(',')
+                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
+                    ?? new List<string>();
             }
         }
 

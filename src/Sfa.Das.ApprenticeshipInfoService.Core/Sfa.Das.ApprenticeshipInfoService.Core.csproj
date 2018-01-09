@@ -54,10 +54,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ActiveFrameworkChecker.cs" />
+    <Compile Include="Helpers\ActiveApprenticceshipChecker.cs" />
     <Compile Include="Configuration\IConfigurationSettings.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
-    <Compile Include="Helpers\IActiveFrameworkChecker.cs" />
+    <Compile Include="Helpers\IActiveApprenticceshipChecker.cs" />
     <Compile Include="Helpers\IControllerHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApprenticeshipDetails.cs" />
