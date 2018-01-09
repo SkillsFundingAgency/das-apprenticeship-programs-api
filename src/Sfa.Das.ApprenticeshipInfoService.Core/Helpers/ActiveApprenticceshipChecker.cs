@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
@@ -27,24 +28,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
         {
             var lapsedFrameworks = _configurationSettings.FrameworksExpiredRequired;
 
-            if (lapsedFrameworks == null || lapsedFrameworks.Count < 1)
-            {
-                return false;
-            }
-
-            return lapsedFrameworks.Any(lapsedFramework => lapsedFramework == frameworkId);
+            return CheckValueIntoList(frameworkId, lapsedFrameworks);
         }
 
         private bool IsSpecialLapsedStandard(string standardId)
         {
             var lapsedStandards = _configurationSettings.StandardsExpiredRequired;
 
-            if (lapsedStandards == null || lapsedStandards.Count < 1)
+            return CheckValueIntoList(standardId, lapsedStandards);
+        }
+
+        private static bool CheckValueIntoList(string apprenticeshipId, List<string> lapsedApprenticeships)
+        {
+            if (lapsedApprenticeships == null || lapsedApprenticeships.Count < 1)
             {
                 return false;
             }
 
-            return lapsedStandards.Any(lapsedStandard => lapsedStandard == standardId);
+            return lapsedApprenticeships.Any(lapsedFramework => lapsedFramework == apprenticeshipId);
         }
     }
 }
