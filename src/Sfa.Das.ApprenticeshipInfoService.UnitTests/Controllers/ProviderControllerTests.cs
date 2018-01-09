@@ -218,6 +218,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockActiveFrameworkChecker
                 .Setup(x => x.CheckActiveFramework("234-3-2", It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(false);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), null, It.IsAny<DateTime?>()))
+                .Returns(false);
             _mockGetProviders.Setup(x => x.GetStandardsByProviderUkprn(ukprn)).Returns(standards);
             _mockGetProviders.Setup(x => x.GetFrameworksByProviderUkprn(ukprn)).Returns(frameworks);
 
