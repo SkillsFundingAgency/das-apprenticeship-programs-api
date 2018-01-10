@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<ILog> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
-        private Mock<IActiveApprenticceshipChecker> _mockActiveFrameworkChecker;
+        private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
 
         [SetUp]
@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
-            _mockActiveFrameworkChecker = new Mock<IActiveApprenticceshipChecker>();
+            _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
             _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum)
                 .Returns(ProviderApprenticeshipTrainingMaximum);

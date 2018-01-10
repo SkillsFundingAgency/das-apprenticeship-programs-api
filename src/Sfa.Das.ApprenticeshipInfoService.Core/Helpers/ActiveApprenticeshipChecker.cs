@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
                 return false;
             }
 
-            return lapsedApprenticeships.Any(lapsedFramework => lapsedFramework == apprenticeshipId);
+            return lapsedApprenticeships.Any(lapsedItem => lapsedItem == apprenticeshipId);
         }
     }
 }
