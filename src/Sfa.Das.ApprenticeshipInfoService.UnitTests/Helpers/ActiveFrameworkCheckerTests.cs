@@ -24,7 +24,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
             var mockConfigSettings = new Mock<IConfigurationSettings>();
             mockConfigSettings.Setup(x => x.FrameworksExpiredRequired).Returns(new List<string> { frameworkExpiredRequired });
 
-            var activeFrameworkChecker = new ActiveApprenticceshipChecker(mockConfigSettings.Object);
+            var activeFrameworkChecker = new ActiveApprenticeshipChecker(mockConfigSettings.Object);
             var res = activeFrameworkChecker.CheckActiveFramework(frameworkId, effectiveFrom, effectiveTo);
 
             Assert.AreEqual(expectedResult, res, message);
@@ -44,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
             var mockConfigSettings = new Mock<IConfigurationSettings>();
             mockConfigSettings.Setup(x => x.StandardsExpiredRequired).Returns(new List<string> { standardExpiredRequired });
 
-            var activeFrameworkChecker = new ActiveApprenticceshipChecker(mockConfigSettings.Object);
+            var activeFrameworkChecker = new ActiveApprenticeshipChecker(mockConfigSettings.Object);
             var res = activeFrameworkChecker.CheckActiveStandard(standardId, effectiveFrom, effectiveTo);
 
             Assert.AreEqual(expectedResult, res, message);

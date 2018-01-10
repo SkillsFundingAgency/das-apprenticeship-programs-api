@@ -8,11 +8,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class StandardMapping : IStandardMapping
     {
-        private readonly IActiveApprenticceshipChecker _activeApprenticceshipChecker;
+        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
 
-        public StandardMapping(IActiveApprenticceshipChecker activeApprenticceshipChecker)
+        public StandardMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker)
         {
-            _activeApprenticceshipChecker = activeApprenticceshipChecker;
+            _activeApprenticeshipChecker = activeApprenticeshipChecker;
         }
 
         public Standard MapToStandard(StandardSearchResultsItem document)
@@ -41,7 +41,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 StandardSectorCode = document.StandardSectorCode,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticceshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
             };
         }
 
@@ -61,7 +61,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = document.SectorSubjectAreaTier2,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticceshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
             };
         }
     }

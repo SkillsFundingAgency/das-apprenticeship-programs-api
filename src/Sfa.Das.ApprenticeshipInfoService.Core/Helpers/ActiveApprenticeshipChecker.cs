@@ -5,11 +5,11 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
-    public class ActiveApprenticceshipChecker : IActiveApprenticceshipChecker
+    public class ActiveApprenticeshipChecker : IActiveApprenticeshipChecker
     {
         private readonly IConfigurationSettings _configurationSettings;
 
-        public ActiveApprenticceshipChecker(IConfigurationSettings configurationSettings)
+        public ActiveApprenticeshipChecker(IConfigurationSettings configurationSettings)
         {
             _configurationSettings = configurationSettings;
         }

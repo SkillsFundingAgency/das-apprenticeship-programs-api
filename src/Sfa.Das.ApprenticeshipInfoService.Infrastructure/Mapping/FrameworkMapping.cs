@@ -10,11 +10,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
-         private readonly ActiveApprenticceshipChecker _activeApprenticceshipChecker;
+         private readonly ActiveApprenticeshipChecker _activeApprenticeshipChecker;
 
-        public FrameworkMapping(ActiveApprenticceshipChecker activeApprenticceshipChecker)
+        public FrameworkMapping(ActiveApprenticeshipChecker activeApprenticeshipChecker)
         {
-            _activeApprenticceshipChecker = activeApprenticceshipChecker;
+            _activeApprenticeshipChecker = activeApprenticeshipChecker;
         }
 
         public Framework MapToFramework(FrameworkSearchResultsItem document)
@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 CombinedQualification = document.CombinedQualification?.OrderBy(x => x),
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = _activeApprenticceshipChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeApprenticeshipChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -70,7 +70,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = _activeApprenticceshipChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeApprenticeshipChecker.CheckActiveFramework(document.FrameworkId, document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
