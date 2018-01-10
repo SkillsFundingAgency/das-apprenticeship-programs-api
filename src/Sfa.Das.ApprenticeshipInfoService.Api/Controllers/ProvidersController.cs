@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         private readonly IGetStandards _getStandards;
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
-        private readonly IActiveFrameworkChecker _activeFrameworkChecker;
+        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
         private readonly IConfigurationSettings _applicationSettings;
 
         private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
@@ -36,7 +36,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             IGetStandards getStandards,
             IGetFrameworks getFrameworks,
             IApprenticeshipProviderRepository apprenticeshipProviderRepository, 
-            IActiveFrameworkChecker activeFrameworkChecker, 
+            IActiveApprenticeshipChecker activeApprenticeshipChecker, 
             IConfigurationSettings applicationSettings)
         {
             _getProviders = getProviders;
@@ -44,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             _getStandards = getStandards;
             _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
-            _activeFrameworkChecker = activeFrameworkChecker;
+            _activeApprenticeshipChecker = activeApprenticeshipChecker;
             _applicationSettings = applicationSettings;
         }
 
@@ -154,7 +154,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
 
             apprenticeshipTrainingSummary.Count = apprenticeships.Count;
-            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems 
+            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
                                 = apprenticeships.OrderBy(x => x.Name)
                                     .ThenBy(x => x.Level)
                                     .Take(take);
@@ -167,7 +167,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
 
             return frameworks
-                .Where(x => _activeFrameworkChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Where(x => _activeApprenticeshipChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
                 .Select(framework => new ApprenticeshipTraining
                 {
                     Name = framework.PathwayName,
@@ -183,7 +183,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         {
             var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
 
-            return standards.Where(x => DateHelper.CheckEffectiveDates(x.EffectiveFrom, x.EffectiveTo))
+            return standards
+                .Where(x => _activeApprenticeshipChecker.CheckActiveStandard(x.StandardId.ToString(), x.EffectiveFrom, x.EffectiveTo))
                 .Select(standard => new ApprenticeshipTraining
                 {
                     Name = standard.Title,
