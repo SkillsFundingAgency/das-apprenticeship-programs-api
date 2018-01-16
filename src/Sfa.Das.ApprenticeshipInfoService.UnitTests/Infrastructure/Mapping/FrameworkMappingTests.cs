@@ -15,15 +15,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
     {
         private FrameworkMapping _sut;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
-        private ActiveFrameworkChecker _activeFrameworkChecker;
+        private ActiveApprenticeshipChecker _activeApprenticeshipChecker;
 
         [SetUp]
         public void Init()
         {
 			_mockConfigurationSettings = new Mock<IConfigurationSettings>();
-            _activeFrameworkChecker = new ActiveFrameworkChecker(_mockConfigurationSettings.Object);
+            _activeApprenticeshipChecker = new ActiveApprenticeshipChecker(_mockConfigurationSettings.Object);
 
-            _sut = new FrameworkMapping(_activeFrameworkChecker);
+            _sut = new FrameworkMapping(_activeApprenticeshipChecker);
 		}
 
 	    [Test]

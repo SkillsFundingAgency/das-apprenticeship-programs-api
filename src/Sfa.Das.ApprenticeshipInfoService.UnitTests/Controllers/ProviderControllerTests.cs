@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<ILog> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
-        private Mock<IActiveFrameworkChecker> _mockActiveFrameworkChecker;
+        private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
 
         [SetUp]
@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
             _mockLogger = new Mock<ILog>();
-            _mockActiveFrameworkChecker = new Mock<IActiveFrameworkChecker>();
+            _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
             _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum)
                 .Returns(ProviderApprenticeshipTrainingMaximum);
@@ -217,6 +217,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                 .Returns(true);
             _mockActiveFrameworkChecker
                 .Setup(x => x.CheckActiveFramework("234-3-2", It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(false);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), null, It.IsAny<DateTime?>()))
                 .Returns(false);
             _mockGetProviders.Setup(x => x.GetStandardsByProviderUkprn(ukprn)).Returns(standards);
             _mockGetProviders.Setup(x => x.GetFrameworksByProviderUkprn(ukprn)).Returns(frameworks);

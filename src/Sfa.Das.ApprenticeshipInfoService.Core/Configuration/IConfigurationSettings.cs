@@ -27,6 +27,8 @@
 
         List<string> FrameworksExpiredRequired { get; }
 
+        List<string> StandardsExpiredRequired { get; }
+
         int ProviderApprenticeshipTrainingMaximum { get; }
     }
 }
