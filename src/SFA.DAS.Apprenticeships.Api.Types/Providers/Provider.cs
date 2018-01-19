@@ -41,6 +41,8 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public IEnumerable<ContactAddress> Addresses { get; set; }
 
         public string MarketingInfo { get; set; }
-
+        public bool HasParentCompanyGuarantee { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsLevyPayerOnly { get; set; }
     }
 }
