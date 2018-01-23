@@ -123,9 +123,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
         {
-
             var totalTakeFromFrameworkProviders = _queryHelper.GetFrameworkProviderTotalAmount();
-
 
             var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderFrameworkDto>(

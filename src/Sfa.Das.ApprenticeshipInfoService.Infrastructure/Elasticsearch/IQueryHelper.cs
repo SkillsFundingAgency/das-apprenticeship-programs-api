@@ -11,7 +11,6 @@
         int GetProvidersByFrameworkTotalAmount(string frameworkId);
         int GetProvidersByStandardTotalAmount(string standardId);
         int GetStandardProviderTotalAmount();
-
         int GetFrameworkProviderTotalAmount();
     }
 }
