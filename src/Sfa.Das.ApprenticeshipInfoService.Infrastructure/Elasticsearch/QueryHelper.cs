@@ -2,7 +2,7 @@
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -91,6 +91,30 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                             .Type(Types.Parse("standarddocument"))
+                            .From(0)
+                            .MatchAll());
+            return (int)results.HitsMetaData.Total;
+        }
+
+        public int GetStandardProviderTotalAmount()
+        {
+            var results =
+                _elasticsearchCustomClient.Search<ProviderStandardDto>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse("standardprovider"))
+                            .From(0)
+                            .MatchAll());
+            return (int)results.HitsMetaData.Total;
+        }
+
+        public int GetFrameworkProviderTotalAmount()
+        {
+            var results =
+                _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
+                    s =>
+                        s.Index(_applicationSettings.ProviderIndexAlias)
+                            .Type(Types.Parse("frameworkprovider"))
                             .From(0)
                             .MatchAll());
             return (int)results.HitsMetaData.Total;
