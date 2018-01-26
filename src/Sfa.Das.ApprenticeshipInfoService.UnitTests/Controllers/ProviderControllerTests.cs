@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     [TestFixture]
     public class ProviderControllerTests
     {
-        private const int ProviderApprenticeshipTrainingMaximum = 3;
+        private const int TakeMaximum = 3;
         private ProvidersController _sut;
         private Mock<IGetProviders> _mockGetProviders;
         private Mock<IControllerHelper> _mockControllerHelper;
@@ -47,8 +47,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockLogger = new Mock<ILog>();
             _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
-            _mockConfigurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum)
-                .Returns(ProviderApprenticeshipTrainingMaximum);
+            _mockConfigurationSettings.Setup(x => x.TakeMaximum)
+                .Returns(TakeMaximum);
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
@@ -229,7 +229,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
            var result = _sut.GetActiveApprenticeshipTrainingByProvider(ukprn);
            var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
-           Assert.AreEqual(ProviderApprenticeshipTrainingMaximum, providerApprenticeships.Length);
+           Assert.AreEqual(TakeMaximum, providerApprenticeships.Length);
            Assert.AreEqual(4, result.Count);
 
             Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId, 

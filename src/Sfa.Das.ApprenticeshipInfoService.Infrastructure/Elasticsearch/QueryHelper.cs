@@ -96,30 +96,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return (int)results.HitsMetaData.Total;
         }
 
-        public int GetStandardProviderTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<ProviderStandardDto>(
-                    s =>
-                        s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("standardprovider"))
-                            .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
-        }
-
-        public int GetFrameworkProviderTotalAmount()
-        {
-            var results =
-                _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
-                    s =>
-                        s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("frameworkprovider"))
-                            .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
-        }
-
         public int GetProvidersByFrameworkTotalAmount(string frameworkId)
         {
             var results =
