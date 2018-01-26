@@ -168,7 +168,19 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
         {
-            var totalTakeFromStandardProviders = _queryHelper.GetStandardProviderTotalAmount();
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetching a count of totalTakeFromStandardProviders");
+            var totalTakeFromStandardProviders = 0;
+            try
+            {
+                totalTakeFromStandardProviders = _queryHelper.GetStandardProviderTotalAmount();
+            }
+            catch (Exception ex)
+            {
+                _applicationLogger.Error(ex, $"For 'GetStandardsByProviderUkprn', fetching a count of totalTakeFromStandardProviders caused an error");
+
+            }
+
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetched a count of totalTakeFromStandardProviders: {totalTakeFromStandardProviders}");
 
             var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderStandardDto>(
@@ -182,16 +194,32 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                     .Field(f => f.Ukprn)
                                     .Terms(ukprn))));
 
-         if (matchedIds.ApiCall.HttpStatusCode != 200)
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetched a collection of matchedIds.Documents");
+
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetched a total number of matchedIds.Documents: {matchedIds.Documents.Count}");
+
+            if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
                  _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider standards for ukprn [{ukprn}]");
 
                 throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetching a count of totalTakeForStandardDocuments");
 
-            var totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+            var totalTakeForStandardDocuments = 0;
+            try
+            {
+                totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+            }
+            catch (Exception ex)
+            {
+                _applicationLogger.Error(ex, $"For 'GetStandardsByProviderUkprn', fetching a count of totalTakeForStandardDocuments caused an error");
 
-            var providerStandards =
+            }
+
+            _applicationLogger.Debug($"For 'GetStandardsByProviderUkprn', fetched a count of totalTakeForStandardDocuments: {totalTakeForStandardDocuments}");
+
+             var providerStandards =
                 _elasticsearchCustomClient.Search<ProviderStandard>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)

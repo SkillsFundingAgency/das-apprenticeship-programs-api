@@ -206,29 +206,29 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
         }
 
-        [Test]
-        public void GetProviderStandardsByUkprnShouldLogWhenInvalidStatusCode()
-        {
-            var ukprn = 1L;
-            var searchResponse = new Mock<ISearchResponse<ProviderStandardDto>>();
-            var apiCall = new Mock<IApiCallDetails>();
-            apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
-            searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
+        //[Test]
+        //public void GetProviderStandardsByUkprnShouldLogWhenInvalidStatusCode()
+        //{
+        //    var ukprn = 1L;
+        //    var searchResponse = new Mock<ISearchResponse<ProviderStandardDto>>();
+        //    var apiCall = new Mock<IApiCallDetails>();
+        //    apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
+        //    searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
 
-            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
-            var repo = new ProviderRepository(
-                _elasticClient.Object,
-                _log.Object,
-                Mock.Of<IConfigurationSettings>(),
-                Mock.Of<IProviderLocationSearchProvider>(),
-                Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+        //    _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+        //    var repo = new ProviderRepository(
+        //        _elasticClient.Object,
+        //        _log.Object,
+        //        Mock.Of<IConfigurationSettings>(),
+        //        Mock.Of<IProviderLocationSearchProvider>(),
+        //        Mock.Of<IProviderMapping>(),
+        //        _queryHelper.Object);
 
-            Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
+        //    Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
-            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
+        //    _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
 
-        }
+        //}
 
         [Test]
         public void GetProviderStandardsByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
