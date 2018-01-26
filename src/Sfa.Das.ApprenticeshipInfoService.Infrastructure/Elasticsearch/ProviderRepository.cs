@@ -201,6 +201,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
                  _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider standards for ukprn [{ukprn}]");
+                _applicationLogger.Warn($"Error in querying provider standards for ukprn [{ukprn}] debug information: {matchedIds.ApiCall.DebugInformation}");
+                _applicationLogger.Warn(matchedIds.ApiCall.OriginalException, $"Error in querying provider standards for ukprn [{ukprn}] error toString: {matchedIds.ApiCall.ServerError.Error}");
 
                 throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
