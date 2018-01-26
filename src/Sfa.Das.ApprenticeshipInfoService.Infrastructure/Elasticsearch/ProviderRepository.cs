@@ -123,12 +123,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
         {
+            var totalTakeFromFrameworkProviders = _queryHelper.GetFrameworkProviderTotalAmount();
+
             var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
                             .Type(Types.Parse("frameworkprovider"))
                             .From(0)
+                            .Take(totalTakeFromFrameworkProviders)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
@@ -140,12 +143,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed to query provider frameworks for ukprn [{ukprn}]");
             }
 
+            var totalTakeForFrameworkDocuments = _queryHelper.GetFrameworksTotalAmount();
+
             var providerFrameworks =
                 _elasticsearchCustomClient.Search<ProviderFramework>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                             .Type(Types.Parse("frameworkdocument"))
                             .From(0)
+                            .Take(totalTakeForFrameworkDocuments)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.FrameworkId)
@@ -162,12 +168,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
         {
-        var matchedIds =
+            var totalTakeFromStandardProviders = _queryHelper.GetStandardProviderTotalAmount();
+
+            var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderStandardDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
                             .Type(Types.Parse("standardprovider"))
                             .From(0)
+                            .Take(totalTakeFromStandardProviders)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
@@ -180,12 +189,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
 
+            var totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+
             var providerStandards =
                 _elasticsearchCustomClient.Search<ProviderStandard>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                             .Type(Types.Parse("standarddocument"))
                             .From(0)
+                            .Take(totalTakeForStandardDocuments)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.StandardId)
