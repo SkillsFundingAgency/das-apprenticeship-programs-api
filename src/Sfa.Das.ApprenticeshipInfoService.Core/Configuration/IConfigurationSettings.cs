@@ -29,6 +29,6 @@
 
         List<string> StandardsExpiredRequired { get; }
 
-        int ProviderApprenticeshipTrainingMaximum { get; }
+        int TakeMaximum { get; }
     }
 }

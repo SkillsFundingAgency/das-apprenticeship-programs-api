@@ -141,7 +141,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto> { frameworkDto1, frameworkDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(2);
+            configurationSettings.Setup(x => x.TakeMaximum).Returns(2);
             apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
@@ -183,7 +183,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworks.Setup(x => x.Documents).Returns(providerFrameworks);
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(10);
+            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
@@ -206,29 +206,29 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
         }
 
-        //[Test]
-        //public void GetProviderStandardsByUkprnShouldLogWhenInvalidStatusCode()
-        //{
-        //    var ukprn = 1L;
-        //    var searchResponse = new Mock<ISearchResponse<ProviderStandardDto>>();
-        //    var apiCall = new Mock<IApiCallDetails>();
-        //    apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
-        //    searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
+        [Test]
+        public void GetProviderStandardsByUkprnShouldLogWhenInvalidStatusCode()
+        {
+            var ukprn = 1L;
+            var searchResponse = new Mock<ISearchResponse<ProviderStandardDto>>();
+            var apiCall = new Mock<IApiCallDetails>();
+            apiCall.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
+            searchResponse.SetupGet(x => x.ApiCall).Returns(apiCall.Object);
 
-        //    _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
-        //    var repo = new ProviderRepository(
-        //        _elasticClient.Object,
-        //        _log.Object,
-        //        Mock.Of<IConfigurationSettings>(),
-        //        Mock.Of<IProviderLocationSearchProvider>(),
-        //        Mock.Of<IProviderMapping>(),
-        //        _queryHelper.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            var repo = new ProviderRepository(
+                _elasticClient.Object,
+                _log.Object,
+                Mock.Of<IConfigurationSettings>(),
+                Mock.Of<IProviderLocationSearchProvider>(),
+                Mock.Of<IProviderMapping>(),
+                _queryHelper.Object);
 
-        //    Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
+            Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
-        //    _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
+            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
 
-        //}
+        }
 
         [Test]
         public void GetProviderStandardsByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
@@ -245,7 +245,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForStandardsDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { standardDto1, standardDto2 });
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(2);
+            configurationSettings.Setup(x => x.TakeMaximum).Returns(2);
             apiCallForStandardDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForStandardsDtos.SetupGet(x => x.ApiCall).Returns(apiCallForStandardDtos.Object);
 
@@ -288,7 +288,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponse.Setup(x => x.Documents).Returns(providerStandards);
 
             var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.ProviderApprenticeshipTrainingMaximum).Returns(10);
+            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int) HttpStatusCode.OK);
             searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
 

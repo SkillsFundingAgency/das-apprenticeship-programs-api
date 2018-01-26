@@ -151,7 +151,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
             apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
 
-            var take = _applicationSettings.ProviderApprenticeshipTrainingMaximum;
+            var take = _applicationSettings.TakeMaximum;
 
             apprenticeshipTrainingSummary.Count = apprenticeships.Count;
             apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
