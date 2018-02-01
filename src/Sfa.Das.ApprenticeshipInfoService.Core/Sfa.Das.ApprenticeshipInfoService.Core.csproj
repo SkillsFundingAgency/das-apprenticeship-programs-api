@@ -47,6 +47,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,12 +62,15 @@
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\IActiveApprenticeshipChecker.cs" />
     <Compile Include="Helpers\IControllerHelper.cs" />
+    <Compile Include="Helpers\IPaginationHelper.cs" />
+    <Compile Include="Helpers\PaginationHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApprenticeshipDetails.cs" />
     <Compile Include="Models\ApprenticeshipProduct.cs" />
     <Compile Include="Models\ApprenticeshipBasic.cs" />
     <Compile Include="Models\DetailProviderResponse.cs" />
     <Compile Include="Models\ContactInformation.cs" />
+    <Compile Include="Models\PaginationDetails.cs" />
     <Compile Include="Models\Responses\FrameworkProviderSearchResultsItemResponse.cs" />
     <Compile Include="Models\ProviderDetail.cs" />
     <Compile Include="Models\Location.cs" />

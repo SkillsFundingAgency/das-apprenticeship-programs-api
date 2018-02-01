@@ -38,6 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IAnalyticsService>().Use<AnalyticsService>();
             For<IQueryHelper>().Use<QueryHelper>();
             For<IActiveApprenticeshipChecker>().Use<ActiveApprenticeshipChecker>();
+            For<IPaginationHelper>().Use<PaginationHelper>();
         }
 
         private IDictionary<string, object> GetProperties()

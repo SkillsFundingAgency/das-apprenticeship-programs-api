@@ -30,6 +30,9 @@
         public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
         public int TakeMaximum => int.Parse(ConfigurationManager.AppSettings["TakeMaximum"]);
 
+        public int PageSizeApprenticeshipSummary => int.Parse(
+            ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);
+
         public List<string> FrameworksExpiredRequired
         {
             get

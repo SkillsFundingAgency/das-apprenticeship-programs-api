@@ -7,6 +7,7 @@ using Moq;
 using Nest;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
@@ -19,22 +20,34 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
     [TestFixture]
     public class ProviderRepositoryTests
     {
+        private const int TakeMaximum = 3;
+        private const int PageSizeApprenticeshipSummary = 2;
         private Mock<IElasticsearchCustomClient> _elasticClient;
 
         private Mock<ILog> _log;
 
         private Mock<IQueryHelper> _queryHelper;
+        private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
+        private Mock<IConfigurationSettings> _mockConfigurationSettings;
+        private Mock<IPaginationHelper> _mockPaginationHelper;
 
         [SetUp]
         public void Setup()
         {
             _elasticClient = new Mock<IElasticsearchCustomClient>();
             _log = new Mock<ILog>();
+            _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
             _log.Setup(x => x.Warn(It.IsAny<string>())).Verifiable();
             _queryHelper = new Mock<IQueryHelper>();
             _queryHelper.Setup(x => x.GetProvidersByFrameworkTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersByStandardTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersTotalAmount()).Returns(1);
+            _mockConfigurationSettings = new Mock<IConfigurationSettings>();
+            _mockConfigurationSettings.Setup(x => x.TakeMaximum)
+                .Returns(TakeMaximum);
+            _mockConfigurationSettings.Setup(x => x.PageSizeApprenticeshipSummary)
+                .Returns(PageSizeApprenticeshipSummary);
+            _mockPaginationHelper = new Mock<IPaginationHelper>();
         }
 
         [Test]
@@ -47,12 +60,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<Provider>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
             var repo = new ProviderRepository(
-                _elasticClient.Object, 
-                _log.Object, 
-                Mock.Of<IConfigurationSettings>(), 
+                _elasticClient.Object,
+                _log.Object,
+                _mockConfigurationSettings.Object,
                 Mock.Of<IProviderLocationSearchProvider>(),
-                Mock.Of<IProviderMapping>(), 
-                _queryHelper.Object);
+                Mock.Of<IProviderMapping>(),
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetAllProviders());
 
@@ -74,7 +89,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprn(1L));
 
@@ -96,7 +113,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprnList(new List<long> { 1L }));
 
@@ -119,7 +138,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
 
@@ -156,7 +177,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 configurationSettings.Object,
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
             _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]"), Times.Once);
@@ -198,7 +221,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 configurationSettings.Object,
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
              var result = repo.GetFrameworksByProviderUkprn(ukprn);
               Assert.AreEqual(result.Count(), providerFrameworks.Count );
@@ -222,7 +247,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
@@ -260,7 +287,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 configurationSettings.Object,
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
             _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards apprenticeship details for ukprn [{ukprn}]"), Times.Once);
@@ -303,7 +332,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 configurationSettings.Object,
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             var result = repo.GetStandardsByProviderUkprn(ukprn);
             Assert.AreEqual(result.Count(), providerStandards.Count);
@@ -325,7 +356,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByStandardId(string.Empty));
 
@@ -347,7 +380,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
-                _queryHelper.Object);
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByFrameworkId(string.Empty));
 

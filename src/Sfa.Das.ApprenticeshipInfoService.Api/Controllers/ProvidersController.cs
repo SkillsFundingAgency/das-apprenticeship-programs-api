@@ -1,8 +1,4 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
-using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-using SFA.DAS.Apprenticeships.Api.Types;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -16,36 +12,31 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
     using Swashbuckle.Swagger.Annotations;
-    using IControllerHelper = Sfa.Das.ApprenticeshipInfoService.Core.Helpers.IControllerHelper;
+    using IControllerHelper = Core.Helpers.IControllerHelper;
 
     public class ProvidersController : ApiController
     {
+        private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
+
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly IGetStandards _getStandards;
         private readonly IGetFrameworks _getFrameworks;
         private readonly IApprenticeshipProviderRepository _apprenticeshipProviderRepository;
-        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
-        private readonly IConfigurationSettings _applicationSettings;
-
-        private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
         public ProvidersController(
             IGetProviders getProviders,
             IControllerHelper controllerHelper,
             IGetStandards getStandards,
             IGetFrameworks getFrameworks,
-            IApprenticeshipProviderRepository apprenticeshipProviderRepository, 
-            IActiveApprenticeshipChecker activeApprenticeshipChecker, 
-            IConfigurationSettings applicationSettings)
+            IApprenticeshipProviderRepository apprenticeshipProviderRepository
+            )
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
             _getStandards = getStandards;
             _getFrameworks = getFrameworks;
             _apprenticeshipProviderRepository = apprenticeshipProviderRepository;
-            _activeApprenticeshipChecker = activeApprenticeshipChecker;
-            _applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -130,7 +121,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Get list of active apprenticeships for a given provider
         /// </summary>
-        /// <param name="ukprn">UKPRN</param>
+        /// <param name="ukprn">unique id</param>
         /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
@@ -139,61 +130,28 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
+            return GetActiveApprenticeshipTrainingByProvider(ukprn, 1);
+        }
+
+        /// <summary>
+        /// Get list of active apprenticeships for a given provider
+        /// </summary>
+        /// <param name="ukprn">unique id</param>
+        /// <param name="page">number of page for which results are returned (default 1)</param>
+        /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [Route("providers/{ukprn}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
+        [ExceptionHandling]
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
+        {
             if (ukprn.ToString().Length != 8)
             {
                 throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
             }
 
-            var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary {Ukprn = ukprn};
-
-            var apprenticeships = new List<ApprenticeshipTraining>();
-
-            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
-            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
-
-            var take = _applicationSettings.TakeMaximum;
-
-            apprenticeshipTrainingSummary.Count = apprenticeships.Count;
-            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
-                                = apprenticeships.OrderBy(x => x.Name)
-                                    .ThenBy(x => x.Level)
-                                    .Take(take);
-
-            return apprenticeshipTrainingSummary;
-        }
-
-        private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)
-        {
-            var frameworks = _getProviders.GetFrameworksByProviderUkprn(ukprn);
-
-            return frameworks
-                .Where(x => _activeApprenticeshipChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
-                .Select(framework => new ApprenticeshipTraining
-                {
-                    Name = framework.PathwayName,
-                    Level = framework.Level,
-                    Type = ApprenticeshipTrainingType.Framework.ToString(),
-                    TrainingType = ApprenticeshipTrainingType.Framework,
-                    Identifier = framework.FrameworkId
-                })
-                .ToList();
-        }
-
-        private IEnumerable<ApprenticeshipTraining> GetActiveStandardsForUkprn(long ukprn)
-        {
-            var standards = _getProviders.GetStandardsByProviderUkprn(ukprn);
-
-            return standards
-                .Where(x => _activeApprenticeshipChecker.CheckActiveStandard(x.StandardId.ToString(), x.EffectiveFrom, x.EffectiveTo))
-                .Select(standard => new ApprenticeshipTraining
-                {
-                    Name = standard.Title,
-                    Level = standard.Level,
-                    Type = ApprenticeshipTrainingType.Standard.ToString(),
-                    TrainingType = ApprenticeshipTrainingType.Standard,
-                    Identifier = standard.StandardId.ToString()
-                })
-                .ToList();
+            return _getProviders.GetActiveApprenticeshipTrainingByProvider(ukprn, page);
         }
 
         /// <summary>
@@ -229,7 +187,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Get a list of providers for an specific framework
         /// </summary>
-        /// <param name="apprenticeshipId">Framework id</param>
+        /// <param name="frameworkId">Framework id</param>
         /// <returns>A list of Providers</returns>
         [SwaggerOperation("GetProvidersByFrameworkId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]

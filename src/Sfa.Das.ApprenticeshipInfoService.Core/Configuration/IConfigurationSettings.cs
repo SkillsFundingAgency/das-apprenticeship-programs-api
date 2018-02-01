@@ -30,5 +30,6 @@
         List<string> StandardsExpiredRequired { get; }
 
         int TakeMaximum { get; }
+        int PageSizeApprenticeshipSummary { get; }
     }
 }
