@@ -1,11 +1,12 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+﻿using SFA.DAS.Apprenticeships.Api.Types.Pagination;
+
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
     public class PaginationHelper : IPaginationHelper
     {
         public PaginationDetails GeneratePaginationDetails(int page, int pageSize, int totalCount)
         {
-            var paginationDetails = new PaginationDetails { NumberOfRecordsToSkip = 0, Page = 1 };
+            var paginationDetails = new PaginationDetails { NumberOfRecordsToSkip = 0, Page = 1, TotalCount = totalCount, NumberPerPage = pageSize };
 
             if (totalCount <= 0)
             {
@@ -19,6 +20,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
                 skip = skip - pageSize;
             }
 
+            paginationDetails.LastPage = (totalCount + pageSize - 1) / pageSize;
             paginationDetails.NumberOfRecordsToSkip = skip;
             paginationDetails.Page = (skip / pageSize) + 1;
             return paginationDetails;

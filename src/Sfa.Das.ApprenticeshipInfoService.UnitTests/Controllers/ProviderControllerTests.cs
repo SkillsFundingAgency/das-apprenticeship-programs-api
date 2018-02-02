@@ -1,5 +1,6 @@
 ﻿using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Apprenticeships.Api.Types.Pagination;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -25,40 +26,26 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     [TestFixture]
     public class ProviderControllerTests
     {
-        private const int TakeMaximum = 3;
-        private const int PageSizeApprenticeshipSummary = 2;
         private ProvidersController _sut;
         private Mock<IGetProviders> _mockGetProviders;
         private Mock<IControllerHelper> _mockControllerHelper;
-        private Mock<IApprenticeshipProviderRepository> _mockApprenticeshipProviderRepository;
-        private Mock<ILog> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
-        private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
-        private Mock<IConfigurationSettings> _mockConfigurationSettings;
-
-        [SetUp]
+           [SetUp]
         public void Init()
         {
             _mockGetProviders = new Mock<IGetProviders>();
             _mockControllerHelper = new Mock<IControllerHelper>();
             _mockGetStandards = new Mock<IGetStandards>();
             _mockGetFrameworks = new Mock<IGetFrameworks>();
-            _mockApprenticeshipProviderRepository = new Mock<IApprenticeshipProviderRepository>();
-            _mockLogger = new Mock<ILog>();
-            _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
-            _mockConfigurationSettings = new Mock<IConfigurationSettings>();
-            _mockConfigurationSettings.Setup(x => x.TakeMaximum)
-                .Returns(TakeMaximum);
-            _mockConfigurationSettings.Setup(x => x.PageSizeApprenticeshipSummary)
-                .Returns(PageSizeApprenticeshipSummary);
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
                 _mockControllerHelper.Object,
                 _mockGetStandards.Object,
                 _mockGetFrameworks.Object,
-                _mockApprenticeshipProviderRepository.Object)
+                Mock.Of<IApprenticeshipProviderRepository>()
+                )
             {
                 Request = new HttpRequestMessage
                 {
@@ -207,13 +194,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             const int numberPerPage = 20;
             const int numberReturned = 1;
             const int page = 2;
-            var expected = new ApprenticeshipTrainingSummary
+            const int lastPage = 37;
+            var paginationDetails = new PaginationDetails {NumberPerPage = 20, Page = page, TotalCount = totalCount, LastPage = lastPage};
+
+        var expected = new ApprenticeshipTrainingSummary
             {
                 ApprenticeshipTrainingItems = apprenticeshipTrainingList,
-                NumberPerPage = numberPerPage,
-                NumberReturned = numberReturned,
-                Page = page,
-                TotalCount = totalCount,
+                PaginationDetails = paginationDetails,
                 Ukprn = ukprn
             };
 
@@ -224,11 +211,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
            var result = _sut.GetActiveApprenticeshipTrainingByProvider(ukprn);
            var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
            Assert.AreEqual(apprenticeshipTrainingList.Count, providerApprenticeships.Length);
-           Assert.AreEqual(totalCount, result.TotalCount);
-           Assert.AreEqual(numberPerPage, result.NumberPerPage);
-           Assert.AreEqual(numberReturned, result.NumberReturned);
-           Assert.AreEqual(page, result.Page);
-           Assert.AreEqual(providerApprenticeships[0].Identifier, apprenticeshipTraining.Identifier); 
+           Assert.AreEqual(totalCount, result.PaginationDetails.TotalCount);
+           Assert.AreEqual(numberPerPage, result.PaginationDetails.NumberPerPage);
+           Assert.AreEqual(numberReturned, result.ApprenticeshipTrainingItems.Count());
+           Assert.AreEqual(page, result.PaginationDetails.Page);
+           Assert.AreEqual(lastPage, result.PaginationDetails.LastPage);
+           Assert.AreEqual(providerApprenticeships[0].Identifier, apprenticeshipTraining.Identifier);
         }
 
         [Test]

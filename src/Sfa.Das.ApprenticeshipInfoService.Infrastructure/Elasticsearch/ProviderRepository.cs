@@ -2,6 +2,7 @@
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
+
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     using System;
@@ -218,7 +219,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
            return providerStandards.Documents;
         }
-        
+
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page)
         {
             var coordinates = new Coordinate
@@ -309,37 +310,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
              var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary { Ukprn = ukprn };
 
-            var apprenticeships = GetActiveFrameworkAndStandardApprenticeships(ukprn);
+            var apprenticeships = new List<ApprenticeshipTraining>();
+            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
+            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
 
             var totalCount = apprenticeships.Count;
 
-            apprenticeshipTrainingSummary.TotalCount = totalCount;
-
             var pageSize = _applicationSettings.PageSizeApprenticeshipSummary;
             var paginationDetails = _paginationHelper.GeneratePaginationDetails(page, pageSize, totalCount);
+            apprenticeshipTrainingSummary.PaginationDetails = paginationDetails;
 
-            apprenticeshipTrainingSummary.Page = paginationDetails.Page;
-            apprenticeshipTrainingSummary.NumberPerPage = _applicationSettings.PageSizeApprenticeshipSummary;
             apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
                 = apprenticeships.OrderBy(x => x.Name)
                     .ThenBy(x => x.Level)
                     .Skip(paginationDetails.NumberOfRecordsToSkip)
                     .Take(pageSize);
 
-            apprenticeshipTrainingSummary.NumberReturned = apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
-                .Count();
-
-            return apprenticeshipTrainingSummary;
-        }
-
-       
-
-        private List<ApprenticeshipTraining> GetActiveFrameworkAndStandardApprenticeships(long ukprn)
-        {
-            var apprenticeships = new List<ApprenticeshipTraining>();
-            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
-            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
-            return apprenticeships;
+           return apprenticeshipTrainingSummary;
         }
 
         private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)

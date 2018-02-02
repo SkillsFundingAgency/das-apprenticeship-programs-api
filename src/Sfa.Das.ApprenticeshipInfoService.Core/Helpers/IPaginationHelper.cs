@@ -1,4 +1,5 @@
 ﻿using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using SFA.DAS.Apprenticeships.Api.Types.Pagination;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 {
