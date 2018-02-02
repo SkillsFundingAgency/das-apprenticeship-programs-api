@@ -172,7 +172,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         }
 
         [Test]
-        public void ShouldReturnActiveListOfProviderApprenticeshipsForUkprnInExpectedOrder()
+        public void ShouldReturnActiveListOfProviderApprenticeshipsForUkprn()
         {
             const long ukprn = 10005214L;
 
