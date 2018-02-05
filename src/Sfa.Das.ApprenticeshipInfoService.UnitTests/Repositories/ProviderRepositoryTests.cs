@@ -22,7 +22,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
     [TestFixture]
     public class ProviderRepositoryTests
     {
-        private const int TakeMaximum = 3;
+        private const int TakeMaximum = 10;
         private const int PageSizeApprenticeshipSummary = 4;
         private Mock<IElasticsearchCustomClient> _elasticClient;
 
@@ -484,7 +484,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                new PaginationHelper());
 
             var result = repo.GetActiveApprenticeshipTrainingByProvider(ukprn, 1);
 
@@ -506,5 +506,113 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
         }
 
+        [Test]
+        public void ShouldReturnActiveListOfProviderApprenticeshipsForUkprnInExpectedOrderSecondPage()
+        {
+            const long ukprn = 10005214L;
+            var searchResponseForDtos = new Mock<ISearchResponse<ProviderStandardDto>>();
+            var apiCallForStandards = new Mock<IApiCallDetails>();
+            var apiCallForDtos = new Mock<IApiCallDetails>();
+            var searchResponse = new Mock<ISearchResponse<ProviderStandard>>();
+            var apiCallForFrameworks = new Mock<IApiCallDetails>();
+            var searchResponseForFrameworkDtos = new Mock<ISearchResponse<ProviderFrameworkDto>>();
+            var apiCallForFrameworkDtos = new Mock<IApiCallDetails>();
+            var searchResponseForFrameworks = new Mock<ISearchResponse<ProviderFramework>>();
+
+            searchResponseForDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { new ProviderStandardDto() });
+            searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto>());
+
+            var configurationSettings = new Mock<IConfigurationSettings>();
+            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
+            apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
+            apiCallForStandards.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            apiCallForFrameworks.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+            searchResponse.SetupGet(x => x.ApiCall).Returns(apiCallForStandards.Object);
+            searchResponseForFrameworks.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworks.Object);
+            searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
+
+            var providerStandardArcheologistEntry4 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerStandardArcheologistEntry5 = new ProviderStandard { StandardId = 21, Title = "Archeologist", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var providerStandardArcheologistEntry6 = new ProviderStandard { StandardId = 22, Title = "Archeologist", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3) };
+
+            var standards = new List<ProviderStandard>
+            {
+                providerStandardArcheologistEntry4,
+                providerStandardArcheologistEntry5,
+                providerStandardArcheologistEntry6
+
+            };
+
+            searchResponse.Setup(x => x.Documents).Returns(standards);
+
+            var frameworkAccountingEntry2 = new ProviderFramework { FrameworkId = "321-1-1", PathwayName = "Accounting", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3) };
+            var frameworkAccountingEntry1 = new ProviderFramework { FrameworkId = "321-2-1", PathwayName = "Accounting", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), EffectiveTo = DateTime.Today.AddDays(2) };
+            var frameworkAccountingEntry3 = new ProviderFramework { FrameworkId = "234-3-2", PathwayName = "Accounting", Level = 4, EffectiveFrom = DateTime.Today.AddDays(-3), EffectiveTo = DateTime.Today.AddDays(3) };
+            var standardZebraWranglerEntry7 = new ProviderFramework() { FrameworkId = "235-4-1", PathwayName = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) };
+
+            var frameworks = new List<ProviderFramework>
+            {
+                frameworkAccountingEntry2,
+                frameworkAccountingEntry3,
+                frameworkAccountingEntry1,
+                standardZebraWranglerEntry7
+            };
+            searchResponseForFrameworks.Setup(x => x.Documents).Returns(frameworks);
+
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveFramework(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Returns(true);
+            _mockActiveFrameworkChecker
+                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), null, It.IsAny<DateTime?>()))
+                .Returns(false);
+
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForDtos.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandard>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderFrameworkDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForFrameworkDtos.Object);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderFramework>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForFrameworks.Object);
+
+            var paginationDetails = new PaginationDetails
+            {
+                LastPage = 1,
+                NumberOfRecordsToSkip = 0,
+                NumberPerPage = 20,
+                Page = 0,
+                TotalCount = 3
+            };
+
+            _mockPaginationHelper
+                .Setup(x => x.GeneratePaginationDetails(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Returns(paginationDetails);
+
+            var repo = new ProviderRepository(
+                _elasticClient.Object,
+                _log.Object,
+                _mockConfigurationSettings.Object,
+                Mock.Of<IProviderLocationSearchProvider>(),
+                Mock.Of<IProviderMapping>(),
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                new PaginationHelper());
+
+            var result = repo.GetActiveApprenticeshipTrainingByProvider(ukprn, 2);
+
+            var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
+            Assert.AreEqual(3, providerApprenticeships.Length);
+
+            Assert.AreEqual(providerApprenticeships[0].Identifier, providerStandardArcheologistEntry5.StandardId.ToString(),
+                $"Expect first item to be Standard Id [{providerStandardArcheologistEntry5.StandardId}], but was [{providerApprenticeships[0].Identifier}]");
+            Assert.AreEqual(providerApprenticeships[0].TrainingType, ApprenticeshipTrainingType.Standard);
+            Assert.AreEqual(providerApprenticeships[0].Type, "Standard");
+            Assert.AreEqual(providerApprenticeships[0].Level, 2);
+            Assert.AreEqual(providerApprenticeships[0].Name, "Archeologist");
+            Assert.AreEqual(providerApprenticeships[1].Identifier, providerStandardArcheologistEntry6.StandardId.ToString(),
+                $"Expect first item to be Standard Id [{providerStandardArcheologistEntry6.StandardId}], but was [{providerApprenticeships[1].Identifier}]");
+            Assert.AreEqual(providerApprenticeships[2].Identifier, standardZebraWranglerEntry7.FrameworkId,
+                $"Expect first item to be Framework Id [{standardZebraWranglerEntry7.FrameworkId}], but was [{providerApprenticeships[2].Identifier}]");
+        }
     }
 }
