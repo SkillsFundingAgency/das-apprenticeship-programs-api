@@ -161,18 +161,34 @@ namespace SFA.DAS.Providers.Api.Client
         //Task<IEnumerable<StandardProvider>> GetStandardProvidersAsync(int standardId);
 
         /// <summary>
-        /// Get ApprenticeshipTrainingSummary for a provider
+        /// Get ApprenticeshipTrainingSummary for a provider for page 1 of results
         /// GET providers/{ukprn}/active-apprenticeship-training
         /// </summary>
-        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, total count of active items</returns>
+        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, pagination details</returns>
         ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn);
 
+
         /// <summary>
-        /// Get ApprenticeshipTrainingSummary for a provider
+        /// Get ApprenticeshipTrainingSummary for a provider for a given page
+        /// GET providers/{ukprn}/active-apprenticeship-training/{pageNumber}
+        /// </summary>
+        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, pagination details</returns>
+        ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int pageNumber);
+
+        /// <summary>
+        /// Get ApprenticeshipTrainingSummary for a provider for page 1 of results
         /// GET providers/{ukprn}/active-apprenticeship-training
         /// </summary>
         /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, total count of active items</returns>
         Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn);
+
+
+        /// <summary>
+        /// Get ApprenticeshipTrainingSummary for a provider for a given page
+        /// GET providers/{ukprn}/active-apprenticeship-training/{pageNumber}
+        /// </summary>
+        /// <returns>ApprenticeshipTrainingSummary (list of apprenticeshipTraining, ukprn, total count of active items</returns>
+        Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn, int pageNumber);
 
 
 
