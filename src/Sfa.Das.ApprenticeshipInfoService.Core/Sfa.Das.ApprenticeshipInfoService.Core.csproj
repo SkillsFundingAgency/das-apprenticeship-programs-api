@@ -60,6 +60,8 @@
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\IActiveApprenticeshipChecker.cs" />
     <Compile Include="Helpers\IControllerHelper.cs" />
+    <Compile Include="Helpers\IPaginationHelper.cs" />
+    <Compile Include="Helpers\PaginationHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApprenticeshipDetails.cs" />
     <Compile Include="Models\ApprenticeshipProduct.cs" />

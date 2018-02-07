@@ -24,5 +24,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
 
         IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn);
         IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn);
+
+        ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page);
     }
 }

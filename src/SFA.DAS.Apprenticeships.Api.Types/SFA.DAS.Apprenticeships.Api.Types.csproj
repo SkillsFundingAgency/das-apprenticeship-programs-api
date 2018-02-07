@@ -55,6 +55,7 @@
     <Compile Include="Exceptions\UnknownDeliveryModeException.cs" />
     <Compile Include="FrameworkCodeSummary.cs" />
     <Compile Include="FrameworkProvider.cs" />
+    <Compile Include="Pagination\PaginationDetails.cs" />
     <Compile Include="ProvidersHref.cs" />
     <Compile Include="Providers\ApprenticeshipTrainingSummary.cs" />
     <Compile Include="Providers\ContactAddress.cs" />
@@ -83,6 +84,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

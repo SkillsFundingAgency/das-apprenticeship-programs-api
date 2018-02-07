@@ -115,6 +115,7 @@
     <Compile Include="Helpers\ActiveFrameworkCheckerTests.cs" />
     <Compile Include="Helpers\ControllerHelperTests.cs" />
     <Compile Include="Helpers\DateHelperTests.cs" />
+    <Compile Include="Helpers\PaginationHelperTests.cs" />
     <Compile Include="Infrastructure\ApplicationSettingsTests.cs" />
     <Compile Include="Infrastructure\Mapping\FrameworkMappingTests.cs" />
     <Compile Include="JsonEnumSerializerTests.cs" />

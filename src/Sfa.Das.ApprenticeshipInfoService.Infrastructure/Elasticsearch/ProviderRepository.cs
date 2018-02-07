@@ -1,4 +1,7 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
+﻿using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
+using SFA.DAS.Apprenticeships.Api.Types;
+
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
@@ -24,6 +27,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IProviderLocationSearchProvider _providerLocationSearchProvider;
         private readonly IProviderMapping _providerMapping;
         private readonly IQueryHelper _queryHelper;
+        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
+        private readonly IPaginationHelper _paginationHelper;
 
         public ProviderRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
@@ -31,7 +36,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             IConfigurationSettings applicationSettings,
             IProviderLocationSearchProvider providerLocationSearchProvider,
             IProviderMapping providerMapping,
-            IQueryHelper queryHelper)
+            IQueryHelper queryHelper,
+            IActiveApprenticeshipChecker activeApprenticeshipChecker, 
+            IPaginationHelper paginationHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationLogger = applicationLogger;
@@ -39,6 +46,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _providerLocationSearchProvider = providerLocationSearchProvider;
             _providerMapping = providerMapping;
             _queryHelper = queryHelper;
+            _activeApprenticeshipChecker = activeApprenticeshipChecker;
+            _paginationHelper = paginationHelper;
         }
 
         public IEnumerable<ProviderSummary> GetAllProviders()
@@ -296,5 +305,64 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             return results.Documents;
         }
+
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
+        {
+             var apprenticeshipTrainingSummary = new ApprenticeshipTrainingSummary { Ukprn = ukprn };
+
+            var apprenticeships = new List<ApprenticeshipTraining>();
+            apprenticeships.AddRange(GetActiveStandardsForUkprn(ukprn));
+            apprenticeships.AddRange(GetActiveFrameworksForUkprn(ukprn));
+
+            var totalCount = apprenticeships.Count;
+
+            var pageSize = _applicationSettings.PageSizeApprenticeshipSummary;
+            var paginationDetails = _paginationHelper.GeneratePaginationDetails(page, pageSize, totalCount);
+            apprenticeshipTrainingSummary.PaginationDetails = paginationDetails;
+            apprenticeshipTrainingSummary.Count = totalCount;
+
+            apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
+                = apprenticeships.OrderBy(x => x.Name)
+                    .ThenBy(x => x.Level)
+                    .Skip(paginationDetails.NumberOfRecordsToSkip)
+                    .Take(pageSize);
+
+           return apprenticeshipTrainingSummary;
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)
+        {
+            var frameworks = GetFrameworksByProviderUkprn(ukprn);
+
+            return frameworks
+                .Where(x => _activeApprenticeshipChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Select(framework => new ApprenticeshipTraining
+                {
+                    Name = framework.PathwayName,
+                    Level = framework.Level,
+                    Type = ApprenticeshipTrainingType.Framework.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Framework,
+                    Identifier = framework.FrameworkId
+                })
+                .ToList();
+        }
+
+        private IEnumerable<ApprenticeshipTraining> GetActiveStandardsForUkprn(long ukprn)
+        {
+            var standards = GetStandardsByProviderUkprn(ukprn);
+
+            return standards
+                .Where(x => _activeApprenticeshipChecker.CheckActiveStandard(x.StandardId.ToString(), x.EffectiveFrom, x.EffectiveTo))
+                .Select(standard => new ApprenticeshipTraining
+                {
+                    Name = standard.Title,
+                    Level = standard.Level,
+                    Type = ApprenticeshipTrainingType.Standard.ToString(),
+                    TrainingType = ApprenticeshipTrainingType.Standard,
+                    Identifier = standard.StandardId.ToString()
+                })
+                .ToList();
+        }
+
     }
 }
