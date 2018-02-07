@@ -7,6 +7,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
     {
         public long Ukprn { get; set; }        
         public PaginationDetails PaginationDetails { get; set; }
+        public int Count { get; set; }
         public IEnumerable<ApprenticeshipTraining> ApprenticeshipTrainingItems { get; set; }
 
     }

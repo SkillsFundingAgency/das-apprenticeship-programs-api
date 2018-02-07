@@ -319,6 +319,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var pageSize = _applicationSettings.PageSizeApprenticeshipSummary;
             var paginationDetails = _paginationHelper.GeneratePaginationDetails(page, pageSize, totalCount);
             apprenticeshipTrainingSummary.PaginationDetails = paginationDetails;
+            apprenticeshipTrainingSummary.Count = totalCount;
 
             apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
                 = apprenticeships.OrderBy(x => x.Name)
