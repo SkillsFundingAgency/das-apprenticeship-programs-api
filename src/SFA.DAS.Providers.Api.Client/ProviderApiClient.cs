@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Apprenticeships.Api.Client;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
@@ -171,9 +169,25 @@ namespace SFA.DAS.Providers.Api.Client
             }
         }
 
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int pageNumber)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training/{pageNumber}"))
+            {
+                return RequestAndDeserialise<ApprenticeshipTrainingSummary>(request);
+            }
+        }
+
         public async Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training"))
+            {
+                return await RequestAndDeserialiseAsync<ApprenticeshipTrainingSummary>(request);
+            }
+        }
+
+        public async Task<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProviderAsync(long ukprn, int pageNumber)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training/{pageNumber}"))
             {
                 return await RequestAndDeserialiseAsync<ApprenticeshipTrainingSummary>(request);
             }
