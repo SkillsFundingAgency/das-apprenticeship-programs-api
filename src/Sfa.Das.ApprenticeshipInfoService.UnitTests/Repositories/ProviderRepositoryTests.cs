@@ -490,7 +490,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
             Assert.AreEqual(PageSizeApprenticeshipSummary, providerApprenticeships.Length);
-            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(4, result.Count);
             Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId,
                 $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
             Assert.AreEqual(providerApprenticeships[1].Identifier, providerFrameworkAccountingLev3.FrameworkId);
