@@ -14,9 +14,8 @@ open Fake
    ==>"Building Acceptance Tests"
     //==>"Run Acceptance Tests"
 
-"Set version number"
-   ==>"Set Solution Name"
-   ==>"Update Assembly Info Version Numbers"
+"Set Solution Name"
+   ==>"Update WiN Assembly Info Version Numbers"
    ==>"Clean Directories"
    ==>"Dotnet Restore"
    ==>"Build Projects"
