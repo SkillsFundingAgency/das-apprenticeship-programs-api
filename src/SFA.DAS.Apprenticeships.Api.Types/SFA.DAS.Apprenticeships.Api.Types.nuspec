@@ -5,13 +5,13 @@
         <version>0.0.1</version>
         <authors>sfanuget scottcowan</authors>
 		<licenseUrl>https://github.com/SkillsFundingAgency/das-search/blob/master/LICENSE</licenseUrl>
-		<projectUrl>https://github.com/SkillsFundingAgency/das-search</projectUrl>		
+		<projectUrl>https://github.com/SkillsFundingAgency/das-search</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Provides types for the SFA.DAS.ApprenticeshipInfoService client service</description>
 		<summary>Types used for SFA.DAS.ApprenticeshipInfoService client service</summary>
         <copyright>Copyright 2016</copyright>
     </metadata>
      <files>
-        <file src="\..\src\SFA.DAS.Apprenticeships.Api.Client\bin\Release\SFA.DAS.Apprenticeships.Api.Types.dll" target="lib\net45" />
+        <file src="bin\Release\SFA.DAS.Apprenticeships.Api.Types.dll" target="lib\net45" />
      </files>
 </package>
