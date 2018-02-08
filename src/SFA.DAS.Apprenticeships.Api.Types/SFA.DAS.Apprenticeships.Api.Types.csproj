@@ -1,96 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{35CDF98E-A38F-42B7-ACCE-62B5BB4BA3F3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.Apprenticeships.Api.Types</RootNamespace>
-    <AssemblyName>SFA.DAS.Apprenticeships.Api.Types</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\SharedRules.ruleset</CodeAnalysisRuleSet>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>SFA.DAS.Apprenticeships.Api.Types</PackageId>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>Esfa</Authors>
+    <Title>Provides types for the SFA.DAS.ApprenticeshipInfoService client service</Title>
+    <Description>Provides types for the SFA.DAS.ApprenticeshipInfoService client service</Description>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-apprenticeship-programs-api/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-apprenticeship-programs-api/tree/master/src/SFA.DAS.Apprenticeships.Api.Types</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SkillsFundingAgency/das-apprenticeship-programs-api</RepositoryUrl>
+    <PackageTags>Esfa;Das;</PackageTags>
+    <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\SharedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ApprenticeshipTrainingType.cs" />
-    <Compile Include="AssessmentOrgs\Address.cs" />
-    <Compile Include="AssessmentOrgs\Link.cs" />
-    <Compile Include="enums\DeliveryMode.cs" />
-    <Compile Include="Exceptions\UnknownDeliveryModeException.cs" />
-    <Compile Include="FrameworkCodeSummary.cs" />
-    <Compile Include="FrameworkProvider.cs" />
-    <Compile Include="Pagination\PaginationDetails.cs" />
-    <Compile Include="ProvidersHref.cs" />
-    <Compile Include="Providers\ApprenticeshipTrainingSummary.cs" />
-    <Compile Include="Providers\ContactAddress.cs" />
-    <Compile Include="AssessmentOrgs\Organisation.cs" />
-    <Compile Include="AssessmentOrgs\OrganisationSummary.cs" />
-    <Compile Include="AssessmentOrgs\Period.cs" />
-    <Compile Include="AssessmentOrgs\StandardOrganisationSummary.cs" />
-    <Compile Include="Exceptions\EntityNotFoundException.cs" />
-    <Compile Include="Framework.cs" />
-    <Compile Include="FrameworkSummary.cs" />
-    <Compile Include="JobRoleItem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\ApprenticeshipTraining.cs" />
-    <Compile Include="Providers\ProviderFramework.cs" />
-    <Compile Include="Providers\ProviderStandard.cs" />
-    <Compile Include="Providers\ProviderSummary.cs" />
-    <Compile Include="Providers\Provider.cs" />
-    <Compile Include="Standard.cs" />
-    <Compile Include="StandardProvider.cs" />
-    <Compile Include="ApprenticeshipSummary.cs" />
-    <Compile Include="StandardSummary.cs" />
-    <Compile Include="TrainingLocation.cs" />
-    <Compile Include="TypicalLength.cs" />
-    <Compile Include="Stats\VersionInformation.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
