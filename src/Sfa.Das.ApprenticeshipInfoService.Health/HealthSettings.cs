@@ -1,5 +1,6 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Health
 {
+    using Microsoft.Azure;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -7,29 +8,29 @@
 
     public class HealthSettings : IHealthSettings
     {
-        public string Environment => ConfigurationManager.AppSettings["Environment"];
+        public string Environment => CloudConfigurationManager.GetSetting("EnvironmentName");
 
         public IEnumerable<Uri> ElasticsearchUrls => GetElasticSearchIps("ElasticServerUrls");
 
         public IEnumerable<string> RequiredIndexAliases => GetElasticRequiredIndexAliases("RequiredIndexAliases");
-        
-        public string LarsSiteRootUrl => ConfigurationManager.AppSettings["LarsSiteRootUrl"];
 
-        public string LarsSiteDownloadsPageUrl => ConfigurationManager.AppSettings["LarsSiteDownloadsPageUrl"];
+        public string LarsSiteRootUrl => CloudConfigurationManager.GetSetting("LarsSiteRootUrl");
 
-        public string CourseDirectoryUrl => ConfigurationManager.AppSettings["CourseDirectoryUrl"];
+        public string LarsSiteDownloadsPageUrl => CloudConfigurationManager.GetSetting("LarsSiteDownloadsPageUrl");
 
-        public string UkrlpUrl => ConfigurationManager.AppSettings["UKRLP_EndpointUri"];
+        public string CourseDirectoryUrl => CloudConfigurationManager.GetSetting("CourseDirectoryUrl");
+
+        public string UkrlpUrl => CloudConfigurationManager.GetSetting("UKRLP_EndpointUri");
 
         private IEnumerable<Uri> GetElasticSearchIps(string configString)
         {
-            var urlStrings = ConfigurationManager.AppSettings[configString].Split(',');
+            var urlStrings = CloudConfigurationManager.GetSetting(configString).Split(',');
             return urlStrings.Select(url => new Uri(url));
         }
 
         private IEnumerable<string> GetElasticRequiredIndexAliases(string requiredIndexAliases)
         {
-            return ConfigurationManager.AppSettings[requiredIndexAliases].Split(',');
+            return CloudConfigurationManager.GetSetting(requiredIndexAliases).Split(',');
         }
     }
 }

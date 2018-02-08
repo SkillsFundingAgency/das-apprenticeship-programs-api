@@ -9,29 +9,29 @@
 
     public sealed class ApplicationSettings : IConfigurationSettings
     {
-        public string ApprenticeshipIndexAlias => ConfigurationManager.AppSettings["ApprenticeshipIndexAlias"];
+        public string ApprenticeshipIndexAlias => CloudConfigurationManager.GetSetting("ApprenticeshipIndexAlias");
 
-        public string ProviderIndexAlias => ConfigurationManager.AppSettings["ProviderIndexAlias"];
+        public string ProviderIndexAlias => CloudConfigurationManager.GetSetting("ProviderIndexAlias");
 
-        public string AssessmentOrgsIndexAlias => ConfigurationManager.AppSettings["AssessmentOrgsIndexAlias"];
+        public string AssessmentOrgsIndexAlias => CloudConfigurationManager.GetSetting("AssessmentOrgsIndexAlias");
 
         public IEnumerable<Uri> ElasticServerUrls => GetElasticSearchIps();
 
-        public string EnvironmentName => ConfigurationManager.AppSettings["EnvironmentName"];
+        public string EnvironmentName => CloudConfigurationManager.GetSetting("EnvironmentName");
 
-        public string ApplicationName => ConfigurationManager.AppSettings["ApplicationName"];
+        public string ApplicationName => CloudConfigurationManager.GetSetting("ApplicationName");
 
-        public string GaTrackingCode => ConfigurationManager.AppSettings["ga.trackingid"];
+        public string GaTrackingCode => CloudConfigurationManager.GetSetting("ga.trackingid");
 
-        public int ApprenticeshipProviderElements => int.Parse(ConfigurationManager.AppSettings["ApprenticeshipProviderElements"]);
+        public int ApprenticeshipProviderElements => int.Parse(CloudConfigurationManager.GetSetting("ApprenticeshipProviderElements"));
 
-        public string ElasticsearchUsername => ConfigurationManager.AppSettings["ElasticsearchUsername"];
+        public string ElasticsearchUsername => CloudConfigurationManager.GetSetting("ElasticsearchUsername");
 
-        public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
-        public int TakeMaximum => int.Parse(ConfigurationManager.AppSettings["TakeMaximum"]);
+        public string ElasticsearchPassword => CloudConfigurationManager.GetSetting("ElasticsearchPassword");
+        public int TakeMaximum => int.Parse(CloudConfigurationManager.GetSetting("TakeMaximum"));
 
         public int PageSizeApprenticeshipSummary => int.Parse(
-            ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);
+            CloudConfigurationManager.GetSetting("PageSizeApprenticeshipSummary"));
 
         public List<string> FrameworksExpiredRequired
         {

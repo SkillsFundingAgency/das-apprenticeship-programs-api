@@ -9,6 +9,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
     using System.Collections.Generic;
     using System.Diagnostics;
     using Elasticsearch;
+    using Microsoft.Azure;
     using Models;
 
     public class HealthService : IHealthService
@@ -48,7 +49,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
             var courseDirectoryStatus = _httpServer.ResponseCode(_healthSettings.CourseDirectoryUrl);
 
             var ukrlpStatus = _httpServer.ResponseCode(_healthSettings.UkrlpUrl);
-            var fechoicesStatus = _sqlService.TestConnection(ConfigurationManager.AppSettings["AchievementRateDataBaseConnectionString"]);
+            var fechoicesStatus = _sqlService.TestConnection(CloudConfigurationManager.GetSetting("AchievementRateDataBaseConnectionString"));
 
             var model = new HealthModel
             {
@@ -85,7 +86,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
             {
                 var links = _angleSharpService.GetLinks(larsDownloadPageUrl, "li a", "LARS CSV");
                 var linkEndpoint = links?.FirstOrDefault();
-            
+
                 model.LarsZipFileStatus = _httpServer.ResponseCode(string.Concat(_healthSettings.LarsSiteRootUrl, linkEndpoint));
 
                 var dateStampOfLarsFile = GetDateStampOfLarsFile(linkEndpoint);
