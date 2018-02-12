@@ -16,7 +16,6 @@
 
   <PropertyGroup>
     <PackageId>SFA.DAS.Providers.Api.Client</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
     <Authors>Esfa</Authors>
     <Title>A client to call the DAS Providers service</Title>
     <Description>A client to call the DAS Providers service</Description>

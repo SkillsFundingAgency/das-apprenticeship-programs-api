@@ -15,7 +15,6 @@
 
   <PropertyGroup>
     <PackageId>SFA.DAS.Apprenticeships.Api.Client</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
     <Authors>Esfa</Authors>
     <Title>A client to call the DAS Apprenticeship Programmes and Providers service</Title>
     <Description>A client to call the DAS Apprenticeship Programmes and Providers service</Description>

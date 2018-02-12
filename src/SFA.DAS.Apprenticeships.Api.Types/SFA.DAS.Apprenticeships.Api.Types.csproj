@@ -10,7 +10,6 @@
 
   <PropertyGroup>
     <PackageId>SFA.DAS.Apprenticeships.Api.Types</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
     <Authors>Esfa</Authors>
     <Title>Provides types for the SFA.DAS.ApprenticeshipInfoService client service</Title>
     <Description>Provides types for the SFA.DAS.ApprenticeshipInfoService client service</Description>
