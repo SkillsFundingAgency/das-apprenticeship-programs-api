@@ -152,7 +152,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed to query provider frameworks for ukprn [{ukprn}]");
             }
 
-            var totalTakeForFrameworkDocuments = _queryHelper.GetFrameworksTotalAmount();
+            var totalTakeForFrameworkDocuments = 0;
+            if (matchedIds.Documents.Count > 0)
+            {
+                totalTakeForFrameworkDocuments = _queryHelper.GetFrameworksTotalAmount();
+            }
 
             var providerFrameworks =
                 _elasticsearchCustomClient.Search<ProviderFramework>(
@@ -197,7 +201,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                  throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
 
-            var totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+            var totalTakeForStandardDocuments = 0;
+
+            if (matchedIds.Documents.Count>0)
+            {
+                totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+            }
 
             var providerStandards =
                 _elasticsearchCustomClient.Search<ProviderStandard>(
