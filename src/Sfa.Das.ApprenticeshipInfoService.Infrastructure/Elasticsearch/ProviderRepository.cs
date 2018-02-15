@@ -93,9 +93,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
-            if (results.Documents.Count() > 1)
+            if (results.Documents.Count > 1)
             {
-                _applicationLogger.Debug($"found {results.Documents.Count()} providers for the ukprn {ukprn}");
+                _applicationLogger.Debug($"found {results.Documents.Count} providers for the ukprn {ukprn}");
             }
 
             return results.Documents.FirstOrDefault();
@@ -122,9 +122,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
-            if (results.Documents.Count() > 1)
+            if (results.Documents.Count > 1)
             {
-                _applicationLogger.Debug($"found {results.Documents.Count()} providers for the ukprns provided");
+                _applicationLogger.Debug($"found {results.Documents.Count} providers for the ukprns provided");
             }
 
             return results.Documents;
@@ -132,19 +132,19 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderFramework> GetFrameworksByProviderUkprn(long ukprn)
         {
-            var maximumTake = _applicationSettings.TakeMaximum;
-
+            var totalTakeForFrameworkDocuments = _queryHelper.GetFrameworksTotalAmount();
+            var aggregateKeyName = "levelId";
             var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
                             .Type(Types.Parse("frameworkprovider"))
                             .From(0)
-                            .Take(maximumTake)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
-                                    .Terms(ukprn))));
+                                    .Terms(ukprn)))
+                            .Aggregations(agg => agg.Terms(aggregateKeyName, frm => frm.Size(totalTakeForFrameworkDocuments).Field(fi => fi.FrameworkId))));
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
@@ -152,11 +152,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed to query provider frameworks for ukprn [{ukprn}]");
             }
 
-            var totalTakeForFrameworkDocuments = 0;
-            if (matchedIds.Documents.Count > 0)
-            {
-                totalTakeForFrameworkDocuments = _queryHelper.GetFrameworksTotalAmount();
-            }
+            var matchingFrameworkIds = ExtractFrameworkIdsFromAggregation(matchedIds, aggregateKeyName);
 
             var providerFrameworks =
                 _elasticsearchCustomClient.Search<ProviderFramework>(
@@ -164,11 +160,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                             .Type(Types.Parse("frameworkdocument"))
                             .From(0)
-                            .Take(totalTakeForFrameworkDocuments)
+                            .Take(matchingFrameworkIds.Count)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.FrameworkId)
-                                    .Terms(matchedIds.Documents.Select(x => x.FrameworkId)))));
+                                    .Terms(matchingFrameworkIds))));
 
             if (providerFrameworks.ApiCall.HttpStatusCode != 200)
             {
@@ -181,19 +177,21 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn)
         {
-            var maximumTake = _applicationSettings.TakeMaximum;
-
+            var totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
+            var aggregateKeyName = "levelId";
             var matchedIds =
                 _elasticsearchCustomClient.Search<ProviderStandardDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
                             .Type(Types.Parse("standardprovider"))
                             .From(0)
-                            .Take(maximumTake)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
-                                    .Terms(ukprn))));
+                                    .Terms(ukprn)))
+                                .Aggregations(agg => agg.Terms(
+                                    aggregateKeyName,
+                                frm => frm.Size(totalTakeForStandardDocuments).Field(fi => fi.StandardCode))));
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
@@ -201,12 +199,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                  throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
 
-            var totalTakeForStandardDocuments = 0;
-
-            if (matchedIds.Documents.Count>0)
-            {
-                totalTakeForStandardDocuments = _queryHelper.GetStandardsTotalAmount();
-            }
+            var matchingStandardIds = ExtractStandardCodesFromAggregation(matchedIds, aggregateKeyName);
 
             var providerStandards =
                 _elasticsearchCustomClient.Search<ProviderStandard>(
@@ -214,11 +207,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
                             .Type(Types.Parse("standarddocument"))
                             .From(0)
-                            .Take(totalTakeForStandardDocuments)
+                            .Take(matchingStandardIds.Count)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.StandardId)
-                                    .Terms(matchedIds.Documents.Select(x => x.StandardCode)))));
+                                    .Terms(matchingStandardIds))));
 
             if (providerStandards.ApiCall.HttpStatusCode != 200)
             {
@@ -277,9 +270,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException("Failed query providers by standard code");
             }
 
-            if (results.Documents.Count() > 1)
+            if (results.Documents.Count > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count()} providers for the standard {standardId}");
+                _applicationLogger.Warn($"found {results.Documents.Count} providers for the standard {standardId}");
             }
 
             return results.Documents;
@@ -307,9 +300,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException("Failed query providers by standard code");
             }
 
-            if (results.Documents.Count() > 1)
+            if (results.Documents.Count > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count()} providers for the framework {frameworkId}");
+                _applicationLogger.Warn($"found {results.Documents.Count} providers for the framework {frameworkId}");
             }
 
             return results.Documents;
@@ -337,6 +330,42 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     .Take(pageSize);
 
            return apprenticeshipTrainingSummary;
+        }
+
+        private static List<string> ExtractFrameworkIdsFromAggregation(ISearchResponse<ProviderFrameworkDto> matchedIds, string levelId)
+        {
+
+            if (matchedIds.Aggregations == null) { return new List<string>(); }
+
+            var matchedList = ((BucketAggregate)matchedIds.Aggregations[levelId]).Items;
+            return GetKeysFromAggregate(matchedList);
+        }
+
+        private static List<string> ExtractStandardCodesFromAggregation(ISearchResponse<ProviderStandardDto> matchedIds, string levelId)
+        {
+            if (matchedIds.Aggregations == null) { return new List<string>(); }
+            var matchedList = ((BucketAggregate)matchedIds.Aggregations[levelId]).Items;
+            return GetKeysFromAggregate(matchedList);
+        }
+
+        private static List<string> GetKeysFromAggregate(IReadOnlyCollection<IBucket> matchedList)
+        {
+            if (matchedList == null) { return new List<string>(); }
+
+            var matchedDetails = new List<string>();
+            using (var matchedEnumerator = matchedList.GetEnumerator())
+            {
+                while (matchedEnumerator.MoveNext())
+                {
+                    if (matchedEnumerator.Current != null)
+                    {
+                        var res = ((KeyedBucket<object>)matchedEnumerator.Current).Key.ToString();
+                        matchedDetails.Add(res);
+                    }
+                }
+            }
+
+            return matchedDetails;
         }
 
         private IEnumerable<ApprenticeshipTraining> GetActiveFrameworksForUkprn(long ukprn)
@@ -372,6 +401,5 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 })
                 .ToList();
         }
-
-    }
+     }
 }
