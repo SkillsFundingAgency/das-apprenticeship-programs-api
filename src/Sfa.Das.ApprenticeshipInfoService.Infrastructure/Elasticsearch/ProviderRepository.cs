@@ -37,7 +37,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             IProviderLocationSearchProvider providerLocationSearchProvider,
             IProviderMapping providerMapping,
             IQueryHelper queryHelper,
-            IActiveApprenticeshipChecker activeApprenticeshipChecker, 
+            IActiveApprenticeshipChecker activeApprenticeshipChecker,
             IPaginationHelper paginationHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
@@ -321,7 +321,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var pageSize = _applicationSettings.PageSizeApprenticeshipSummary;
             var paginationDetails = _paginationHelper.GeneratePaginationDetails(page, pageSize, totalCount);
             apprenticeshipTrainingSummary.PaginationDetails = paginationDetails;
-            apprenticeshipTrainingSummary.Count = totalCount;
 
             apprenticeshipTrainingSummary.ApprenticeshipTrainingItems
                 = apprenticeships.OrderBy(x => x.Name)
