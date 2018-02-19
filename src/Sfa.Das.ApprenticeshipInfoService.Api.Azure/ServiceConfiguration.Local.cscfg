@@ -19,7 +19,6 @@
       <Setting name="ApprenticeshipProviderElements" value="20"/>
       <Setting name="ElasticsearchUsername" value="" />
       <Setting name="ElasticsearchPassword" value="" />
-      <Setting name="TakeMaximum" value="1000" />
       <Setting name="PageSizeApprenticeshipSummary" value="20" />
       <Setting name="FrameworksExpiredRequired" value="" />
       <Setting name="StandardsExpiredRequired" value="" />

@@ -26,7 +26,6 @@
       <Setting name="ApprenticeshipProviderElements" />
       <Setting name="ElasticsearchUsername" />
       <Setting name="ElasticsearchPassword" />
-      <Setting name="TakeMaximum" />
       <Setting name="PageSizeApprenticeshipSummary" />
       <Setting name="FrameworksExpiredRequired" />
       <Setting name="StandardsExpiredRequired" />

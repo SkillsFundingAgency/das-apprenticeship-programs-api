@@ -19,7 +19,6 @@
       <Setting name="ApprenticeshipProviderElements" value="__ApprenticeshipProviderElements__"/>
       <Setting name="ElasticsearchUsername" value="__ElasticsearchUsername__" />
       <Setting name="ElasticsearchPassword" value="__ElasticsearchPassword__" />
-      <Setting name="TakeMaximum" value="__TakeMaximum__" />
       <Setting name="PageSizeApprenticeshipSummary" value="__PageSizeApprenticeshipSummary__" />
       <Setting name="FrameworksExpiredRequired" value="__FrameworksExpiredRequired__" />
       <Setting name="StandardsExpiredRequired" value="__StandardsExpiredRequired__" />
