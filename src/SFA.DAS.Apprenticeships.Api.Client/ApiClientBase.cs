@@ -116,7 +116,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             return false;
         }
 
-        internal T RequestAndDeserialise<T>(HttpRequestMessage request, string missing = null) where T : class
+        protected T RequestAndDeserialise<T>(HttpRequestMessage request, string missing = null) where T : class
 
         {
             request.Headers.Add("Accept", "application/json");

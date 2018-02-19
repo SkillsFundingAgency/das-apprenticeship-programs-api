@@ -22,7 +22,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
     [TestFixture]
     public class ProviderRepositoryTests
     {
-        private const int TakeMaximum = 10;
         private const int PageSizeApprenticeshipSummary = 4;
         private Mock<IElasticsearchCustomClient> _elasticClient;
 
@@ -45,8 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             _queryHelper.Setup(x => x.GetProvidersByStandardTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersTotalAmount()).Returns(1);
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
-            _mockConfigurationSettings.Setup(x => x.TakeMaximum)
-                .Returns(TakeMaximum);
+
             _mockConfigurationSettings.Setup(x => x.PageSizeApprenticeshipSummary)
                 .Returns(PageSizeApprenticeshipSummary);
             _mockPaginationHelper = new Mock<IPaginationHelper>();
@@ -163,9 +161,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto> { frameworkDto1, frameworkDto2 });
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(2);
-            apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
+         apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
             apiCallForFrameworks.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.Ambiguous);
@@ -176,7 +172,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
-                configurationSettings.Object,
+                Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
@@ -207,8 +203,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             searchResponseForFrameworks.Setup(x => x.Documents).Returns(providerFrameworks);
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForFrameworkDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
@@ -220,7 +214,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
-                configurationSettings.Object,
+                Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
@@ -273,8 +267,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             searchResponseForStandardsDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { standardDto1, standardDto2 });
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(2);
             apiCallForStandardDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForStandardsDtos.SetupGet(x => x.ApiCall).Returns(apiCallForStandardDtos.Object);
 
@@ -286,7 +278,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
-                configurationSettings.Object,
+                Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
@@ -318,8 +310,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             };
             searchResponse.Setup(x => x.Documents).Returns(providerStandards);
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int) HttpStatusCode.OK);
             searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
 
@@ -331,7 +321,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var repo = new ProviderRepository(
                 _elasticClient.Object,
                 _log.Object,
-                configurationSettings.Object,
+                Mock.Of<IConfigurationSettings>(),
                 Mock.Of<IProviderLocationSearchProvider>(),
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
@@ -407,8 +397,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { new ProviderStandardDto() });
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto>());
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
             apiCallForStandards.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
@@ -490,7 +478,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
             Assert.AreEqual(PageSizeApprenticeshipSummary, providerApprenticeships.Length);
-            Assert.AreEqual(4, result.Count);
+            Assert.AreEqual(4, result.PaginationDetails.TotalCount);
             Assert.AreEqual(providerApprenticeships[0].Identifier, providerFrameworkAccountingLev2.FrameworkId,
                 $"Expect first item to be Framework Id [{providerFrameworkAccountingLev2.FrameworkId}], but was [{providerApprenticeships[0].Identifier} ]");
             Assert.AreEqual(providerApprenticeships[1].Identifier, providerFrameworkAccountingLev3.FrameworkId);
@@ -522,8 +510,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { new ProviderStandardDto() });
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto>());
 
-            var configurationSettings = new Mock<IConfigurationSettings>();
-            configurationSettings.Setup(x => x.TakeMaximum).Returns(10);
             apiCallForDtos.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);
             searchResponseForDtos.SetupGet(x => x.ApiCall).Returns(apiCallForDtos.Object);
             apiCallForStandards.SetupGet(x => x.HttpStatusCode).Returns((int)HttpStatusCode.OK);

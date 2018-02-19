@@ -28,7 +28,6 @@
         public string ElasticsearchUsername => CloudConfigurationManager.GetSetting("ElasticsearchUsername");
 
         public string ElasticsearchPassword => CloudConfigurationManager.GetSetting("ElasticsearchPassword");
-        public int TakeMaximum => int.Parse(CloudConfigurationManager.GetSetting("TakeMaximum"));
 
         public int PageSizeApprenticeshipSummary => int.Parse(
             CloudConfigurationManager.GetSetting("PageSizeApprenticeshipSummary"));
