@@ -11,24 +11,15 @@
     </Sites>
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" />
-      <Setting name="LarsSiteRootUrl" />
-      <Setting name="LarsSiteDownloadsPageUrl" />
-      <Setting name="CourseDirectoryUrl" />
       <Setting name="UKRLP_EndpointUri" />
       <Setting name="ElasticServerUrls" />
-      <Setting name="RequiredIndexAliases" />
-      <Setting name="ApprenticeshipIndexAlias" />
-      <Setting name="ProviderIndexAlias" />
-      <Setting name="AssessmentOrgsIndexAlias" />
       <Setting name="EnvironmentName" />
-      <Setting name="ApplicationName" />
       <Setting name="ga.trackingid" />
-      <Setting name="ApprenticeshipProviderElements" />
       <Setting name="ElasticsearchUsername" />
       <Setting name="ElasticsearchPassword" />
-      <Setting name="PageSizeApprenticeshipSummary" />
-      <Setting name="FrameworksExpiredRequired" />
-      <Setting name="StandardsExpiredRequired" />
+      <Setting name="FeatureToggle.Elk5Feature" />
+      <Setting name="FeatureToggle.GaApiAnalyticsFeature" />
+      <Setting name="FeatureToggle.IgnoreSslCertificateFeature" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />

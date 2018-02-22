@@ -14,11 +14,11 @@
 
         public IEnumerable<string> RequiredIndexAliases => GetElasticRequiredIndexAliases("RequiredIndexAliases");
 
-        public string LarsSiteRootUrl => CloudConfigurationManager.GetSetting("LarsSiteRootUrl");
+        public string LarsSiteRootUrl => ConfigurationManager.AppSettings["LarsSiteRootUrl"];
 
-        public string LarsSiteDownloadsPageUrl => CloudConfigurationManager.GetSetting("LarsSiteDownloadsPageUrl");
+        public string LarsSiteDownloadsPageUrl => ConfigurationManager.AppSettings["LarsSiteDownloadsPageUrl"];
 
-        public string CourseDirectoryUrl => CloudConfigurationManager.GetSetting("CourseDirectoryUrl");
+        public string CourseDirectoryUrl => ConfigurationManager.AppSettings["CourseDirectoryUrl"];
 
         public string UkrlpUrl => CloudConfigurationManager.GetSetting("UKRLP_EndpointUri");
 
@@ -30,7 +30,7 @@
 
         private IEnumerable<string> GetElasticRequiredIndexAliases(string requiredIndexAliases)
         {
-            return CloudConfigurationManager.GetSetting(requiredIndexAliases).Split(',');
+            return ConfigurationManager.AppSettings[requiredIndexAliases].Split(',');
         }
     }
 }
