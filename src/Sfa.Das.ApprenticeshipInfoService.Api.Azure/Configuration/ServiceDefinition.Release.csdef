@@ -20,6 +20,7 @@
       <Setting name="FeatureToggle.Elk5Feature" />
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" />
+      <Setting name="LoggingRedisConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" loadBalancer="das-ais-ilb"/>
