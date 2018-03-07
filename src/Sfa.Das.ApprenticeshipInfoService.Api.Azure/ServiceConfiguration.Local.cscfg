@@ -4,18 +4,18 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" value=""/>
-      <Setting name="ElasticServerUrls" value="http://192.168.99.100:9200, http://127.0.0.1:9200, http://docker.local:9200"/>
+      <Setting name="ElasticServerUrls" value="http://docker.local:9200"/>
       <Setting name="EnvironmentName" value="local" />
       <Setting name="ga.trackingid" value="" />
-      <Setting name="ElasticsearchUsername" value="" />
-      <Setting name="ElasticsearchPassword" value="" />
-      <Setting name="FeatureToggle.Elk5Feature" value="" />
+      <Setting name="ElasticsearchUsername" value="elastic" />
+      <Setting name="ElasticsearchPassword" value="changeme" />
+      <Setting name="FeatureToggle.Elk5Feature" value="true" />
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" value="" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="" />
       <Setting name="LoggingRedisConnectionString" value="" />
-      <Setting name="ApprenticeshipIndexAlias" value="" />
-      <Setting name="ProviderIndexAlias" value="" />
-      <Setting name="AssessmentOrgsIndexAlias" value="" />
+      <Setting name="ApprenticeshipIndexAlias" value="localapprenticeshipindexalias" />
+      <Setting name="ProviderIndexAlias" value="localproviderindexalias" />
+      <Setting name="AssessmentOrgsIndexAlias" value="localassessmentorgsindexalias" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="E280E23D933FE3A62AF335BE9768A2C9D65CCC9A" thumbprintAlgorithm="sha1" />
