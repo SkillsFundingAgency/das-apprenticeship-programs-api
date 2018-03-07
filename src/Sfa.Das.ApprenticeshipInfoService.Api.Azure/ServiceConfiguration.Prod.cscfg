@@ -38,7 +38,7 @@
     </AddressAssignments>
     <LoadBalancers>
       <LoadBalancer name="__ilbname__">
-        <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.125.243" />
+        <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.125.241" />
       </LoadBalancer>
     </LoadBalancers>
   </NetworkConfiguration>
