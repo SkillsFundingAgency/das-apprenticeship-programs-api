@@ -7,7 +7,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles
     {
         public bool EvaluateBooleanToggleValue(IFeatureToggle toggle)
         {
-            return bool.Parse(CloudConfigurationManager.GetSetting($"FeatureToggle.{toggle.GetType().Name}"));
+	        var setting = CloudConfigurationManager.GetSetting($"FeatureToggle.{toggle.GetType().Name}");
+
+	        return !string.IsNullOrEmpty(setting) && bool.Parse(setting);
         }
     }
 }
