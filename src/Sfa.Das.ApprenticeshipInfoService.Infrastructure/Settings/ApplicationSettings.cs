@@ -9,11 +9,11 @@
 
     public sealed class ApplicationSettings : IConfigurationSettings
     {
-        public string ApprenticeshipIndexAlias => ConfigurationManager.AppSettings["ApprenticeshipIndexAlias"];
+        public string ApprenticeshipIndexAlias => CloudConfigurationManager.GetSetting("ApprenticeshipIndexAlias");
 
-        public string ProviderIndexAlias => ConfigurationManager.AppSettings["ProviderIndexAlias"];
+        public string ProviderIndexAlias => CloudConfigurationManager.GetSetting("ProviderIndexAlias");
 
-        public string AssessmentOrgsIndexAlias => ConfigurationManager.AppSettings["AssessmentOrgsIndexAlias"];
+        public string AssessmentOrgsIndexAlias => CloudConfigurationManager.GetSetting("AssessmentOrgsIndexAlias");
 
         public IEnumerable<Uri> ElasticServerUrls => GetElasticSearchIps();
 

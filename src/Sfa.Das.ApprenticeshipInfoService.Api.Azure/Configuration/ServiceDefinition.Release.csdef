@@ -11,7 +11,6 @@
     </Sites>
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" />
-      <Setting name="UKRLP_EndpointUri" />
       <Setting name="ElasticServerUrls" />
       <Setting name="EnvironmentName" />
       <Setting name="ga.trackingid" />
@@ -21,6 +20,9 @@
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" />
       <Setting name="LoggingRedisConnectionString" />
+      <Setting name="ApprenticeshipIndexAlias" />
+      <Setting name="ProviderIndexAlias" />
+      <Setting name="AssessmentOrgsIndexAlias" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" loadBalancer="das-ais-ilb"/>
