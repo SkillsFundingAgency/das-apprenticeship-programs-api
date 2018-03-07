@@ -122,6 +122,7 @@
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
+    <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />
     <Compile Include="FeatureToggles\GaApiAnalyticsFeature.cs" />
     <Compile Include="FeatureToggles\Elk5Feature.cs" />

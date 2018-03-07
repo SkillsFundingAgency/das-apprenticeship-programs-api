@@ -48,7 +48,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
             var larsDownloadPageStatus = _httpServer.ResponseCode(larsDownloadPageUrl);
             var courseDirectoryStatus = _httpServer.ResponseCode(_healthSettings.CourseDirectoryUrl);
 
-            var ukrlpStatus = _httpServer.ResponseCode(_healthSettings.UkrlpUrl);
             var fechoicesStatus = _sqlService.TestConnection(CloudConfigurationManager.GetSetting("AchievementRateDataBaseConnectionString"));
 
             var model = new HealthModel
@@ -60,8 +59,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
                 ElasticsearchLog = elasticErrorLogs,
                 LarsFilePageStatus = larsDownloadPageStatus,
                 CourseDirectoryStatus = courseDirectoryStatus,
-                FEChoices = fechoicesStatus,
-                UkrlpStatus = ukrlpStatus
+                FEChoices = fechoicesStatus
             };
 
             if (elasticsearchModel.Exception != null)
