@@ -13,7 +13,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return new OrganisationSummary
             {
                 Id = organisation.EpaOrganisationIdentifier,
-                Name = organisation.EpaOrganisation
+                Name = organisation.EpaOrganisation,
+                Ukprn = organisation.Ukprn
             };
         }
 
