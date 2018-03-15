@@ -20,6 +20,6 @@
 
         public string EpaOrganisationIdentifierKeyword { get; set; }
 
-        public int? Ukprn { get; set; }
+        public long? Ukprn { get; set; }
     }
 }
