@@ -11,14 +11,14 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 		/// Get all apprenticeship programmes
 		/// GET /apprenticeship-programmes
 		/// </summary>
-		/// <returns>an apprenticeship programme</returns>
-		ApprenticeshipSummary Get();
+		/// <returns>all apprenticeship programmes</returns>
+		IEnumerable<ApprenticeshipSummary> Get();
 
 		/// <summary>
-		/// Get a single standard details
+		/// Get all apprenticeship programmes
 		/// GET /apprenticeship-programmes
 		/// </summary>
-		/// <returns>an apprenticeship programme</returns>
-		Task<ApprenticeshipSummary> GetAsync();
+		/// <returns>all apprenticeship programmes</returns>
+		Task<IEnumerable<ApprenticeshipSummary>> GetAsync();
     }
 }
