@@ -19,5 +19,7 @@
         public Address Address { get; set; }
 
         public string EpaOrganisationIdentifierKeyword { get; set; }
+
+        public long? Ukprn { get; set; }
     }
 }

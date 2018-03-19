@@ -146,8 +146,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         [Test]
         public void ShouldReturnValidListOfAssessmentOrganisations()
         {
-            var element = new OrganisationSummary { Id = "EPA0001" };
-            var expected = new List<OrganisationSummary> { element };
+            var ukprn = 10002000;
+            var element = new OrganisationSummary { Id = "EPA0001", Ukprn = ukprn };
+            var element2 = new OrganisationSummary { Id = "EPA0002"};
+
+            var expected = new List<OrganisationSummary> { element, element2 };
 
             _mockGetAssessmentOrgs.Setup(
                 x =>
@@ -163,6 +166,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             response.First().Should().Be(element);
             response.First().Id.Should().Be(element.Id);
             response.First().Uri.Should().Be("http://localhost/assessment-organisations/EPA0001");
+            response.First().Ukprn.Should().Be(ukprn);
+            response.ToList()[1].Id.Should().Be(element2.Id);
+            response.ToList()[1].Ukprn.Should().Be(null);
         }
 
         [Test]

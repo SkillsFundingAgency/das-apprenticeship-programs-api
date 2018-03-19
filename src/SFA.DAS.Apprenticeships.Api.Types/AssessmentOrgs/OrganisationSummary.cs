@@ -11,5 +11,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs
         public string Name { get; set; }
 
         public List<Link> Links { get; set; }
+
+        public long? Ukprn { get; set; }
     }
 }
