@@ -14,9 +14,10 @@ open Fake
    ==>"Building Acceptance Tests"
     //==>"Run Acceptance Tests"
 
-"Set Solution Name"
-   ==>"Update WiN Assembly Info Version Numbers"
-   ==>"Clean Directories"
+"Set version number"
+   ==>"Set Solution Name"
+   ==>"Update Assembly Info Version Numbers"
+   ==>"Clean Directories" 
    ==>"Dotnet Restore"
    ==>"Build Projects"
    ==>"Run NUnit Tests"
@@ -24,10 +25,10 @@ open Fake
    ==>"Run Jasmine Tests"
    ==>"Build Cloud Projects"
    ==>"Build Database project"
-   ==>"Build WebJob Project"
-   ==>"Publish Solution"
+   ==>"Build WebJob Project" 
+   ==>"Publish Solution"  
    ==>"Compile Views"
-   ==>"Create WiN Nuget Packages"
+   ==>"Create Nuget Package"
 
 "Set Solution Name"
     ==> "Build Database project"
@@ -36,5 +37,5 @@ open Fake
 "Set version number"
     ==>"Set Solution Name"
     ==> "Zip Compiled Source"
-
-RunTargetOrDefault  "Create WiN Nuget Packages"
+   
+RunTargetOrDefault  "Create Nuget Package"
