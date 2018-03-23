@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models
 {
     public interface IAnalyticsService
     {

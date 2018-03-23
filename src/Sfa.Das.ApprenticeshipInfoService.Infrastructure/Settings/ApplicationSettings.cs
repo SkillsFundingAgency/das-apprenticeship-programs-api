@@ -28,7 +28,8 @@
         public string ElasticsearchUsername => ConfigurationManager.AppSettings["ElasticsearchUsername"];
 
         public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
-   
+        public string IfaStandardApiUrl => ConfigurationManager.AppSettings["IFAStandardsApiUrl"];
+
         public int PageSizeApprenticeshipSummary => int.Parse(
             ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);
 
@@ -61,5 +62,6 @@
             var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');
             return urlStrings.Select(url => new Uri(url));
         }
-    }
+
+      }
 }

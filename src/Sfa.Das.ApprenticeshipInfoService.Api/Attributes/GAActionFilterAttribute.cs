@@ -10,7 +10,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Attributes
     using System.Web.Http.Controllers;
     using System.Web.Mvc;
     using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
-    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
+    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 
     public class GaActionFilterAttribute : System.Web.Http.Filters.ActionFilterAttribute
     {
