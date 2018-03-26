@@ -25,5 +25,5 @@
     <PackageTags>Esfa;Das;</PackageTags>
     <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
   </PropertyGroup>
-
+  
 </Project>

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Net;
-using Elasticsearch.Net;
+﻿using Elasticsearch.Net;
 using FeatureToggle.Core.Fluent;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
@@ -24,7 +22,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             if (Is<IgnoreSslCertificateFeature>.Enabled)
             {
                 using (var settings = new ConnectionSettings(
-                    new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First()),
+                    new StaticConnectionPool(_applicationSettings.ElasticServerUrls),
                     new MyCertificateIgnoringHttpConnection()))
                 {
                     SetDefaultSettings(settings);
@@ -33,7 +31,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 }
             }
 
-            using (var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First())))
+            using (var settings = new ConnectionSettings(new StaticConnectionPool(_applicationSettings.ElasticServerUrls)))
             {
                 SetDefaultSettings(settings);
 
@@ -48,9 +46,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
             }
 
-	        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
-			settings.DisableDirectStreaming();
+            settings.DisableDirectStreaming();
             settings.MapDefaultTypeNames(d => d.Add(typeof(StandardSearchResultsItem), "standarddocument"));
             settings.MapDefaultTypeNames(d => d.Add(typeof(FrameworkSearchResultsItem), "frameworkdocument"));
             settings.MapDefaultTypeNames(d => d.Add(typeof(StandardProviderSearchResultsItem), "standardprovider"));

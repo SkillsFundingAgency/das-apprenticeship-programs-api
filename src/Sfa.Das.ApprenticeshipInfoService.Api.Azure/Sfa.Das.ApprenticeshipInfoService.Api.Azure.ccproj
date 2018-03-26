@@ -34,13 +34,8 @@
   <!-- Items for the project -->
   <ItemGroup>
     <ServiceDefinition Include="ServiceDefinition.csdef" />
-    <ServiceConfiguration Include="ServiceConfiguration.Release.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
-    <None Include="ServiceConfiguration.PreProd.cscfg" />
-    <None Include="ServiceConfiguration.Prod.cscfg" />
-    <None Include="Configuration\ServiceDefinition.Cloud.csdef" />
-    <None Include="Configuration\ServiceDefinition.Release.csdef" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Api\Sfa.Das.ApprenticeshipInfoService.Api.csproj">
@@ -54,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sfa.Das.ApprenticeshipInfoService.ApiContent\" />
-    <Folder Include="Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="Sfa.Das.ApprenticeshipInfoService.ApiContent\diagnostics.wadcfgx" />

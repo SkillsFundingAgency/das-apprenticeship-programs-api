@@ -1,10 +1,10 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
+    using System.Configuration;
     using System.Diagnostics;
     using System.Reflection;
     using System.Web.Http;
     using System.Web.Http.Description;
-    using Microsoft.Azure;
     using SFA.DAS.Apprenticeships.Api.Types.Stats;
 
     public class StatsController : ApiController
@@ -20,7 +20,7 @@
             string assemblyInformationalVersion = fileVersionInfo.ProductVersion;
             return new VersionInformation
             {
-                BuildId = CloudConfigurationManager.GetSetting("BuildId"),
+                BuildId = ConfigurationManager.AppSettings["BuildId"],
                 Version = assemblyInformationalVersion,
                 AssemblyVersion = version
             };

@@ -20,5 +20,5 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure
 
             Assert.AreEqual(expectedList, frameworksExpired);
         }
-    }   
+    }
 }

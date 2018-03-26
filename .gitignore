@@ -119,6 +119,8 @@ csx
 ecf
 rcf
 *.build.csdef
+*.cscfg
+*.csdef
 dataCacheClient.config
 machineKey.config
 settings.config
@@ -206,6 +208,3 @@ spec/_Chutzpah*
 **/*/Tools/NUnit.Extension*
 **/*/Tools/NUnit.ConsoleRunner*
 **/*/*.fake/*
-
-src/Tools/**/*.*
-src/Tools/PhantomJS/tools/phantomjs/ChangeLog
