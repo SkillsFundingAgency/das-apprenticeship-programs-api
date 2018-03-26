@@ -24,18 +24,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services
             {
                 var ifaUrlBase = _applicationSettings.IfaStandardApiUrl;
                 var urlToCall = $"{ifaUrlBase}/{standardId}";
-                var url = string.Empty;
+
                 try
                 {
                     var json = wc.DownloadString(urlToCall);
                     var jsonResult = JsonConvert.DeserializeObject<IfaApiStandard>(json);
-                    url = jsonResult.StandardPageUri;
-                    return url;
+                    return  jsonResult.StandardPageUri;
                 }
                 catch (Exception ex)
                 {
                     _logger.Warn(ex, $"IFA Url [{urlToCall}] failed to return details");
-                    return url;
+                    return string.Empty;
                 }
             }
         }
