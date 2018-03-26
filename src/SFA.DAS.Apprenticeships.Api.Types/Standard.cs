@@ -62,6 +62,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int StandardSectorCode { get; set; }
 
-        public string StandardPageUri { get; set; }
+        public string StandardPageUrl { get; set; }
     }
 }

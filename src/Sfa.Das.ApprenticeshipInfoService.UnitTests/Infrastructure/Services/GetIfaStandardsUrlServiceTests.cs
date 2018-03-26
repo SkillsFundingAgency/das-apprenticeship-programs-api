@@ -27,7 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Services
 
             var service = new GetIfaStandardsUrlService(_mockLogger.Object, _mockConfigurationSettings.Object);
 
-            var res = service.GetStandardUri(standardId);
+            var res = service.GetStandardUrl(standardId);
 
             var urlToCall = $"{ifaUrlBase}/{standardId}";
             var logWarning = $"IFA Url [{urlToCall}] failed to return details";

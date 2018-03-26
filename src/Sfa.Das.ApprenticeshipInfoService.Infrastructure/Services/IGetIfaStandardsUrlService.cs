@@ -2,6 +2,6 @@
 {
     public interface IGetIfaStandardsUrlService
     {
-        string GetStandardUri(string standardId);
+        string GetStandardUrl(string standardId);
     }
 }
