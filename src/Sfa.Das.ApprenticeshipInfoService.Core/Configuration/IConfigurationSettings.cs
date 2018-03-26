@@ -30,5 +30,7 @@
         List<string> StandardsExpiredRequired { get; }
 
          int PageSizeApprenticeshipSummary { get; }
+
+        string IfaStandardApiUrl { get; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FeatureToggle.Core.Fluent;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -19,17 +20,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IStandardMapping _standardMapping;
         private readonly IQueryHelper _queryHelper;
+        private readonly IGetIfaStandardsUrlService _getIfaStandardUrlService;
 
         public StandardRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
             IStandardMapping standardMapping,
-            IQueryHelper queryHelper)
+            IQueryHelper queryHelper, 
+            IGetIfaStandardsUrlService getIfaStandardUrlService)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationSettings = applicationSettings;
             _standardMapping = standardMapping;
             _queryHelper = queryHelper;
+            _getIfaStandardUrlService = getIfaStandardUrlService;
         }
 
         public IEnumerable<StandardSummary> GetAllStandards()
@@ -65,6 +69,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
             var response = document != null ? _standardMapping.MapToStandard(document) : null;
+
+            if (response != null)
+            {
+                response.StandardPageUrl = _getIfaStandardUrlService.GetStandardUrl(response.StandardId);
+            }
 
             return response;
         }
