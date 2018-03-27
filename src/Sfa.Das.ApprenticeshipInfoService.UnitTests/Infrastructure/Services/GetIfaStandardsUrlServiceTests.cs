@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-using System.Configuration;
-using Moq;
-using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings;
-using SFA.DAS.NLog.Logger;
-
-namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Services
+﻿namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Services
 {
+    using System;
+    using ApprenticeshipInfoService.Infrastructure.Services;
+    using Core.Configuration;
+    using Moq;
+    using NUnit.Framework;
+    using SFA.DAS.NLog.Logger;
+
     [TestFixture]
     public class GetIfaStandardsUrlServiceTests
     {
