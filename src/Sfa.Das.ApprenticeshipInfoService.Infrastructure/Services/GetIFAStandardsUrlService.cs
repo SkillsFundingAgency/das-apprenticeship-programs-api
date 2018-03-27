@@ -29,7 +29,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services
                 {
                     var json = wc.DownloadString(urlToCall);
                     var jsonResult = JsonConvert.DeserializeObject<IfaApiStandard>(json);
-                    return  jsonResult.StandardPageUrl;
+                    return  jsonResult.StandardPageUri;
                 }
                 catch (Exception ex)
                 {
