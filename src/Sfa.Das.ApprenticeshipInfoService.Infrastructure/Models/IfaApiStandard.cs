@@ -2,6 +2,6 @@
 {
     public class IfaApiStandard
     {
-        public string StandardPageUrl { get; set; }
+        public string StandardPageUri { get; set; }
     }
 }
