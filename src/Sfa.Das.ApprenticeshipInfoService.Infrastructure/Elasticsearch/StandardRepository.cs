@@ -72,7 +72,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (response != null)
             {
-                response.StandardPageUrl = _getIfaStandardUrlService.GetStandardUrl(response.StandardId);
+                response.StandardPageUri = _getIfaStandardUrlService.GetStandardUrl(response.StandardId);
             }
 
             return response;
