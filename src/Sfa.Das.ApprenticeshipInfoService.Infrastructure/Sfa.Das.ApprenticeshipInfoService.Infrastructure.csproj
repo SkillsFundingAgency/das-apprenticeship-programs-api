@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="DependencyResolution\InfrastructureRegistry.cs" />
     <Compile Include="Elasticsearch\ApprenticeshipProviderRepository.cs" />
+    <Compile Include="Elasticsearch\ProviderSearchService.cs" />
     <Compile Include="Elasticsearch\ElasticsearchProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\IProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\AssessmentOrgsRepository.cs" />
