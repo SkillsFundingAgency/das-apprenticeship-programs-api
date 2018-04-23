@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
 using SFA.DAS.NLog.Logger;
 
@@ -41,6 +42,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IQueryHelper>().Use<QueryHelper>();
             For<IActiveApprenticeshipChecker>().Use<ActiveApprenticeshipChecker>();
             For<IPaginationHelper>().Use<PaginationHelper>();
+            For<IGetIfaStandardsUrlService>().Use<GetIfaStandardsUrlService>();
         }
 
         private IDictionary<string, object> GetProperties()
