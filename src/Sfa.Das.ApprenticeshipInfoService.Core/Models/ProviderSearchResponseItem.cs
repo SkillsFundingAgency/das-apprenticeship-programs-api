@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
-    public class ProviderSearchResultsItem
+    public class ProviderSearchResponseItem
     {
         public string Ukprn { get; set; }
 
@@ -24,8 +26,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public string Website { get; set; }
 
-        public string EmployerSatisfaction { get; set; }
+        public double? EmployerSatisfaction { get; set; }
 
-        public string LearnerSatisfaction { get; set; }
+        public double? LearnerSatisfaction { get; set; }
     }
 }
