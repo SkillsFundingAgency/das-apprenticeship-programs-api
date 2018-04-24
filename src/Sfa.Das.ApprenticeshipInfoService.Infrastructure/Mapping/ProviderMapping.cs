@@ -127,6 +127,36 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
+        public ProviderSearchResponseItem MapToProviderSearchItem(ProviderSearchResultsItem provider)
+        {
+            var response = new ProviderSearchResponseItem
+            {
+                Aliases = provider.Aliases,
+                Ukprn = provider.Ukprn,
+                IsHigherEducationInstitute = provider.IsHigherEducationInstitute,
+                IsEmployerProvider = provider.IsEmployerProvider,
+                ProviderName = provider.ProviderName,
+                Phone = provider.Phone,
+                Email = provider.Email,
+                NationalProvider = provider.NationalProvider,
+                Website = provider.Website
+            };
+
+            if (!string.IsNullOrWhiteSpace(provider.EmployerSatisfaction))
+            {
+                var employerSatisfaction = double.Parse(provider.EmployerSatisfaction);
+                response.EmployerSatisfaction = employerSatisfaction;
+            }
+
+            if (!string.IsNullOrWhiteSpace(provider.LearnerSatisfaction))
+            {
+                var learnerSatisfaction = double.Parse(provider.LearnerSatisfaction);
+                response.LearnerSatisfaction = learnerSatisfaction;
+            }
+
+            return response;
+        }
+
         private List<DeliveryMode> ConvertToEnumeratedDeliveryModes(List<string> itemDeliveryModes)
         {
             var enumeratedDeliveryModes = new List<DeliveryMode>();

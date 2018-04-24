@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
@@ -14,14 +16,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     public class SearchController : ApiController
     {
         private readonly IApprenticeshipSearchService _apprenticeshipSearchService;
-	    private readonly IProviderSearchService _providerSearchService;
-	    private readonly ILog _logger;
+        private readonly IProviderSearchService _providerSearchService;
+        private readonly IProviderMapping _providerMapping;
+        private readonly ILog _logger;
 
-        public SearchController(IApprenticeshipSearchService apprenticeshipSearchService, IProviderSearchService providerSearchService, ILog logger)
+        public SearchController(IApprenticeshipSearchService apprenticeshipSearchService, IProviderSearchService providerSearchService, IProviderMapping providerMapping, ILog logger)
         {
             _apprenticeshipSearchService = apprenticeshipSearchService;
-	        _providerSearchService = providerSearchService;
-	        _logger = logger;
+            _providerSearchService = providerSearchService;
+            _providerMapping = providerMapping;
+            _logger = logger;
         }
 
         /// <summary>
@@ -52,14 +56,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <returns>a search result object</returns>
         [SwaggerOperation("SearchProviders")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResultsItem>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
         [Route("searchProviders/{keywords}/{page}/{take}")]
         [ExceptionHandling]
-        public IEnumerable<ProviderSearchResultsItem> SearchProviders(string keywords, int page, int take)
+        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page, int take)
         {
             try
             {
-                var response = _providerSearchService.SearchProviders(keywords, page, take);
+                var providerSearchResults = _providerSearchService.SearchProviders(keywords, page, take);
+                var response = providerSearchResults.Select(providerSearchResultsItem => _providerMapping.MapToProviderSearchItem(providerSearchResultsItem)).ToList();
+
+                foreach (var providerSearchResponseItem in response)
+                {
+                    providerSearchResponseItem.Uri = ResolveProviderUri(providerSearchResponseItem.Ukprn);
+                }
 
                 return response;
             }
@@ -68,6 +78,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                 _logger.Error(e, "/search");
                 throw;
             }
+        }
+
+        private string ResolveProviderUri(string id)
+        {
+            return Url.Link("DefaultApi", new { controller = "Providers", id = id });
         }
     }
 }
