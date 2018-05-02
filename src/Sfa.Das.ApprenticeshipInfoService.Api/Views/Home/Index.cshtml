@@ -18,14 +18,6 @@
                         <th>Swagger API definition</th>
                         <td><a href="/swagger/docs/v1"><img id="swagger-img" src="" /></a></td>
                     </tr>
-                    <script>
-                        var url = document.location.protocol + '//' + document.location.host;
-                        $('#swagger-img').attr('src', 'https://online.swagger.io/validator?url=' + url + '/swagger/docs/v1')
-                    </script>
-                    <tr>
-                        <th>Chat with the developers</th>
-                        <td><a href="https://gitter.im/sfa-das-apprenticeship-programmes-api/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img src="https://badges.gitter.im/gitterHQ/gitterHQ.github.io.svg" /></a></td>
-                    </tr>
                 </tbody>
             </table>
 
@@ -114,6 +106,11 @@ For&lt;IAssessmentOrgsApiClient&gt;().Use&lt;AssessmentOrgsApiClient&gt;();
         </div>
     </div>
 </main>
+
+<script>
+    var url = document.location.protocol + '//' + document.location.host;
+    $('#swagger-img').attr('src', 'https://online.swagger.io/validator?url=' + url + '/swagger/docs/v1')
+</script>
 
 @section footerJS
 {
