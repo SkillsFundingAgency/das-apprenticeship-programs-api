@@ -1,7 +1,5 @@
 ﻿using Microsoft.Azure;
-using NLog.Internal;
 using SFA.DAS.NLog.Logger;
-using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
