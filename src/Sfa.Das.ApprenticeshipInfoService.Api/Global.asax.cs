@@ -1,4 +1,7 @@
-﻿using SFA.DAS.NLog.Logger;
+﻿using Microsoft.Azure;
+using NLog.Internal;
+using SFA.DAS.NLog.Logger;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
@@ -56,6 +59,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 && !context.Request.Path.StartsWith("/__browserlink"))
             {
                 _logger.Info($"{context.Request.HttpMethod} {context.Request.Path}");
+            }
+
+            var redirectUrl = CloudConfigurationManager.GetSetting("RedirectUrl");
+            if (!string.IsNullOrEmpty(redirectUrl))
+            {
+                var requestRawUrl = application?.Context?.Request.RawUrl;
+                _logger.Info($"Redirecting request from UserHost:{context.Request.UserHostAddress} to {redirectUrl} for request {requestRawUrl}");
+
+                Response.RedirectPermanent($"{redirectUrl}{requestRawUrl}");
             }
         }
     }
