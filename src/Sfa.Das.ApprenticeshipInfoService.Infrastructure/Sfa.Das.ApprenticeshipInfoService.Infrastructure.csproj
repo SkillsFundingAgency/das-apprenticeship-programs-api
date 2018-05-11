@@ -34,8 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\Elasticsearch.Net.5.3.1\lib\net46\Elasticsearch.Net.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Elasticsearch.Net.5.6.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="FeatureToggle, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FeatureToggle.3.5.1\lib\net40\FeatureToggle.dll</HintPath>
@@ -62,8 +61,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
-      <HintPath>..\packages\NEST.5.3.1\lib\net46\Nest.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NEST.5.6.0\lib\net46\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -109,12 +107,14 @@
   <ItemGroup>
     <Compile Include="DependencyResolution\InfrastructureRegistry.cs" />
     <Compile Include="Elasticsearch\ApprenticeshipProviderRepository.cs" />
+    <Compile Include="Elasticsearch\ProviderSearchService.cs" />
     <Compile Include="Elasticsearch\ElasticsearchProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\IProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\AssessmentOrgsRepository.cs" />
     <Compile Include="Elasticsearch\IQueryHelper.cs" />
     <Compile Include="Elasticsearch\ProviderRepository.cs" />
     <Compile Include="Elasticsearch\QueryHelper.cs" />
+    <Compile Include="Elasticsearch\ApprenticeshipSearchService.cs" />
     <Compile Include="Elasticsearch\StandardRepository.cs" />
     <Compile Include="Elasticsearch\ElasticsearchClientFactory.cs" />
     <Compile Include="Elasticsearch\IElasticsearchClientFactory.cs" />
@@ -122,6 +122,7 @@
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
+    <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />
     <Compile Include="FeatureToggles\GaApiAnalyticsFeature.cs" />
     <Compile Include="FeatureToggles\Elk5Feature.cs" />

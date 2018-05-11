@@ -16,5 +16,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         StandardProviderSearchResultsItemResponse MapToStandardProviderResponse(StandardProviderSearchResultsItem item);
 
         FrameworkProviderSearchResultsItemResponse MapToFrameworkProviderResponse(FrameworkProviderSearchResultsItem item);
+
+	    ProviderSearchResponseItem MapToProviderSearchItem(ProviderSearchResultsItem provider);
+
     }
 }

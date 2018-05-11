@@ -23,6 +23,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<ILog>().Use(x => new NLogLogger(x.ParentType, x.GetInstance<IRequestContext>(), GetProperties())).AlwaysUnique();
             For<IConfigurationSettings>().Use<ApplicationSettings>();
             For<IElasticsearchClientFactory>().Use<ElasticsearchClientFactory>();
+            For<IApprenticeshipSearchService>().Use<ApprenticeshipSearchService>();
+            For<IProviderSearchService>().Use<ProviderSearchService>();
             For<IGetStandards>().Use<StandardRepository>();
             For<IGetFrameworks>().Use<FrameworkRepository>();
             For<IGetProviders>().Use<ProviderRepository>();

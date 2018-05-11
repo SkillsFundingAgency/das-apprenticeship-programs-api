@@ -2,6 +2,7 @@
 {
     public interface IQueryHelper
     {
+	    string FormatKeywords(string query);
         int GetFrameworksTotalAmount();
         int GetOrganisationsAmountByStandardId(string standardId);
         int GetOrganisationsTotalAmount();

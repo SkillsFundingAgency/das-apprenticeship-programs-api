@@ -1,8 +1,8 @@
-﻿using Nest;
+﻿using System.Text.RegularExpressions;
+using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -60,7 +60,19 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return (int)results.HitsMetaData.Total;
         }
 
-        public int GetFrameworksTotalAmount()
+	    public string FormatKeywords(string query)
+	    {
+			if (string.IsNullOrEmpty(query))
+		    {
+			    return "*";
+		    }
+
+		    var queryformated = Regex.Replace(query, @"[+\-&|!(){}\[\]^""~?:\\/]", @" ");
+
+		    return queryformated.ToLowerInvariant();
+		}
+
+	    public int GetFrameworksTotalAmount()
         {
             var results =
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
