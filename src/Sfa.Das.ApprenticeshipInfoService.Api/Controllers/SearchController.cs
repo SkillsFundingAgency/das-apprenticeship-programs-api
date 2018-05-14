@@ -34,13 +34,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <returns>a search result object</returns>
         [SwaggerOperation("SearchActiveStandards")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSearchResultsItem>))]
-        [Route("searchApprenticeships/{keywords}/{page}/{take}")]
+        [Route("searchApprenticeships/{keywords}/{page}")]
         [ExceptionHandling]
-        public IEnumerable<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page, int take)
+        public IEnumerable<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page = 1)
         {
             try
             {
-                var response = _apprenticeshipSearchService.SearchApprenticeships(keywords, page, take);
+                var response = _apprenticeshipSearchService.SearchApprenticeships(keywords, page);
 
                 return response;
             }

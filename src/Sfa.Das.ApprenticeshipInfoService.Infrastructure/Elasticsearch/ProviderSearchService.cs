@@ -39,7 +39,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 return new List<ProviderSearchResultsItem>();
             }
 
-            const int takeElements = 10;
+            const int takeElements = 20;
 
             var formattedKeywords = _queryHelper.FormatKeywords(keywords);
 

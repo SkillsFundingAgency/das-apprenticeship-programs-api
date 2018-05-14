@@ -32,9 +32,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _queryHelper = queryHelper;
         }
 
-        public List<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page, int take)
+        public List<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page)
         {
-            var takeElements = take == 0 ? 10 : take;
+            var takeElements = 20;
 
             var formattedKeywords = _queryHelper.FormatKeywords(keywords);
 
