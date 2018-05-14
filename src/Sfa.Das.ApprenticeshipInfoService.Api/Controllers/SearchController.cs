@@ -59,7 +59,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
         [Route("searchProviders/{keywords}/{page}")]
         [ExceptionHandling]
-        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page)
+        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page = 1)
         {
             try
             {
