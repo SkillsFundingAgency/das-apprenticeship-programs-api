@@ -32,14 +32,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _queryHelper = queryHelper;
         }
 
-        public List<ProviderSearchResultsItem> SearchProviders(string keywords, int page, int take)
+        public List<ProviderSearchResultsItem> SearchProviders(string keywords, int page)
         {
             if (keywords.Length < 3)
             {
                 return new List<ProviderSearchResultsItem>();
             }
 
-            var takeElements = take == 0 ? 10 : take;
+            const int takeElements = 10;
 
             var formattedKeywords = _queryHelper.FormatKeywords(keywords);
 

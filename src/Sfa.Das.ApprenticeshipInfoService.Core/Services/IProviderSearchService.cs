@@ -5,6 +5,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
 {
     public interface IProviderSearchService
     {
-        List<ProviderSearchResultsItem> SearchProviders(string keywords, int page, int take);
+        List<ProviderSearchResultsItem> SearchProviders(string keywords, int page);
     }
 }

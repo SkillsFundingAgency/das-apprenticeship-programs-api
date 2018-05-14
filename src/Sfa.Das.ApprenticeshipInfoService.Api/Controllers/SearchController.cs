@@ -57,13 +57,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <returns>a search result object</returns>
         [SwaggerOperation("SearchProviders")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
-        [Route("searchProviders/{keywords}/{page}/{take}")]
+        [Route("searchProviders/{keywords}/{page}")]
         [ExceptionHandling]
-        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page, int take)
+        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page)
         {
             try
             {
-                var providerSearchResults = _providerSearchService.SearchProviders(keywords, page, take);
+                var providerSearchResults = _providerSearchService.SearchProviders(keywords, page);
                 var response = providerSearchResults.Select(providerSearchResultsItem => _providerMapping.MapToProviderSearchItem(providerSearchResultsItem)).ToList();
 
                 foreach (var providerSearchResponseItem in response)
