@@ -189,9 +189,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                 .Terms(t => t
                                     .Field(f => f.Ukprn)
                                     .Terms(ukprn)))
-                                .Aggregations(agg => agg.Terms(
-                                    aggregateKeyName,
-                                frm => frm.Size(totalTakeForStandardDocuments).Field(fi => fi.StandardCode))));
+                            .Aggregations(agg => agg
+                                .Terms(aggregateKeyName, frm => frm
+                                    .Size(totalTakeForStandardDocuments)
+                                    .Field(fi => fi.StandardCode))));
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
@@ -219,7 +220,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 throw new ApplicationException($"Failed to query provider standards apprenticeship details for ukprn [{ukprn}]");
             }
 
-           return providerStandards.Documents;
+           return providerStandards.Documents.Where(x => x.Published);
         }
 
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double lat, double lon, int page)
