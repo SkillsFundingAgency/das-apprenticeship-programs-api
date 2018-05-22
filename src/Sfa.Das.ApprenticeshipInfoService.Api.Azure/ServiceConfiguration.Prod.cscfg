@@ -18,7 +18,7 @@
       <Setting name="AssessmentOrgsIndexAlias" value="__AssessmentOrgsIndexAlias__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="E280E23D933FE3A62AF335BE9768A2C9D65CCC9A" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="22C8DB7F51F0220677CCB62236F4AE3BD8E4A840" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
