@@ -9,5 +9,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public DateTime? EffectiveTo { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public bool Published { get; set; }
     }
 }
