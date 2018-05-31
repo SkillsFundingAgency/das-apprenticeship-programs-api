@@ -38,7 +38,7 @@
             get
             {
                 return
-                    ConfigurationManager.AppSettings["FrameworksExpiredRequired"]
+                    CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
                         ?.Split(',')
                         .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
                     ?? new List<string>();
