@@ -41,7 +41,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 StandardSectorCode = document.StandardSectorCode,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo),
+                LastDateForNewStarts = document.LastDateForNewStarts
             };
         }
 
@@ -61,7 +62,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = document.SectorSubjectAreaTier2,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo)
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo),
+                LastDateForNewStarts = document.LastDateForNewStarts
             };
         }
     }
