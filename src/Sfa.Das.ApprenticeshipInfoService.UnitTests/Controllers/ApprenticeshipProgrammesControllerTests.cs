@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using StructureMap;
+﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
@@ -15,7 +13,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     using FluentAssertions;
     using Moq;
     using NUnit.Framework;
-    using NUnit.Framework.Constraints;
     using SFA.DAS.Apprenticeships.Api.Types;
     using SFA.DAS.NLog.Logger;
     using Assert = NUnit.Framework.Assert;
@@ -114,7 +111,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                 {
                     Id = "1238",
                     Title = "test title 2",
-                    IsActiveStandard = false
+                    IsActiveStandard = false,
+                    LastDateForNewStarts = DateTime.Today
                 },
                 new StandardSummary
                 {
