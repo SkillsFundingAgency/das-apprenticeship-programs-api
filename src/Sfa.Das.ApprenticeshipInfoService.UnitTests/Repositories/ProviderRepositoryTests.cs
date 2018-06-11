@@ -304,9 +304,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerStandards = new List<ProviderStandard>
             {
-                new ProviderStandard { StandardId = 1, Published = true},
+                new ProviderStandard { StandardId = 1, Published = true },
                 new ProviderStandard { StandardId = 2, Published = true },
-                new ProviderStandard { StandardId = 3 , Published = true},
+                new ProviderStandard { StandardId = 3, Published = true },
                 new ProviderStandard { StandardId = 4, Published = true },
                 new ProviderStandard { StandardId = 5, Published = false }
             };
@@ -331,6 +331,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 _mockPaginationHelper.Object);
 
             var result = repo.GetStandardsByProviderUkprn(ukprn);
+
             Assert.AreEqual(numberReturnedActiveAndPublished, result.Count());
             _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Never);
         }
@@ -414,11 +415,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerStandardWithNoEffectiveFrom = new ProviderStandard { StandardId = 30, Title = "Absent because no effective from date", Level = 4, EffectiveFrom = null, Published = true };
 
+            var providerStandardNotPublished = new ProviderStandard { StandardId = 31, Title = "Absent because not published", Level = 4, EffectiveFrom = DateTime.Today.AddDays(-3), Published = false };
+
             var standards = new List<ProviderStandard>
             {
                 providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum,
                 providerStandardArcheologistLev1,
-                providerStandardWithNoEffectiveFrom
+                providerStandardWithNoEffectiveFrom,
+                providerStandardNotPublished
 
             };
 
@@ -521,7 +525,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworks.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworks.Object);
             searchResponseForFrameworkDtos.SetupGet(x => x.ApiCall).Returns(apiCallForFrameworkDtos.Object);
 
-            var providerStandardArcheologistEntry4 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true};
+            var providerStandardArcheologistEntry4 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true };
             var providerStandardArcheologistEntry5 = new ProviderStandard { StandardId = 21, Title = "Archeologist", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true };
             var providerStandardArcheologistEntry6 = new ProviderStandard { StandardId = 22, Title = "Archeologist", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true };
 
