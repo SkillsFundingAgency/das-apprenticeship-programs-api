@@ -78,7 +78,7 @@
             }
 
             window.swashbuckleConfig = {
-                rootUrl: 'http://' + document.location.host,
+                rootUrl: document.location.protocol + '//' + document.location.host,
                 discoveryPaths: arrayFrom('swagger/docs/v1'),
                 booleanValues: arrayFrom('true|false'),
                 validatorUrl: stringOrNullFrom(''),

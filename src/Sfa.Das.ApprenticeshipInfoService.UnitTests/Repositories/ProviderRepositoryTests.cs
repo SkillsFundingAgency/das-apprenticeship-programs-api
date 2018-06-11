@@ -304,11 +304,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerStandards = new List<ProviderStandard>
             {
-                new ProviderStandard { StandardId = 1, Published = true},
-                new ProviderStandard { StandardId = 2, Published = true},
-                new ProviderStandard { StandardId = 3, Published = true},
-                new ProviderStandard { StandardId = 4, Published = true},
-                new ProviderStandard { StandardId = 5, Published = false}
+                new ProviderStandard { StandardId = 1, Published = true },
+                new ProviderStandard { StandardId = 2, Published = true },
+                new ProviderStandard { StandardId = 3, Published = true },
+                new ProviderStandard { StandardId = 4, Published = true },
+                new ProviderStandard { StandardId = 5, Published = false }
             };
             searchResponse.Setup(x => x.Documents).Returns(providerStandards);
 
@@ -411,7 +411,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             var providerStandardArcheologistLev1 = new ProviderStandard { StandardId = 20, Title = "Archeologist", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true};
             var providerStandardZebraWranglerShouldBeCutOffByProviderApprenticeshipTrainingMaximum
-                = new ProviderStandard() { StandardId = 10, Title = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true};
+                = new ProviderStandard() { StandardId = 10, Title = "Zebra Wrangler", Level = 1, EffectiveFrom = DateTime.Today.AddDays(-3) ,Published = true};
 
             var providerStandardWithNoEffectiveFrom = new ProviderStandard { StandardId = 30, Title = "Absent because no effective from date", Level = 4, EffectiveFrom = null, Published = true };
 
@@ -529,7 +529,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var providerStandardArcheologistEntry5 = new ProviderStandard { StandardId = 21, Title = "Archeologist", Level = 2, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true };
             var providerStandardArcheologistEntry6 = new ProviderStandard { StandardId = 22, Title = "Archeologist", Level = 3, EffectiveFrom = DateTime.Today.AddDays(-3), Published = true };
 
-            var standards = new List<ProviderStandard>  
+            var standards = new List<ProviderStandard>
             {
                 providerStandardArcheologistEntry4,
                 providerStandardArcheologistEntry5,
