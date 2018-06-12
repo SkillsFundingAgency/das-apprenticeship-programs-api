@@ -10,6 +10,5 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public string Title { get; set; }
         public int Level { get; set; }
         public bool Published { get; set; }
-
     }
 }
