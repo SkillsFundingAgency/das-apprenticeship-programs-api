@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types;
 
@@ -28,6 +29,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 JobRoles = document.JobRoles,
                 Keywords = document.Keywords,
                 Duration = document.Duration,
+                FundingPeriods = document.FundingPeriods,
                 MaxFunding = document.FundingCap,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 IntroductoryText = document.IntroductoryText,
@@ -55,6 +57,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 StandardSectorCode = document.StandardSectorCode,
                 IsPublished = document.Published,
                 Duration = document.Duration,
+                FundingPeriods = document.FundingPeriods,
                 MaxFunding = document.FundingCap,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 Ssa1 = document.SectorSubjectAreaTier1,

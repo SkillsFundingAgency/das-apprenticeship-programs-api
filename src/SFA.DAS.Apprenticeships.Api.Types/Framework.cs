@@ -68,5 +68,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public DateTime? EffectiveTo { get; set; }
 
         public bool IsActiveFramework { get; set; }
+
+	    public List<FundingPeriod> FundingPeriods { get; set; }
     }
 }

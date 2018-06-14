@@ -27,6 +27,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public int Duration { get; set; }
 
+	    public List<FundingPeriod> FundingPeriods { get; set; }
+
         public int FundingCap { get; set; }
 
         public string IntroductoryText { get; set; }

@@ -1,10 +1,9 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     using System;
     using System.Collections.Generic;
-
+    using SFA.DAS.Apprenticeships.Api.Types;
+    
     public sealed class FrameworkSearchResultsItem
     {
         public string FrameworkId { get; set; }
@@ -32,6 +31,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public string ProfessionalRegistration { get; set; }
         
         public int Duration { get; set; }
+
+        public List<FundingPeriod> FundingPeriods { get; set; }
 
         public int FundingCap { get; set; }
 

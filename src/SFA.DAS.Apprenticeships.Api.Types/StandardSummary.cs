@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
@@ -41,5 +42,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public bool IsActiveStandard { get; set; }
 
         public int StandardSectorCode { get; set; }
+
+	    public List<FundingPeriod> FundingPeriods { get; set; }
     }
 }
