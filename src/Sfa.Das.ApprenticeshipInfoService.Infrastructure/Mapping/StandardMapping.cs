@@ -10,11 +10,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
     public class StandardMapping : IStandardMapping
     {
         private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
+	    private readonly IFundingCapCalculator _fundingCapCalculator;
 
-        public StandardMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker)
-        {
-            _activeApprenticeshipChecker = activeApprenticeshipChecker;
-        }
+	    public StandardMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker, IFundingCapCalculator fundingCapCalculator)
+	    {
+		    _activeApprenticeshipChecker = activeApprenticeshipChecker;
+		    _fundingCapCalculator = fundingCapCalculator;
+	    }
 
         public Standard MapToStandard(StandardSearchResultsItem document)
         {
@@ -30,7 +32,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Keywords = document.Keywords,
                 Duration = document.Duration,
                 FundingPeriods = document.FundingPeriods,
-                MaxFunding = document.FundingCap,
+                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 IntroductoryText = document.IntroductoryText,
                 EntryRequirements = document.EntryRequirements,
@@ -58,7 +60,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 IsPublished = document.Published,
                 Duration = document.Duration,
                 FundingPeriods = document.FundingPeriods,
-                MaxFunding = document.FundingCap,
+                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,

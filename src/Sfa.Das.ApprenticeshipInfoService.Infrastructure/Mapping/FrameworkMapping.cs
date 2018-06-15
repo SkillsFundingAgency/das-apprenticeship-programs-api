@@ -10,12 +10,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
-         private readonly ActiveApprenticeshipChecker _activeApprenticeshipChecker;
+         private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
+	    private readonly IFundingCapCalculator _fundingCapCalculator;
 
-        public FrameworkMapping(ActiveApprenticeshipChecker activeApprenticeshipChecker)
-        {
-            _activeApprenticeshipChecker = activeApprenticeshipChecker;
-        }
+	    public FrameworkMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker, IFundingCapCalculator fundingCapCalculator)
+	    {
+		    _activeApprenticeshipChecker = activeApprenticeshipChecker;
+		    _fundingCapCalculator = fundingCapCalculator;
+	    }
 
         public Framework MapToFramework(FrameworkSearchResultsItem document)
         {
@@ -31,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProgType = document.ProgType,
                 Duration = document.Duration,
 				FundingPeriods = document.FundingPeriods,
-                MaxFunding = document.FundingCap,
+                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
                 TypicalLength = new TypicalLength {From = document.Duration, To = document.Duration, Unit = "m"},
@@ -66,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 ProgType = document.ProgType,
                 Duration = document.Duration,
 				FundingPeriods = document.FundingPeriods,
-                MaxFunding = document.FundingCap,
+                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
