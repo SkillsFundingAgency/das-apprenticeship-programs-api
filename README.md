@@ -10,7 +10,6 @@
 | Coverity | [![](https://scan.coverity.com/projects/10689/badge.svg)](https://scan.coverity.com/projects/skillsfundingagency-das-apprenticeship-programs-api) |
 | Web | http://das-prd-apprenticeshipinfoservice.cloudapp.net/ | 
 | Swagger | [![](http://online.swagger.io/validator?url=http://das-prd-apprenticeshipinfoservice.cloudapp.net:80/swagger/docs/v1)](http://das-prd-apprenticeshipinfoservice.cloudapp.net:80/swagger/docs/v1) |
-| Gitter | [![](https://badges.gitter.im/gitterHQ/gitterHQ.github.io.svg)](https://gitter.im/sfa-das-apprenticeship-programmes-api/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) |
 
 A public API from the Skills Funding Agency to provide a list of 
 - Standards
