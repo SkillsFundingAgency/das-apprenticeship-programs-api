@@ -11,13 +11,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
     public class FrameworkMapping : IFrameworkMapping
     {
          private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
-	    private readonly IFundingCapCalculator _fundingCapCalculator;
+        private readonly IFundingCapCalculator _fundingCapCalculator;
 
-	    public FrameworkMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker, IFundingCapCalculator fundingCapCalculator)
-	    {
-		    _activeApprenticeshipChecker = activeApprenticeshipChecker;
-		    _fundingCapCalculator = fundingCapCalculator;
-	    }
+        public FrameworkMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker, IFundingCapCalculator fundingCapCalculator)
+        {
+            _activeApprenticeshipChecker = activeApprenticeshipChecker;
+            _fundingCapCalculator = fundingCapCalculator;
+        }
 
         public Framework MapToFramework(FrameworkSearchResultsItem document)
         {
@@ -67,8 +67,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 PathwayName = document.PathwayName,
                 ProgType = document.ProgType,
                 Duration = document.Duration,
-				FundingPeriods = document.FundingPeriods,
-                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
+                FundingPeriods = document.FundingPeriods,
+                CurrentFundingCap = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
@@ -80,35 +80,35 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return framework;
         }
 
-		public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
-		{
-			return new FrameworkCodeSummary
-			{
-				FrameworkCode = document.FrameworkCode,
-				Ssa1 = document.SectorSubjectAreaTier1,
-				Ssa2 = document.SectorSubjectAreaTier2,
-				Title = document.FrameworkName,
-				EffectiveTo = document.EffectiveTo
-			};
-		}
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSearchResultsItem document)
+        {
+            return new FrameworkCodeSummary
+            {
+                FrameworkCode = document.FrameworkCode,
+                Ssa1 = document.SectorSubjectAreaTier1,
+                Ssa2 = document.SectorSubjectAreaTier2,
+                Title = document.FrameworkName,
+                EffectiveTo = document.EffectiveTo
+            };
+        }
 
-	    public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSearchResultsItem> documents)
-	    {
-		    var earliestDate = GetEarliestDate(documents);
-		    var latestDate = GetLatestDate(documents);
+        public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSearchResultsItem> documents)
+        {
+            var earliestDate = GetEarliestDate(documents);
+            var latestDate = GetLatestDate(documents);
 
-		    return new FrameworkCodeSummary
-		    {
-			    FrameworkCode = documents.First().FrameworkCode,
-			    Ssa1 = documents.First().SectorSubjectAreaTier1,
-			    Ssa2 = documents.First().SectorSubjectAreaTier2,
-			    Title = documents.First().FrameworkName,
-			    EffectiveFrom = earliestDate,
-			    EffectiveTo = latestDate
-		    };
-	    }
+            return new FrameworkCodeSummary
+            {
+                FrameworkCode = documents.First().FrameworkCode,
+                Ssa1 = documents.First().SectorSubjectAreaTier1,
+                Ssa2 = documents.First().SectorSubjectAreaTier2,
+                Title = documents.First().FrameworkName,
+                EffectiveFrom = earliestDate,
+                EffectiveTo = latestDate
+            };
+        }
 
-		public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
+        public FrameworkCodeSummary MapToFrameworkCodeSummary(FrameworkSummary frameworkSummary)
         {
             return new FrameworkCodeSummary
             {
@@ -119,51 +119,51 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 EffectiveTo = frameworkSummary.EffectiveTo
             };
         }
-	    public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSummary> documents)
-	    {
-		    var earliestDate = GetEarliestDate(documents);
-		    var latestDate = GetLatestDate(documents);
+        public FrameworkCodeSummary MapToFrameworkCodeSummaryFromList(List<FrameworkSummary> documents)
+        {
+            var earliestDate = GetEarliestDate(documents);
+            var latestDate = GetLatestDate(documents);
 
-		    return new FrameworkCodeSummary
-		    {
-			    FrameworkCode = documents.First().FrameworkCode,
-			    Ssa1 = documents.First().Ssa1,
-			    Ssa2 = documents.First().Ssa2,
-			    Title = documents.First().FrameworkName,
-			    EffectiveFrom = earliestDate,
-			    EffectiveTo = latestDate
-		    };
-	    }
+            return new FrameworkCodeSummary
+            {
+                FrameworkCode = documents.First().FrameworkCode,
+                Ssa1 = documents.First().Ssa1,
+                Ssa2 = documents.First().Ssa2,
+                Title = documents.First().FrameworkName,
+                EffectiveFrom = earliestDate,
+                EffectiveTo = latestDate
+            };
+        }
 
-		private DateTime? GetLatestDate(List<FrameworkSummary> documents)
-		{
-			if (documents.Any(x => x.EffectiveTo == null))
-			{
-				return null;
-			}
+        private DateTime? GetLatestDate(List<FrameworkSummary> documents)
+        {
+            if (documents.Any(x => x.EffectiveTo == null))
+            {
+                return null;
+            }
 
-			return documents.Max(item => item.EffectiveTo);
-		}
+            return documents.Max(item => item.EffectiveTo);
+        }
 
-		private DateTime? GetEarliestDate(List<FrameworkSummary> documents)
-		{
-			return documents.Min(item => item.EffectiveFrom);
-		}
-		
-	    private DateTime? GetLatestDate(List<FrameworkSearchResultsItem> documents)
-	    {
-		    if (documents.Any(x => x.EffectiveTo == null))
-		    {
-			    return null;
-		    }
+        private DateTime? GetEarliestDate(List<FrameworkSummary> documents)
+        {
+            return documents.Min(item => item.EffectiveFrom);
+        }
+        
+        private DateTime? GetLatestDate(List<FrameworkSearchResultsItem> documents)
+        {
+            if (documents.Any(x => x.EffectiveTo == null))
+            {
+                return null;
+            }
 
-			return documents.Max(item => item.EffectiveTo);
-		}
+            return documents.Max(item => item.EffectiveTo);
+        }
 
-	    private DateTime? GetEarliestDate(List<FrameworkSearchResultsItem> documents)
-	    {
-			return documents.Min(item => item.EffectiveFrom);
-		}
+        private DateTime? GetEarliestDate(List<FrameworkSearchResultsItem> documents)
+        {
+            return documents.Min(item => item.EffectiveFrom);
+        }
 
     }
 }

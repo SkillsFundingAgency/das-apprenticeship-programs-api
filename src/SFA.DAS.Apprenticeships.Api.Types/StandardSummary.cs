@@ -25,7 +25,9 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    public int CurrentFundingCap { get; set; }
+
+	    public int MaxFunding => CurrentFundingCap;
 
         public int Level { get; set; }
 

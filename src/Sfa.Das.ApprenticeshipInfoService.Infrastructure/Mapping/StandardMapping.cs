@@ -60,7 +60,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 IsPublished = document.Published,
                 Duration = document.Duration,
                 FundingPeriods = document.FundingPeriods,
-                MaxFunding = _fundingCapCalculator.CalculateCurrentFundingBand(document),
+                CurrentFundingCap = _fundingCapCalculator.CalculateCurrentFundingBand(document),
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 Ssa1 = document.SectorSubjectAreaTier1,
                 Ssa2 = document.SectorSubjectAreaTier2,
