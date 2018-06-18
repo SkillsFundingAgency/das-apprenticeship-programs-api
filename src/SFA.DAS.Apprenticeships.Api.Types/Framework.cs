@@ -32,9 +32,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    public int CurrentFundingCap { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
+	    public int MaxFunding => CurrentFundingCap;
+
+	    public DateTime? ExpiryDate { get; set; }
 
         public string CompletionQualifications { get; set; }
 
