@@ -28,6 +28,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 
         private int GetFundingCapFromPeriods(List<FundingPeriod> fundingPeriods)
         {
+            if (fundingPeriods == null)
+            {
+                return 0;
+            }
+
             foreach (var fundingPeriod in fundingPeriods)
             {
                 if (fundingPeriod.EffectiveFrom != null && fundingPeriod.EffectiveFrom <= DateTime.Today &&
