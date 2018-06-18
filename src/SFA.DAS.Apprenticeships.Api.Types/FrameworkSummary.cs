@@ -32,14 +32,15 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int Level { get; set; }
 
-        [Obsolete("Use 'Duration' Instead.")]
+        [Obsolete("Use 'Duration' instead.")]
         public TypicalLength TypicalLength { get; set; }
 
         public int Duration { get; set; }
 
 	    public int CurrentFundingCap { get; set; }
 
-	    public int MaxFunding => CurrentFundingCap;
+	    [Obsolete("Use 'CurrentFundingCap' instead.")]
+		public int MaxFunding => CurrentFundingCap;
 
         public double Ssa1 { get; set; }
 
