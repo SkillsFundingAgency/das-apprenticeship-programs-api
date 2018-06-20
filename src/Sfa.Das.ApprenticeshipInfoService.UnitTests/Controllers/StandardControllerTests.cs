@@ -24,10 +24,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private StandardsController _sut;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<ILog> _mockLogger;
+        private DateTime? _lastDateForNewStarts;
 
         [SetUp]
         public void Init()
         {
+            _lastDateForNewStarts = DateTime.Today.AddDays(100);
             _mockGetStandards = new Mock<IGetStandards>();
             _mockLogger = new Mock<ILog>();
             _sut = new StandardsController(_mockGetStandards.Object, _mockLogger.Object);
@@ -60,6 +62,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             standards.Count().Should().Be(2);
             standards.First().Id.Should().Be("2");
             standards.Last().Id.Should().Be("3");
+            standards.First().LastDateForNewStarts.Should().Be(_lastDateForNewStarts);
         }
 
         private IEnumerable<StandardSummary> LoadStandardSummaryData()
@@ -76,7 +79,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                 {
                     Id = "2",
                     Title = "test title 2",
-                    IsActiveStandard = true
+                    IsActiveStandard = true,
+                    LastDateForNewStarts = _lastDateForNewStarts
                 },
                 new StandardSummary
                 {
@@ -99,14 +103,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         [Test]
         public void ShouldReturnStandard()
         {
-            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = true});
-
+            var todaysDate = DateTime.Today;
+            _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = true, LastDateForNewStarts = todaysDate});
             var standard = _sut.Get("42");
 
             Assert.NotNull(standard);
             standard.StandardId.Should().Be("42");
             standard.Title.Should().Be("test title");
             standard.Uri.ToLower().Should().Be("http://localhost/standards/42");
+            standard.LastDateForNewStarts.Should().Be(todaysDate);
         }
 
         [Test]

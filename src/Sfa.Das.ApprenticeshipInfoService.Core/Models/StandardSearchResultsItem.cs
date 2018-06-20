@@ -52,5 +52,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public DateTime? EffectiveFrom { get; set; }
 
         public DateTime? EffectiveTo { get; set; }
+
+        public DateTime? LastDateForNewStarts { get; set; }
     }
 }
