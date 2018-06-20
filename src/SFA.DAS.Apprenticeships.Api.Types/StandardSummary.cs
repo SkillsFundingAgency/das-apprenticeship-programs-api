@@ -20,7 +20,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         /// </summary>
         public string Title { get; set; }
 
-        [Obsolete("Use 'Duration' nstead.")]
+        [Obsolete("Use 'Duration' instead.")]
         public TypicalLength TypicalLength { get; set; }
 
         public int Duration { get; set; }
