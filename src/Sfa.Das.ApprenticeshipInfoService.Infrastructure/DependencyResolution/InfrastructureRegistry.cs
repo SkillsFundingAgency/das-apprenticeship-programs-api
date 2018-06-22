@@ -39,6 +39,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IAnalyticsService>().Use<AnalyticsService>();
             For<IQueryHelper>().Use<QueryHelper>();
             For<IActiveApprenticeshipChecker>().Use<ActiveApprenticeshipChecker>();
+            For<IFundingCapCalculator>().Use<FundingCapCalculator>();
             For<IPaginationHelper>().Use<PaginationHelper>();
             For<IGetIfaStandardsUrlService>().Use<GetIfaStandardsUrlService>();
         }

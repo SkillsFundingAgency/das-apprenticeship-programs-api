@@ -27,14 +27,17 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int Level { get; set; }
         
-        [Obsolete("Use 'Duration' Instead.")]
+        [Obsolete("Use 'Duration' instead.")]
         public TypicalLength TypicalLength { get; set; }
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    public int CurrentFundingCap { get; set; }
 
-        public DateTime? ExpiryDate { get; set; }
+	    [Obsolete("Use 'CurrentFundingCap' instead.")]
+		public int MaxFunding => CurrentFundingCap;
+
+	    public DateTime? ExpiryDate { get; set; }
 
         public string CompletionQualifications { get; set; }
 
@@ -68,5 +71,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public DateTime? EffectiveTo { get; set; }
 
         public bool IsActiveFramework { get; set; }
+
+	    public List<FundingPeriod> FundingPeriods { get; set; }
     }
 }

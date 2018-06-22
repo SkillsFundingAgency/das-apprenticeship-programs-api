@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
@@ -12,7 +13,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    public List<FundingPeriod> FundingPeriods { get; set; }
+
+		public int CurrentFundingCap { get; set; }
+
+	    public int MaxFunding => CurrentFundingCap;
 
         public int Level { get; set; }
 

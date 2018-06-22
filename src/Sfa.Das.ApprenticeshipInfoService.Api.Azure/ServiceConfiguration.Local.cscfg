@@ -4,7 +4,7 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" value=""/>
-      <Setting name="ElasticServerUrls" value="http://docker.local:9200"/>
+      <Setting name="ElasticServerUrls" value="http://localhost:9200"/>
       <Setting name="EnvironmentName" value="local" />
       <Setting name="ga.trackingid" value="" />
       <Setting name="ElasticsearchUsername" value="elastic" />

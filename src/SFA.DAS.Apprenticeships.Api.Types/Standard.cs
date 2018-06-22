@@ -29,14 +29,17 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         public IEnumerable<string> Keywords { get; set; }
 
-        [Obsolete("Use 'Duration' Instead.")]
+        [Obsolete("Use 'Duration' instead.")]
         public TypicalLength TypicalLength { get; set; }
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    [Obsolete("Use 'CurrentFundingCap' instead.")]
+		public int MaxFunding => CurrentFundingBand;
 
-        public string IntroductoryText { get; set; }
+	    public int CurrentFundingBand { get; set; }
+
+		public string IntroductoryText { get; set; }
 
         public string EntryRequirements { get; set; }
 
@@ -65,5 +68,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public int StandardSectorCode { get; set; }
 
         public string StandardPageUri { get; set; }
+
+	    public List<FundingPeriod> FundingPeriods { get; set; }
     }
 }

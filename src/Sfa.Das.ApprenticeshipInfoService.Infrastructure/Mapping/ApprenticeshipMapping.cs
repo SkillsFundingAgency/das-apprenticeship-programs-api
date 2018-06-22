@@ -21,7 +21,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = document.Ssa2,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                MaxFunding = document.MaxFunding
+                CurrentFundingCap = document.CurrentFundingCap,
+                FundingPeriods = document.FundingPeriods
             };
         }
 
@@ -38,7 +39,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = document.Ssa2,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                MaxFunding = document.MaxFunding
+                CurrentFundingCap = document.CurrentFundingCap,
+                FundingPeriods = document.FundingPeriods
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
@@ -19,12 +20,15 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         /// </summary>
         public string Title { get; set; }
 
-        [Obsolete("Use 'Duration' Instead.")]
+        [Obsolete("Use 'Duration' instead.")]
         public TypicalLength TypicalLength { get; set; }
 
         public int Duration { get; set; }
 
-        public int MaxFunding { get; set; }
+	    public int CurrentFundingCap { get; set; }
+
+	    [Obsolete("Use 'CurrentFundingCap' instead.")]
+		public int MaxFunding => CurrentFundingCap;
 
         public int Level { get; set; }
 
@@ -43,5 +47,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public bool IsActiveStandard { get; set; }
 
         public int StandardSectorCode { get; set; }
+
+	    public List<FundingPeriod> FundingPeriods { get; set; }
     }
 }
