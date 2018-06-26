@@ -68,6 +68,10 @@
     <Compile Include="Models\ApprenticeshipDetails.cs" />
     <Compile Include="Models\ApprenticeshipProduct.cs" />
     <Compile Include="Models\ApprenticeshipBasic.cs" />
+    <Compile Include="Models\ApprenticeshipSearchResults.cs" />
+    <Compile Include="Models\ProviderSearchResponseItem.cs" />
+    <Compile Include="Models\ProviderSearchResultsItem.cs" />
+    <Compile Include="Models\ApprenticeshipSearchResultsItem.cs" />
     <Compile Include="Models\DetailProviderResponse.cs" />
     <Compile Include="Models\ContactInformation.cs" />
     <Compile Include="Models\Responses\FrameworkProviderSearchResultsItemResponse.cs" />
@@ -85,8 +89,10 @@
     <Compile Include="Models\FrameworkSearchResultsItem.cs" />
     <Compile Include="Models\IApprenticeshipProduct.cs" />
     <Compile Include="Services\IApprenticeshipProviderRepository.cs" />
+    <Compile Include="Services\IProviderSearchService.cs" />
     <Compile Include="Services\IGetAssessmentOrgs.cs" />
     <Compile Include="Services\IGetProviders.cs" />
+    <Compile Include="Services\IApprenticeshipSearchService.cs" />
     <Compile Include="Services\IGetStandards.cs" />
     <Compile Include="Services\IGetFrameworks.cs" />
   </ItemGroup>
