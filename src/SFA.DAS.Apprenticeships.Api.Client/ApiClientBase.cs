@@ -18,9 +18,14 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        protected ApiClientBase(string baseUri = null)
+        protected ApiClientBase(string baseUri)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(baseUri ?? "http://das-prd-apprenticeshipinfoservice.cloudapp.net") };
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                throw new ArgumentNullException(nameof(baseUri), "API BaseUri must be supplied.");
+            }
+
+            _httpClient = new HttpClient { BaseAddress = new Uri(GetBaseUrl(baseUri)) };
         }
 
         protected static void RaiseResponseError(string message, HttpRequestMessage failedRequest, HttpResponseMessage failedResponse)
@@ -142,6 +147,13 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         public void Dispose()
         {
             _httpClient?.Dispose();
+        }
+
+        private string GetBaseUrl(string baseUri)
+        {
+            return baseUri.EndsWith("/")
+                ? baseUri
+                : baseUri + "/";
         }
     }
 }
