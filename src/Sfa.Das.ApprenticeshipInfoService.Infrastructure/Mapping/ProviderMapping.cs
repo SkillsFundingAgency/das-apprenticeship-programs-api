@@ -139,7 +139,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Phone = provider.Phone,
                 Email = provider.Email,
                 NationalProvider = provider.NationalProvider,
-                Website = provider.Website
+                Website = provider.Website,
+				LegalAddress = provider.Addresses.FirstOrDefault(x => x.ContactType.ToLower() == "legal")
             };
 
             if (!string.IsNullOrWhiteSpace(provider.EmployerSatisfaction))

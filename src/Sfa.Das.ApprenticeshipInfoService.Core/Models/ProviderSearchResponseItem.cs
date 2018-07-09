@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
@@ -29,5 +30,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public double? EmployerSatisfaction { get; set; }
 
         public double? LearnerSatisfaction { get; set; }
+
+		public ContactAddress LegalAddress { get; set; }
     }
 }
