@@ -8,8 +8,8 @@
 | Providers Client | [![](https://img.shields.io/nuget/v/SFA.DAS.Providers.Api.Client.svg)](https://www.nuget.org/packages/SFA.DAS.Providers.Api.Client/) |
 | Assessment Orgs Client | [![](https://img.shields.io/nuget/v/SFA.DAS.AssessmentOrgs.Api.Client.svg)](https://www.nuget.org/packages/SFA.DAS.AssessmentOrgs.Api.Client/) |
 | Coverity | [![](https://scan.coverity.com/projects/10689/badge.svg)](https://scan.coverity.com/projects/skillsfundingagency-das-apprenticeship-programs-api) |
-| Web | http://das-prd-apprenticeshipinfoservice.cloudapp.net/ | 
-| Swagger | [![](http://online.swagger.io/validator?url=http://das-prd-apprenticeshipinfoservice.cloudapp.net:80/swagger/docs/v1)](http://das-prd-apprenticeshipinfoservice.cloudapp.net:80/swagger/docs/v1) |
+| Web | https://findapprenticeshiptraining-api.sfa.bis.gov.uk/ | 
+| Swagger | [![](http://online.swagger.io/validator?url=https://findapprenticeshiptraining-api.sfa.bis.gov.uk/:80/swagger/docs/v1)](http://das-prd-apprenticeshipinfoservice.cloudapp.net:80/swagger/docs/v1) |
 
 A public API from the Skills Funding Agency to provide a list of 
 - Standards
