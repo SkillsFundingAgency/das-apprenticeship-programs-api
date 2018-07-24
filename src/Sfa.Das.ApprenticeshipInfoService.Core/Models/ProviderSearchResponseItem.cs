@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.Apprenticeships.Api.Types;
+﻿using System.Collections.Generic;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
@@ -31,6 +29,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public double? LearnerSatisfaction { get; set; }
 
-		public ContactAddress LegalAddress { get; set; }
+		public List<ContactAddress> Addresses { get; set; }
     }
 }

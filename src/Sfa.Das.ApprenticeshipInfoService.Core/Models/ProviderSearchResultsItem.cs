@@ -27,7 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public string Website { get; set; }
 
-        public string EmployerSatisfaction { get; set; }
+		public string EmployerSatisfaction { get; set; }
 
         public string LearnerSatisfaction { get; set; }
     }
