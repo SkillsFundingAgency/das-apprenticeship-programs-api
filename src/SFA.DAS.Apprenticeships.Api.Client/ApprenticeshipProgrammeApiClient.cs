@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.Apprenticeships.Api.Client
@@ -28,7 +27,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 			}
 		}
 
-		public IEnumerable<ApprenticeshipSearchResultsItem> Search(string keywords, int page)
+		public IEnumerable<ApprenticeshipSearchResultsItem> Search(string keywords, int page = 1)
 		{
 			using (var request = new HttpRequestMessage(HttpMethod.Get, $"/apprenticeship-programmes/search?keywords={keywords}&page={page}"))
 			{
@@ -36,7 +35,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 			}
 		}
 
-		public async Task<IEnumerable<ApprenticeshipSearchResultsItem>> SearchAsync(string keywords, int page)
+		public async Task<IEnumerable<ApprenticeshipSearchResultsItem>> SearchAsync(string keywords, int page = 1)
 		{
 			using (var request = new HttpRequestMessage(HttpMethod.Get, $"/apprenticeship-programmes/search?keywords={keywords}&page={page}"))
 			{

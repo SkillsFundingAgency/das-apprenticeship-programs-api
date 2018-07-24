@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+namespace SFA.DAS.Apprenticeships.Api.Types.Providers
 {
     public class ProviderSearchResponseItem
     {
