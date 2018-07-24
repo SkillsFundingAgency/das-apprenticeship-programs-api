@@ -29,6 +29,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public double? LearnerSatisfaction { get; set; }
 
-		public List<ContactAddress> Addresses { get; set; }
+		public IEnumerable<ContactAddress> Addresses { get; set; }
     }
 }
