@@ -50,7 +50,7 @@
             get
             {
                 return
-                    ConfigurationManager.AppSettings["StandardsExpiredRequired"]
+	                CloudConfigurationManager.GetSetting("StandardsExpiredRequired")
                         ?.Split(',')
                         .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
                     ?? new List<string>();
