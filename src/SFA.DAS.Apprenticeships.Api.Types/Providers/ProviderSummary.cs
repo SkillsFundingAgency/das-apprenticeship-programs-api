@@ -19,6 +19,8 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
 
         public IEnumerable<string> Aliases { get; set; }
 
+	    public bool CurrentlyNotStartingNewApprentices { get; set; }
+
         /// <summary>
         /// Is this provider also an employer
         /// </summary>

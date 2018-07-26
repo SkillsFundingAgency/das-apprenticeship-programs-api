@@ -26,6 +26,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Aliases = provider.Aliases,
                 EmployerSatisfaction = provider.EmployerSatisfaction,
                 IsEmployerProvider = provider.IsEmployerProvider,
+				CurrentlyNotStartingNewApprentices = provider.CurrentlyNotStartingNewApprentices,
                 IsHigherEducationInstitute = provider.IsHigherEducationInstitute,
                 LearnerSatisfaction = provider.LearnerSatisfaction,
                 NationalProvider = provider.NationalProvider,
