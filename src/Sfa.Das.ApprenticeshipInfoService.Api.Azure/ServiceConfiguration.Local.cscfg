@@ -17,6 +17,7 @@
       <Setting name="ProviderIndexAlias" value="localproviderindexalias" />
       <Setting name="AssessmentOrgsIndexAlias" value="localassessmentorgsindexalias" />
       <Setting name="FrameworksExpiredRequired" value=""/>
+      <Setting name="StandardsExpiredRequired" value="73"/>
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="7A1BC8263B7CBAA2B355934D0BB8031B469C1AE1" thumbprintAlgorithm="sha1" />
