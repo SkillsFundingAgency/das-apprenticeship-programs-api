@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
@@ -32,9 +33,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// Search all apprenticeships
         /// </summary>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchActiveStandards")]
+        [SwaggerOperation("SearchActiveApprenticeships")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSearchResultsItem>))]
-        [Route("searchApprenticeships/{keywords}/{page}")]
+        [Route("apprenticeship-programmes/search")]
+		[HttpGet]
         [ExceptionHandling]
         public IEnumerable<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page = 1)
         {
@@ -46,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/search");
+                _logger.Error(e, "/apprenticeship-programmes/search");
                 throw;
             }
         }
@@ -57,7 +59,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <returns>a search result object</returns>
         [SwaggerOperation("SearchProviders")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
-        [Route("searchProviders/{keywords}/{page}")]
+        [Route("providers/search")]
+		[HttpGet]
         [ExceptionHandling]
         public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page = 1)
         {
@@ -75,7 +78,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/search");
+                _logger.Error(e, "/providers/search");
                 throw;
             }
         }

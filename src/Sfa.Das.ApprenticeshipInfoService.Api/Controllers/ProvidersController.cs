@@ -68,7 +68,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("providers/{ukprn}")]
+        [Route("providers/{ukprn:long}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
         {
@@ -111,7 +111,7 @@
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [Route("providers/{ukprn}")]
+        [Route("providers/{ukprn:long}")]
         [ExceptionHandling]
         public void Head(long ukprn)
         {
@@ -126,7 +126,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("providers/{ukprn}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
+        [Route("providers/{ukprn:long}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
@@ -142,7 +142,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("providers/{ukprn}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
+        [Route("providers/{ukprn:long}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
         {

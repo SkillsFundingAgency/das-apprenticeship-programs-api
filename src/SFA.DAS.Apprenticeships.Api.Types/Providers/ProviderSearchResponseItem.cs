@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.Apprenticeships.Api.Types;
+﻿using System.Collections.Generic;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+namespace SFA.DAS.Apprenticeships.Api.Types.Providers
 {
     public class ProviderSearchResponseItem
     {
@@ -29,5 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public double? EmployerSatisfaction { get; set; }
 
         public double? LearnerSatisfaction { get; set; }
+
+		public IEnumerable<ContactAddress> Addresses { get; set; }
     }
 }
