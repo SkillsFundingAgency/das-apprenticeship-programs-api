@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using SFA.DAS.Apprenticeships.Api.Client;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
@@ -39,29 +40,45 @@ namespace SFA.DAS.Providers.Api.Client
             return await GetAsync(providerUkprn.ToString());
         }
 
-        public Provider Get(string providerUkprn)
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/{providerUkprn}"))
-            {
-                return RequestAndDeserialise<Provider>(request, $"The provider {providerUkprn} could not be found");
-            }
-        }
+		public Provider Get(string providerUkprn)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/{providerUkprn}"))
+		    {
+			    return RequestAndDeserialise<Provider>(request, $"The provider {providerUkprn} could not be found");
+		    }
+	    }
 
-        public async Task<Provider> GetAsync(string providerUkprn)
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/{providerUkprn}"))
-            {
-                return await RequestAndDeserialiseAsync<Provider>(request, $"The provider {providerUkprn} could not be found");
-            }
-        }
+	    public async Task<Provider> GetAsync(string providerUkprn)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/{providerUkprn}"))
+		    {
+			    return await RequestAndDeserialiseAsync<Provider>(request, $"The provider {providerUkprn} could not be found");
+		    }
+	    }
 
-        /// <summary>
-        /// Check if a provider exists
-        /// HEAD /frameworks/{provider-ukprn}
-        /// </summary>
-        /// <param name="providerUkprn">an integer for the provider ukprn</param>
-        /// <returns>bool</returns>
-        public bool Exists(long providerUkprn)
+	    public ProviderSearchResponseItem Search(string keywords, int page = 1)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/search?keywords={keywords}&page={page}"))
+		    {
+			    return RequestAndDeserialise<ProviderSearchResponseItem>(request);
+		    }
+	    }
+
+	    public async Task<ProviderSearchResponseItem> SearchAsync(string keywords, int page = 1)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/providers/search?keywords={keywords}&page={page}"))
+		    {
+			    return await RequestAndDeserialiseAsync<ProviderSearchResponseItem>(request);
+		    }
+	    }
+
+		/// <summary>
+		/// Check if a provider exists
+		/// HEAD /frameworks/{provider-ukprn}
+		/// </summary>
+		/// <param name="providerUkprn">an integer for the provider ukprn</param>
+		/// <returns>bool</returns>
+		public bool Exists(long providerUkprn)
         {
             return Exists(providerUkprn.ToString());
         }

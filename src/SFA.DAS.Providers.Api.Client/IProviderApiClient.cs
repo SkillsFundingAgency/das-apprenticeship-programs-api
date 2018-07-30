@@ -56,13 +56,25 @@ namespace SFA.DAS.Providers.Api.Client
         /// <returns>a bool whether the provider exists</returns>
         Task<Provider> GetAsync(string providerUkprn);
 
-        /// <summary>
-        /// Check if a provider exists
-        /// HEAD /frameworks/{provider-ukprn}
-        /// </summary>
-        /// <param name="providerUkprn">provider registration number (8 numbers long)</param>
-        /// <returns>bool</returns>
-        bool Exists(long providerUkprn);
+	    /// <summary>
+	    /// Search for providers
+	    /// </summary>
+	    /// <returns>a search result object</returns>
+	    ProviderSearchResponseItem Search(string keywords, int page = 1);
+
+	    /// <summary>
+	    /// Search for providers
+	    /// </summary>
+	    /// <returns>a search result object</returns>
+		Task<ProviderSearchResponseItem> SearchAsync(string keywords, int page = 1);
+
+		/// <summary>
+		/// Check if a provider exists
+		/// HEAD /frameworks/{provider-ukprn}
+		/// </summary>
+		/// <param name="providerUkprn">provider registration number (8 numbers long)</param>
+		/// <returns>bool</returns>
+		bool Exists(long providerUkprn);
 
         /// <summary>
         /// Check if a provider exists

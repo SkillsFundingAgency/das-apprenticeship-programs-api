@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
@@ -14,7 +15,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public List<string> Aliases { get; set; }
 
-        public string Uri { get; set; }
+	    public IEnumerable<ContactAddress> Addresses { get; set; }
+
+		public string Uri { get; set; }
 
         public string Phone { get; set; }
 
@@ -24,7 +27,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public string Website { get; set; }
 
-        public string EmployerSatisfaction { get; set; }
+		public string EmployerSatisfaction { get; set; }
 
         public string LearnerSatisfaction { get; set; }
     }
