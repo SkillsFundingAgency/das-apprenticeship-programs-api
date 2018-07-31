@@ -53,5 +53,7 @@
         bool IsNew { get; set; }
 
         bool IsLevyPayerOnly { get; set; }
+
+	    bool CurrentlyNotStartingNewApprentices { get; set; }
     }
 }

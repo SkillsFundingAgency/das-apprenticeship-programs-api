@@ -229,7 +229,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                     HasNonLevyContract = item.HasNonLevyContract,
                     HasParentCompanyGuarantee = item.HasParentCompanyGuarantee,
                     IsNew = item.IsNew,
-                    IsLevyPayerOnly = item.IsLevyPayerOnly
+                    IsLevyPayerOnly = item.IsLevyPayerOnly,
+	                CurrentlyNotStartingNewApprentices = item.CurrentlyNotStartingNewApprentices
                 }
             };
         }
