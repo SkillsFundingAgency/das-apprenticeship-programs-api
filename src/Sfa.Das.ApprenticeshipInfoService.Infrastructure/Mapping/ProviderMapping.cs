@@ -26,6 +26,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Aliases = provider.Aliases,
                 EmployerSatisfaction = provider.EmployerSatisfaction,
                 IsEmployerProvider = provider.IsEmployerProvider,
+				CurrentlyNotStartingNewApprentices = provider.CurrentlyNotStartingNewApprentices,
                 IsHigherEducationInstitute = provider.IsHigherEducationInstitute,
                 LearnerSatisfaction = provider.LearnerSatisfaction,
                 NationalProvider = provider.NationalProvider,
@@ -228,7 +229,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                     HasNonLevyContract = item.HasNonLevyContract,
                     HasParentCompanyGuarantee = item.HasParentCompanyGuarantee,
                     IsNew = item.IsNew,
-                    IsLevyPayerOnly = item.IsLevyPayerOnly
+                    IsLevyPayerOnly = item.IsLevyPayerOnly,
+	                CurrentlyNotStartingNewApprentices = item.CurrentlyNotStartingNewApprentices
                 }
             };
         }
