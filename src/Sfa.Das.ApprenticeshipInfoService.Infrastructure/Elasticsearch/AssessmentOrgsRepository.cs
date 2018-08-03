@@ -100,22 +100,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private ISearchRequest GetAllAssessmentOrgsSearchDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<OrganisationDocument>()
-                    .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                    .Type(Types.Parse("organisationdocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
             return new SearchDescriptor<OrganisationDocument>()
                 .Index(_applicationSettings.AssessmentOrgsIndexAlias)
                 .Type(Types.Parse("organisationdocument"))
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
+                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
                 .Take(take)
                 .MatchAll();
         }
