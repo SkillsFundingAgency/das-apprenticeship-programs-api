@@ -4,14 +4,14 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" value=""/>
-      <Setting name="ElasticServerUrls" value="http://localhost:9200"/>
+      <Setting name="ElasticServerUrls" value="https://276a75aff62742f080cfc473765e3f14.eu-west-1.aws.found.io:9243"/>
       <Setting name="EnvironmentName" value="local" />
       <Setting name="ga.trackingid" value="" />
       <Setting name="ElasticsearchUsername" value="elastic" />
-      <Setting name="ElasticsearchPassword" value="changeme" />
+      <Setting name="ElasticsearchPassword" value="fk2JQQbPAxDz2TGHlNsg2Ak6" />
       <Setting name="FeatureToggle.Elk5Feature" value="true" />
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" value="" />
-      <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="" />
+      <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="false" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="ApprenticeshipIndexAlias" value="localapprenticeshipindexalias" />
       <Setting name="ProviderIndexAlias" value="localproviderindexalias" />

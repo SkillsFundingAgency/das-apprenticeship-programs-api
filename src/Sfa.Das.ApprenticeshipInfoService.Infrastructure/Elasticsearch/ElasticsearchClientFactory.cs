@@ -44,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private void SetDefaultSettings(ConnectionSettings settings)
         {
-            if (!Debugger.IsAttached)
+            if (!Debugger.IsAttached || !Is<IgnoreSslCertificateFeature>.Enabled)
             {
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
             }
