@@ -118,7 +118,7 @@
         {
             var listIds = ValidateIds(ids);
 
-            var standards = _getStandards.GetStandardsById(listIds);
+            var standards = _getStandards.GetStandardsById(listIds, page);
 
             foreach (var standard in standards)
             {

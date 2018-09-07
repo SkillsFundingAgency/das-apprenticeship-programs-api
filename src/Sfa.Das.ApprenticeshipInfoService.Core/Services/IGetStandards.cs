@@ -9,6 +9,6 @@
 
         Standard GetStandardById(string id);
 
-        List<Standard> GetStandardsById(List<int> ids);
+        List<Standard> GetStandardsById(List<int> ids, int page);
     }
 }
