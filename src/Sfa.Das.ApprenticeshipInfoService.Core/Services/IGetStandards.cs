@@ -8,5 +8,7 @@
         IEnumerable<StandardSummary> GetAllStandards();
 
         Standard GetStandardById(string id);
+
+        List<Standard> GetStandardsById(List<int> ids);
     }
 }

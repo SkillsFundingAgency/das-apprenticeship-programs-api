@@ -104,6 +104,32 @@
         }
 
         /// <summary>
+        /// Get a list of standards
+        /// </summary>
+        /// <param name="ids">Standard ids, coma separated</param>
+        /// <param name="page">Page you want to get</param>
+        /// <returns>a list of standard</returns>
+        [SwaggerOperation("GetStandardsById")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<Standard>))]
+        [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("standards/getlistbyids")]
+        [ExceptionHandling]
+        public List<Standard> Get(string ids, int page = 1)
+        {
+            var listIds = ValidateIds(ids);
+
+            var standards = _getStandards.GetStandardsById(listIds);
+
+            foreach (var standard in standards)
+            {
+                standard.Uri = Resolve(standard.StandardId);
+                standard.Providers = ResolveProvidersUrl(standard.StandardId);
+            }
+
+            return standards;
+        }
+
+        /// <summary>
         /// Do we have standards?
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
@@ -127,6 +153,27 @@
         public void Head(string id)
         {
             Get(id);
+        }
+
+        private List<int> ValidateIds(string ids)
+        {
+            var response = new List<int>();
+            foreach (var idElement in ids.Split(','))
+            {
+                int id = 0;
+                var validInt = int.TryParse(idElement, out id);
+
+                if (validInt)
+                {
+                    response.Add(id);
+                }
+                else
+                {
+                    throw new Exception("At least one is not a valid id");
+                }
+            }
+
+            return response;
         }
 
         private string Resolve(string id)

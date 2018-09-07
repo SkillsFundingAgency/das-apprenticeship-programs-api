@@ -78,6 +78,36 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return response;
         }
 
+        public List<Standard> GetStandardsById(List<int> ids)
+        {
+            var results = _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
+                s =>
+                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                        .Type(Types.Parse("standarddocument"))
+                        .Query(q => q
+							.Terms(t => t
+                                .Field(fi => fi.StandardId).Terms(ids))));
+
+            var documents = results.Documents.Any() ? results.Documents : null;
+
+            if (documents == null)
+            {
+                return null;
+            }
+
+            var response = new List<Standard>();
+
+            foreach (var standardSearchResultsItem in documents)
+            {
+                var standard = _standardMapping.MapToStandard(standardSearchResultsItem);
+                standard.StandardPageUri = _getIfaStandardUrlService.GetStandardUrl(standard.StandardId);
+
+                response.Add(standard);
+            }
+
+            return response;
+        }
+
         private ISearchRequest GetAllStandardsSeachDescriptor(int take)
         {
             if (Is<Elk5Feature>.Enabled)
