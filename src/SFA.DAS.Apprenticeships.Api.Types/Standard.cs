@@ -70,5 +70,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public string StandardPageUri { get; set; }
 
 	    public List<FundingPeriod> FundingPeriods { get; set; }
+
+		public bool RegulatedStandard { get; set; }
     }
 }
