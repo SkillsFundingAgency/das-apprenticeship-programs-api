@@ -57,6 +57,8 @@
 
         public bool IsLevyPayerOnly { get; set; }
 
-		public bool CurrentlyNotStartingNewApprentices { get; set; }
+        public bool CurrentlyNotStartingNewApprentices { get; set; }
+
+        public bool RegulatedStandard { get; set; }
     }
 }
