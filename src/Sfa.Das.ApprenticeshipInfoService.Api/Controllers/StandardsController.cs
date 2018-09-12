@@ -117,6 +117,7 @@
         public List<Standard> Get(string ids, int page = 1)
         {
             var listIds = ValidateIds(ids);
+            listIds.Sort();
 
             var standards = _getStandards.GetStandardsById(listIds, page);
 
@@ -169,7 +170,7 @@
                 }
                 else
                 {
-                    throw new Exception("At least one is not a valid id");
+                    throw new Exception($"{idElement} is not a valid id");
                 }
             }
 
