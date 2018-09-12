@@ -83,7 +83,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         public List<Standard> GetStandardsById(List<int> ids, int page)
         {
             var skip = GetSkipAmount(page);
-	        var elements = ids.Skip(skip).Take(Take);
+            ids.Sort();
+            var elements = ids.Skip(skip).Take(Take);
             var results = _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
                 s =>
                     s.Index(_applicationSettings.ApprenticeshipIndexAlias)

@@ -117,7 +117,6 @@
         public List<Standard> Get(string ids, int page = 1)
         {
             var listIds = ValidateIds(ids);
-            listIds.Sort();
 
             var standards = _getStandards.GetStandardsById(listIds, page);
 
