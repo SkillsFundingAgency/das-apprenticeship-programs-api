@@ -49,5 +49,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public int StandardSectorCode { get; set; }
 
 	    public List<FundingPeriod> FundingPeriods { get; set; }
+
+		public bool RegulatedStandard { get; set; }
     }
 }
