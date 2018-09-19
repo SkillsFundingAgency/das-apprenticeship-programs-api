@@ -19,13 +19,13 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
 
         public IEnumerable<string> Aliases { get; set; }
 
-	    public bool CurrentlyNotStartingNewApprentices { get; set; }
-		
-		/// <summary>
-		/// Is this provider also an employer
-		/// </summary>
-		public bool IsEmployerProvider { get; set; }
-        
+        public bool CurrentlyNotStartingNewApprentices { get; set; }
+
+        /// <summary>
+        /// Is this provider also an employer
+        /// </summary>
+        public bool IsEmployerProvider { get; set; }
+
         public string Uri { get; set; }
 
         public string Phone { get; set; }
@@ -46,5 +46,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types.Providers
         public bool HasParentCompanyGuarantee { get; set; }
         public bool IsNew { get; set; }
         public bool IsLevyPayerOnly { get; set; }
+        public Feedback ProviderFeedback{ get; set; }
     }
 }
