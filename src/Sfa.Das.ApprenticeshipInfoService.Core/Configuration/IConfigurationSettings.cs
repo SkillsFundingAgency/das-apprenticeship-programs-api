@@ -25,11 +25,7 @@
 
         string ElasticsearchPassword { get; }
 
-        List<string> FrameworksExpiredRequired { get; }
-
-        List<string> StandardsExpiredRequired { get; }
-
-         int PageSizeApprenticeshipSummary { get; }
+        int PageSizeApprenticeshipSummary { get; }
 
         string IfaStandardApiUrl { get; }
     }

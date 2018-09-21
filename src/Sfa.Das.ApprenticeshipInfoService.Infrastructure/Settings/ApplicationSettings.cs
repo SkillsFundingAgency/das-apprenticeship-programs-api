@@ -32,31 +32,7 @@
 
         public int PageSizeApprenticeshipSummary => int.Parse(
             ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);
-
-        public List<string> FrameworksExpiredRequired
-        {
-            get
-            {
-                return
-                    CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
-                        ?.Split(',')
-                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
-                    ?? new List<string>();
-            }
-        }
-
-        public List<string> StandardsExpiredRequired
-        {
-            get
-            {
-                return
-	                CloudConfigurationManager.GetSetting("StandardsExpiredRequired")
-                        ?.Split(',')
-                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
-                    ?? new List<string>();
-            }
-        }
-
+		
         private IEnumerable<Uri> GetElasticSearchIps()
         {
             var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');

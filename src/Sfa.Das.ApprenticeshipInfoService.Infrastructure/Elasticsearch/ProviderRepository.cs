@@ -373,7 +373,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var frameworks = GetFrameworksByProviderUkprn(ukprn);
 
             return frameworks
-                .Where(x => _activeApprenticeshipChecker.CheckActiveFramework(x.FrameworkId, x.EffectiveFrom, x.EffectiveTo))
+                .Where(x => _activeApprenticeshipChecker.CheckActiveFramework(x.EffectiveFrom, x.EffectiveTo))
                 .Select(framework => new ApprenticeshipTraining
                 {
                     Name = framework.PathwayName,
@@ -390,7 +390,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var standards = GetStandardsByProviderUkprn(ukprn);
 
             return standards
-                .Where(x => _activeApprenticeshipChecker.CheckActiveStandard(x.StandardId.ToString(), x.EffectiveFrom, x.EffectiveTo))
+                .Where(x => _activeApprenticeshipChecker.CheckActiveStandard(x.EffectiveFrom, x.EffectiveTo))
                 .Select(standard => new ApprenticeshipTraining
                 {
                     Name = standard.Title,

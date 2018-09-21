@@ -23,8 +23,6 @@
       <Setting name="ApprenticeshipIndexAlias" />
       <Setting name="ProviderIndexAlias" />
       <Setting name="AssessmentOrgsIndexAlias" />
-      <Setting name="FrameworksExpiredRequired" />
-      <Setting name="StandardsExpiredRequired" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
