@@ -22,6 +22,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IQueryHelper _queryHelper;
         private readonly IGetIfaStandardsUrlService _getIfaStandardUrlService;
 
+        private const int Take = 20;
+
         public StandardRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
@@ -76,6 +78,45 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
 
             return response;
+        }
+
+        public List<Standard> GetStandardsById(List<int> ids, int page)
+        {
+            var skip = GetSkipAmount(page);
+            ids.Sort();
+            var elements = ids.Skip(skip).Take(Take);
+            var results = _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
+                s =>
+                    s.Index(_applicationSettings.ApprenticeshipIndexAlias)
+                        .Type(Types.Parse("standarddocument"))
+                        .Take(Take)
+                        .Query(q => q
+                            .Terms(t => t
+                                .Field(fi => fi.StandardId).Terms(elements))));
+
+            var documents = results.Documents.Any() ? results.Documents : null;
+
+            if (documents == null)
+            {
+                return null;
+            }
+
+            var response = new List<Standard>();
+
+            foreach (var standardSearchResultsItem in documents)
+            {
+                var standard = _standardMapping.MapToStandard(standardSearchResultsItem);
+                standard.StandardPageUri = _getIfaStandardUrlService.GetStandardUrl(standard.StandardId);
+
+                response.Add(standard);
+            }
+
+            return response;
+        }
+
+        private int GetSkipAmount(int page)
+        {
+            return (page - 1) * Take;
         }
 
         private ISearchRequest GetAllStandardsSeachDescriptor(int take)

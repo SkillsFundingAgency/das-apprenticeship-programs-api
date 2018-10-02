@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Types;
@@ -84,25 +85,51 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             }
         }
 
-        /// <summary>
-        /// Get all standards
-        /// GET /standards/v2
-        /// </summary>
-        /// <returns>a collection of standard summaries</returns>
-        public IEnumerable<StandardSummary> GetAll()
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
-            {
-                return RequestAndDeserialise<IEnumerable<StandardSummary>>(request);
-            }
-        }
+		/// <summary>
+		/// Get all standards
+		/// GET /standards/v2
+		/// </summary>
+		/// <returns>a collection of standard summaries</returns>
+		public IEnumerable<StandardSummary> GetAll()
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
+		    {
+			    return RequestAndDeserialise<IEnumerable<StandardSummary>>(request);
+		    }
+	    }
 
-        public async Task<IEnumerable<StandardSummary>> GetAllAsync()
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
-            {
-                return await RequestAndDeserialiseAsync<IEnumerable<StandardSummary>>(request);
-            }
-        }
-    }
+	    public async Task<IEnumerable<StandardSummary>> GetAllAsync()
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, "/standards/v2"))
+		    {
+			    return await RequestAndDeserialiseAsync<IEnumerable<StandardSummary>>(request);
+		    }
+	    }
+
+		public IEnumerable<Standard> GetStandardsById(List<int> ids, int page = 1)
+	    {
+			return GetStandardsById(ids.Select(id => id.ToString()).ToList(), page);
+		}
+
+	    public IEnumerable<Standard> GetStandardsById(List<string> ids, int page = 1)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/standards/getlistbyids?ids={string.Join("%2C%20", ids)}&page={page}"))
+		    {
+			    return RequestAndDeserialise<IEnumerable<Standard>>(request);
+		    }
+	    }
+
+		public async Task<IEnumerable<Standard>> GetStandardsByIdAsync(List<int> ids, int page = 1)
+		{
+			return await GetStandardsByIdAsync(ids.Select(id => id.ToString()).ToList(), page);
+		}
+
+	    public async Task<IEnumerable<Standard>> GetStandardsByIdAsync(List<string> ids, int page = 1)
+	    {
+		    using (var request = new HttpRequestMessage(HttpMethod.Get, $"/standards/getlistbyids?ids={string.Join("%2C%20", ids)}&page={page}"))
+		    {
+			    return await RequestAndDeserialiseAsync<IEnumerable<Standard>>(request);
+		    }
+	    }
+	}
 }
