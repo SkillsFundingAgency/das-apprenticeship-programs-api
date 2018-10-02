@@ -9,7 +9,6 @@
       <Setting name="ga.trackingid" value="" />
       <Setting name="ElasticsearchUsername" value="elastic" />
       <Setting name="ElasticsearchPassword" value="changeme" />
-      <Setting name="FeatureToggle.Elk5Feature" value="true" />
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" value="" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="" />
       <Setting name="LoggingRedisConnectionString" value="" />

@@ -121,22 +121,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private ISearchRequest GetAllStandardsSeachDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<StandardSearchResultsItem>()
-                    .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .Type(Types.Parse("standarddocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
             return new SearchDescriptor<StandardSearchResultsItem>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
                 .Type(Types.Parse("standarddocument"))
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.StandardId))
+                .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
                 .Take(take)
                 .MatchAll();
         }
