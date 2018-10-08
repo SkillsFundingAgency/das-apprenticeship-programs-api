@@ -19,7 +19,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
         public void ShouldCheckActiveFrameworkScenarios(DateTime? effectiveFrom, DateTime? effectiveTo, bool expectedResult, string message)
         {
             var activeFrameworkChecker = new ActiveApprenticeshipChecker();
-            var res = activeFrameworkChecker.CheckActiveFramework(effectiveFrom, effectiveTo);
+            var res = activeFrameworkChecker.IsActiveFramework(effectiveFrom, effectiveTo);
 
             Assert.AreEqual(expectedResult, res, message);
         }
@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
         public void ShouldCheckActiveStandardScenarios(DateTime? effectiveFrom, DateTime? effectiveTo, bool expectedResult, string message)
         {
             var activeFrameworkChecker = new ActiveApprenticeshipChecker();
-            var res = activeFrameworkChecker.CheckActiveStandard(effectiveFrom, effectiveTo);
+            var res = activeFrameworkChecker.IsActiveStandard(effectiveFrom, effectiveTo);
 
             Assert.AreEqual(expectedResult, res, message);
         }

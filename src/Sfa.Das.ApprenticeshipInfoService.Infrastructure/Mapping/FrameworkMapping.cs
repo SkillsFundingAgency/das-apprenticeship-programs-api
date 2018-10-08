@@ -48,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 CombinedQualification = document.CombinedQualification?.OrderBy(x => x),
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = _activeApprenticeshipChecker.CheckActiveFramework(document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeApprenticeshipChecker.IsActiveFramework(document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;
@@ -74,7 +74,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 TypicalLength = new TypicalLength { From = document.Duration, To = document.Duration, Unit = "m" },
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveFramework = _activeApprenticeshipChecker.CheckActiveFramework(document.EffectiveFrom, document.EffectiveTo)
+                IsActiveFramework = _activeApprenticeshipChecker.IsActiveFramework(document.EffectiveFrom, document.EffectiveTo)
             };
 
             return framework;

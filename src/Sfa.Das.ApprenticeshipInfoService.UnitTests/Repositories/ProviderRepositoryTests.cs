@@ -441,16 +441,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         searchResponseForFrameworks.Setup(x => x.Documents).Returns(frameworks);
 
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveFramework(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveFramework(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveFramework(It.IsAny<DateTime?>(), DateTime.Today.AddDays(-2)))
+                .Setup(x => x.IsActiveFramework(It.IsAny<DateTime?>(), DateTime.Today.AddDays(-2)))
                 .Returns(false);
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveStandard(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveStandard(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveStandard(null, It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveStandard(null, It.IsAny<DateTime?>()))
                 .Returns(false);
 
             _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForDtos.Object);
@@ -554,13 +554,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             searchResponseForFrameworks.Setup(x => x.Documents).Returns(frameworks);
 
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveFramework(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveFramework(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveStandard(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveStandard(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
             _mockActiveFrameworkChecker
-                .Setup(x => x.CheckActiveStandard(null, It.IsAny<DateTime?>()))
+                .Setup(x => x.IsActiveStandard(null, It.IsAny<DateTime?>()))
                 .Returns(false);
 
             _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<ProviderStandardDto>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponseForDtos.Object);

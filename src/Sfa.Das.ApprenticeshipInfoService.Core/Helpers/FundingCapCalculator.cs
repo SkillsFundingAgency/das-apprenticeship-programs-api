@@ -18,12 +18,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 
         public int CalculateCurrentFundingBand(StandardSearchResultsItem standard)
         {
-            return _activeApprenticeshipChecker.CheckActiveStandard(standard.EffectiveFrom, standard.EffectiveTo) ? GetFundingCapFromPeriods(standard.FundingPeriods) : 0;
+            return _activeApprenticeshipChecker.IsActiveStandard(standard.EffectiveFrom, standard.EffectiveTo) ? GetFundingCapFromPeriods(standard.FundingPeriods) : 0;
         }
 
         public int CalculateCurrentFundingBand(FrameworkSearchResultsItem framework)
         {
-            return _activeApprenticeshipChecker.CheckActiveFramework(framework.EffectiveFrom, framework.EffectiveTo) ? GetFundingCapFromPeriods(framework.FundingPeriods) : 0;
+            return _activeApprenticeshipChecker.IsActiveFramework(framework.EffectiveFrom, framework.EffectiveTo) ? GetFundingCapFromPeriods(framework.FundingPeriods) : 0;
         }
 
         private int GetFundingCapFromPeriods(List<FundingPeriod> fundingPeriods)
