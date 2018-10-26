@@ -120,6 +120,7 @@
     <Compile Include="Helpers\PaginationHelperTests.cs" />
     <Compile Include="Infrastructure\ApplicationSettingsTests.cs" />
     <Compile Include="Infrastructure\Mapping\FrameworkMappingTests.cs" />
+    <Compile Include="Infrastructure\PostCodeIo\WhenUsingThePostcodeLookupService.cs" />
     <Compile Include="Infrastructure\Services\GetIfaStandardsUrlServiceTests.cs" />
     <Compile Include="JsonEnumSerializerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

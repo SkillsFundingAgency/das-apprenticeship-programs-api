@@ -143,12 +143,15 @@
     <Compile Include="Models\GaRouteTrackingArg.cs" />
     <Compile Include="Models\ProviderFrameworkDto.cs" />
     <Compile Include="Models\ProviderStandardDto.cs" />
+    <Compile Include="PostCodeIo\PostCodeIoLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AnalyticsService.cs" />
     <Compile Include="Services\GetIFAStandardsUrlService.cs" />
+    <Compile Include="Services\HttpClient.cs" />
     <Compile Include="Services\IAnalyticsService.cs" />
     <Compile Include="Models\IfaApiStandard.cs" />
     <Compile Include="Services\IGetIfaStandardsUrlService.cs" />
+    <Compile Include="Services\IHttpClient.cs" />
     <Compile Include="Settings\ApplicationSettings.cs" />
   </ItemGroup>
   <ItemGroup>
