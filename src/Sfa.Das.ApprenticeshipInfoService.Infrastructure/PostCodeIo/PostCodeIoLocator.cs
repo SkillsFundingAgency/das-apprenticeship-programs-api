@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.PostCodeIo
 {
-    public class PostCodeIoLocator
+    public class PostCodeIoLocator : IPostCodeIoLocator
     {
         private readonly IConfigurationSettings _configurationSettings;
         private readonly IHttpClient _httpClient;
