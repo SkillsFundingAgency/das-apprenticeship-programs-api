@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apiManagementServiceName": {
+            "type": "string"
+        },
+        "apiManagementResourceGroupName": {
+            "type": "string"
+        },
+        "apimProductName": {
+            "type": "string"
+        },
+        "apimApiResourceName": {
+            "type": "string"
+        },
+        "apimApiDisplayName": {
+            "type": "string"
+        },
+        "apimApiDescription": {
+            "type": "string"
+        },
+        "apimApiPath": {
+            "type": "string"
+        },
+        "apimApiSwaggerUrl": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "ApimApi-FAT",
+            "resourceGroup": "[parameters('apiManagementResourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/api-m/templates/apim/apim-api.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apiManagementServiceName": {
+                        "value": "[parameters('apiManagementServiceName')]"
+                    },
+                    "productName": {
+                        "value": "[parameters('apimProductName')]"
+                    },
+                    "apiResourceName": {
+                        "value": "[parameters('apimApiResourceName')]"
+                    },
+                    "apiDisplayName": {
+                        "value": "[parameters('apimApiDisplayName')]"
+                    },
+                    "apiDescription": {
+                        "value": "[parameters('apimApiDescription')]"
+                    },
+                    "apiPath": {
+                        "value": "[parameters('apimApiPath')]"
+                    },
+                    "apiSwaggerUrl": {
+                        "value": "[parameters('apimApiSwaggerUrl')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
