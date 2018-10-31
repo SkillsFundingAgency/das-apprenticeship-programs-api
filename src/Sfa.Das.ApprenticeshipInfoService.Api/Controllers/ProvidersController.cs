@@ -130,7 +130,7 @@
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
-            return GetActiveApprenticeshipTrainingByProvider(ukprn, 1);
+            return GetActiveApprenticeshipsByProviderByPage(ukprn, 1);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
         [Route("providers/{ukprn:long}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
         [ExceptionHandling]
-        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
+        public ApprenticeshipTrainingSummary GetActiveApprenticeshipsByProviderByPage(long ukprn, int page)
         {
             if (ukprn.ToString().Length != 8)
             {
