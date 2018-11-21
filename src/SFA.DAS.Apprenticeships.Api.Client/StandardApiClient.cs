@@ -143,7 +143,10 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public IEnumerable<StandardProvider> GetProvidersByStandardAndLocation(int standardCode, string postCode,int page = 1)
         {
-            return GetProvidersByStandardAndLocationAsync(standardCode, postCode, page).Result;
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/standards/{standardCode}/providers/{postCode}?page={page}"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardProvider>>(request);
+            }
         }
     }
 }
