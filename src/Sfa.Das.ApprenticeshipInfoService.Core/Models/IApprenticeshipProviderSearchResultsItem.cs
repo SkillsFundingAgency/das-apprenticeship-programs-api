@@ -1,6 +1,7 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     using System.Collections.Generic;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
     public interface IApprenticeshipProviderSearchResultsItem
     {
@@ -55,5 +56,7 @@
         bool IsLevyPayerOnly { get; set; }
 
 	    bool CurrentlyNotStartingNewApprentices { get; set; }
+
+        Feedback ProviderFeedback { get; set; }
     }
 }
