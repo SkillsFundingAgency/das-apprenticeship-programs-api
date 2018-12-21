@@ -3,6 +3,7 @@
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     using System.Collections.Generic;
+    using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
     public sealed class FrameworkProviderSearchResultsItem : IApprenticeshipProviderSearchResultsItem
     {
@@ -66,5 +67,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
         public bool IsLevyPayerOnly { get; set; }
 
 		public bool CurrentlyNotStartingNewApprentices { get; set; }
+
+        public Feedback ProviderFeedback { get; set; }
     }
 }

@@ -231,7 +231,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                     HasParentCompanyGuarantee = item.HasParentCompanyGuarantee,
                     IsNew = item.IsNew,
                     IsLevyPayerOnly = item.IsLevyPayerOnly,
-                    CurrentlyNotStartingNewApprentices = item.CurrentlyNotStartingNewApprentices
+                    CurrentlyNotStartingNewApprentices = item.CurrentlyNotStartingNewApprentices,
+                    ProviderFeedback = item.ProviderFeedback
                 }
             };
         }
