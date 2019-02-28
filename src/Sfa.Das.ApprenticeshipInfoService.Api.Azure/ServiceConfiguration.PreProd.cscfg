@@ -20,7 +20,7 @@
       <Setting name="StandardsExpiredRequired" value="__StandardsExpiredRequired__"/>
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="B64E63A87592DC4A8A46BFB68D3690C5B7E6AC04" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="D4B7EBCE1013CBB10A6DD74D1A20E2C9A69107A2" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
