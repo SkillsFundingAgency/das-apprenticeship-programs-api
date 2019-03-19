@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
-    public sealed class Standard
+    public sealed class Standard : ITrainingProgramme
     {
         /// <summary>
         /// The standard identifier from LARS
@@ -72,5 +72,10 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 	    public List<FundingPeriod> FundingPeriods { get; set; }
 
 		public bool RegulatedStandard { get; set; }
+
+        IReadOnlyCollection<IFundingPeriod> ITrainingProgramme.FundingPeriods => FundingPeriods;
+        public ProgrammeType ProgrammeType => ProgrammeType.Standard;
+        public string Id => StandardId;
+        public int CurrentFundingCap => CurrentFundingBand;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Apprenticeships.Api.Types
 {
-    public sealed class FrameworkSummary
+    public sealed class FrameworkSummary : ITrainingProgramme
     {
         /// <summary>
         /// A composite framework Id {framework-code}-{program-type}-{pathway-code}
@@ -53,5 +53,8 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public bool IsActiveFramework { get; set; }
 
 	    public List<FundingPeriod> FundingPeriods { get; set; }
+
+        IReadOnlyCollection<IFundingPeriod> ITrainingProgramme.FundingPeriods => FundingPeriods;
+        public ProgrammeType ProgrammeType => ProgrammeType.Framework;
     }
 }
