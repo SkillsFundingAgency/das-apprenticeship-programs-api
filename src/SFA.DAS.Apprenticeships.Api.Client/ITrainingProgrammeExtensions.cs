@@ -18,7 +18,6 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public static int FundingCapOn(this ITrainingProgramme course, DateTime date)
         {
-            //todo: would probably be better to return int? null or throw if out of range
             if (!course.IsActiveOn(date))
                 return 0;
 

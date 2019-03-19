@@ -119,7 +119,6 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
 
     internal class TrainingProgrammeApiClientTestFixtures
     {
-        private readonly IReadOnlyList<ITrainingProgramme> _programmes;
         private readonly List<Standard> _standards;
         private readonly List<Framework> _frameworks;
 
@@ -152,16 +151,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
             MemoryCacheMock
                 .Setup(mc => mc.CreateEntry(It.IsAny<string>()))
                 .Returns<string>(key => CacheEntry);
-
-            //CacheEntryMock
-            //    .SetupSet<IReadOnlyList<ITrainingProgramme>>(ce =>
-            //    {
-            //        _cachedProgrammes = ce.Value
-            //    })
-            //    .Callback<IReadOnlyList<ITrainingProgramme>>(value => _cachedProgrammes = value);
         }
-
-        private IReadOnlyList<ITrainingProgramme> _cachedProgrammes;
 
         public Mock<IStandardApiClient> StandardApiClientMock { get; }
         public IStandardApiClient StandardApiClient => StandardApiClientMock.Object;
