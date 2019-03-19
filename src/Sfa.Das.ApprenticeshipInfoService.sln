@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Providers.Api.Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sfa.Das.ApprenticeshipInfoService.AcceptanceTests", "Sfa.Das.ApprenticeshipInfoService.AcceptanceTests\Sfa.Das.ApprenticeshipInfoService.AcceptanceTests.csproj", "{B59D5766-6FF6-442F-9865-F77EC0ADB568}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Apprenticeships.Api.Client.UnitTests", "SFA.DAS.Apprenticeships.Api.Client.UnitTests\SFA.DAS.Apprenticeships.Api.Client.UnitTests.csproj", "{A18F7ED2-B50D-414B-B246-0FBD59806669}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{B59D5766-6FF6-442F-9865-F77EC0ADB568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B59D5766-6FF6-442F-9865-F77EC0ADB568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B59D5766-6FF6-442F-9865-F77EC0ADB568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A18F7ED2-B50D-414B-B246-0FBD59806669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A18F7ED2-B50D-414B-B246-0FBD59806669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A18F7ED2-B50D-414B-B246-0FBD59806669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A18F7ED2-B50D-414B-B246-0FBD59806669}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +114,7 @@ Global
 		{C17DD901-87F3-4741-A169-BCF48E67A9FD} = {042BF8BB-6121-45A1-B24B-74F1E90E4449}
 		{B1B24C66-CC8F-4FA2-A6E2-A4643B5A6D57} = {042BF8BB-6121-45A1-B24B-74F1E90E4449}
 		{B59D5766-6FF6-442F-9865-F77EC0ADB568} = {7C2E8E1F-F4F9-483B-874E-822C6BA383E6}
+		{A18F7ED2-B50D-414B-B246-0FBD59806669} = {7C2E8E1F-F4F9-483B-874E-822C6BA383E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A1B3BEB9-D78E-4CE0-A8DB-79B132219373}
