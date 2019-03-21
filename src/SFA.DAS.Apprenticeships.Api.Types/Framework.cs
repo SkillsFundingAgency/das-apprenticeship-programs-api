@@ -77,5 +77,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         IReadOnlyCollection<IFundingPeriod> ITrainingProgramme.FundingPeriods => FundingPeriods;
         public ProgrammeType ProgrammeType => ProgrammeType.Framework;
         public string Id => FrameworkId;
+
+        /// <summary>
+        ///     A framework has sub groups if there are more than one pathway in the framework. e.g. Engineering\Aerospace Engineering\Moto
+        /// </summary>
+        public bool HasSubGroups => !string.Equals(FrameworkName.Trim(), PathwayName.Trim(), StringComparison.OrdinalIgnoreCase);
+        public string ExtendedTitle => $"{(HasSubGroups ? Title : FrameworkName)}";
     }
 }

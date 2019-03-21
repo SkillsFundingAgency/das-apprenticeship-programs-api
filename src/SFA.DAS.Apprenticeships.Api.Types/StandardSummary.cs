@@ -54,5 +54,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 
         IReadOnlyCollection<IFundingPeriod> ITrainingProgramme.FundingPeriods => FundingPeriods;
         public ProgrammeType ProgrammeType => ProgrammeType.Standard;
+        public string ExtendedTitle => $"{Title}, Level {Level} (Standard)";
     }
 }

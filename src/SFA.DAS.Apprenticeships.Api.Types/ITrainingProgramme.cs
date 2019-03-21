@@ -13,5 +13,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         DateTime? EffectiveTo { get; }
         IReadOnlyCollection<IFundingPeriod> FundingPeriods { get; }
         ProgrammeType ProgrammeType { get; }
+        string ExtendedTitle { get; }
     }
 }
