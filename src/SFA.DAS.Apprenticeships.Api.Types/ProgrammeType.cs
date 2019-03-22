@@ -2,8 +2,7 @@
 {
     public enum ProgrammeType
     {
-        Unknown,
-        Standard,
-        Framework
+        Standard = 0,
+        Framework = 1
     }
 }
