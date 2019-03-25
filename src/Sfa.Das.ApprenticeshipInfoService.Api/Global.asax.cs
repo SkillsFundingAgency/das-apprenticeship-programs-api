@@ -24,6 +24,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
+
+
             _logger.Info("Web Role started");
         }
 
