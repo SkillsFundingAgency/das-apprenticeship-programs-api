@@ -29,6 +29,7 @@
         /// <returns>a collection of standards</returns>
         [SwaggerOperation("GetAllActiveStandards")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
+        [Route("v{version:apiVersion}/standards")]
         [Route("standards")]
         [ExceptionHandling]
         public IEnumerable<StandardSummary> Get()
@@ -57,6 +58,7 @@
         /// <returns>a collection of standards</returns>
         [SwaggerOperation("GetAllStandards")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
+        [Route("v{version:apiVersion}/standards/v2")]
         [Route("standards/v2")]
         [ExceptionHandling]
         public IEnumerable<StandardSummary> GetAll()
@@ -87,6 +89,7 @@
         [SwaggerOperation("GetStandardById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Standard))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/standards/{id}")]
         [Route("standards/{id}")]
         [ExceptionHandling]
         public Standard Get(string id)
@@ -112,6 +115,7 @@
         [SwaggerOperation("GetStandardsById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<Standard>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/standards/getlistbyids")]
         [Route("standards/getlistbyids")]
         [ExceptionHandling]
         public List<Standard> Get(string ids, int page = 1)
@@ -134,6 +138,7 @@
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/standards")]
         [Route("standards")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -148,6 +153,7 @@
         /// <param name="id">{standardid}</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/standards/{id}")]
         [Route("standards/{id}")]
         [ExceptionHandling]
         public void Head(string id)

@@ -87,10 +87,11 @@
     <Compile Include="Models\FrameworkSearchResultsItem.cs" />
     <Compile Include="Models\IApprenticeshipProduct.cs" />
     <Compile Include="Services\IApprenticeshipProviderRepository.cs" />
+    <Compile Include="Services\IApprenticeshipSearchServiceV2.cs" />
     <Compile Include="Services\IProviderSearchService.cs" />
     <Compile Include="Services\IGetAssessmentOrgs.cs" />
     <Compile Include="Services\IGetProviders.cs" />
-    <Compile Include="Services\IApprenticeshipSearchService.cs" />
+    <Compile Include="Services\IApprenticeshipSearchServiceV1.cs" />
     <Compile Include="Services\IGetStandards.cs" />
     <Compile Include="Services\IGetFrameworks.cs" />
   </ItemGroup>

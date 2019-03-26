@@ -30,6 +30,7 @@
         /// <returns>a collection of frameworks</returns>
         [SwaggerOperation("GetAllActiveFrameworks")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
+        [Route("v{version:apiVersion}/frameworks")]
         [Route("frameworks")]
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> Get()
@@ -50,6 +51,7 @@
         /// <returns>a collection of frameworks</returns>
         [SwaggerOperation("GetAllFrameworks")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkSummary>))]
+        [Route("v{version:apiVersion}/frameworks/v2")]
         [Route("frameworks/v2")]
         [ExceptionHandling]
         public IEnumerable<FrameworkSummary> GetAll()
@@ -72,6 +74,7 @@
         [SwaggerOperation("GetFrameworkById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/{id}")]
         [Route("frameworks/{id}")]
         [ExceptionHandling]
         public Framework Get(string id)
@@ -94,6 +97,7 @@
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks")]
         [Route("frameworks")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -108,6 +112,7 @@
         /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/{id}")]
         [Route("frameworks/{id}")]
         [ExceptionHandling]
         public void Head(string id)
@@ -122,6 +127,7 @@
         [SwaggerOperation("GetAllFrameworkCode")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<FrameworkCodeSummary>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/codes")]
         [Route("frameworks/codes")]
         [ExceptionHandling]
         public IEnumerable<FrameworkCodeSummary> GetAllFrameworkCodes()
@@ -149,6 +155,7 @@
         [SwaggerOperation("GetByFrameworkCode")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Framework))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/codes/{frameworkCode}")]
         [Route("frameworks/codes/{frameworkCode}", Name = "GetByFrameworkCode")]
         [ExceptionHandling]
         public FrameworkCodeSummary GetByFrameworkCode(int frameworkCode)
@@ -171,6 +178,7 @@
         /// /// <param name="frameworkCode">Framework code</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/codes/{frameworkCode}")]
         [Route("frameworks/codes/{frameworkCode}")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]

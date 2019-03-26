@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Apprenticeships.Api.Types.enums;
 
 namespace SFA.DAS.Apprenticeships.Api.Client
 {
@@ -42,5 +43,13 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 				return await RequestAndDeserialiseAsync<IEnumerable<ApprenticeshipSearchResultsItem>>(request);
 			}
 		}
-	}
+
+        private string GetLevelsAsCommaSeparatedString(IEnumerable<int> levels)
+        {
+            if (levels == null)
+                return null;
+
+            return string.Join("%2C%20", levels);
+        }
+    }
 }

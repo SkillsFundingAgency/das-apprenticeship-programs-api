@@ -45,6 +45,7 @@
         /// <returns>a collection of providers</returns>
         [SwaggerOperation("GetAllProviders")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSummary>))]
+        [Route("v{version:apiVersion}/providers")]
         [Route("providers")]
         [ExceptionHandling]
         public IEnumerable<ProviderSummary> Get()
@@ -68,6 +69,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [Route("v{version:apiVersion}/providers/{ukprn:long}")]
         [Route("providers/{ukprn:long}")]
         [ExceptionHandling]
         public Provider Get(long ukprn)
@@ -96,6 +98,7 @@
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/providers")]
         [Route("providers")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -111,6 +114,7 @@
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [Route("v{version:apiVersion}/providers/{ukprn:long}")]
         [Route("providers/{ukprn:long}")]
         [ExceptionHandling]
         public void Head(long ukprn)
@@ -126,6 +130,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [Route("v{version:apiVersion}/providers/{ukprn:long}/active-apprenticeship-training")]
         [Route("providers/{ukprn:long}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
@@ -142,6 +147,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [Route("v{version:apiVersion}/providers/{ukprn:long}/active-apprenticeship-training/{page}")]
         [Route("providers/{ukprn:long}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
         [ExceptionHandling]
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
@@ -163,6 +169,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("v{version:apiVersion}/providers/standard/{standardId}")]
         [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -193,6 +200,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("v{version:apiVersion}/providers/framework/{frameworkId}")]
         [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -271,6 +279,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<StandardProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("v{version:apiVersion}/standards/{id}/providers")]
         [Route("standards/{id}/providers")]
         public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double? lat = null,
             double? lon = null, int page = 1)
@@ -292,6 +301,7 @@
         [SwaggerOperation("GetByFrameworkIdAndLocation")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<FrameworkProviderSearchResultsItem>))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
+        [Route("v{version:apiVersion}/frameworks/{id}/providers")]
         [Route("frameworks/{id}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -315,6 +325,7 @@
         [SwaggerOperation("GetStandardProviderDetails")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipDetails))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/standards/{standardCode}/providers")]
         [Route("standards/{standardCode}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]
@@ -337,6 +348,7 @@
         [SwaggerOperation("GetFrameworkProviderDetails")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipDetails))]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/frameworks/{frameworkId}/providers")]
         [Route("frameworks/{frameworkId}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
         [ExceptionHandling]

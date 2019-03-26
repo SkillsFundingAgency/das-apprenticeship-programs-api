@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="DependencyResolution\InfrastructureRegistry.cs" />
     <Compile Include="Elasticsearch\ApprenticeshipProviderRepository.cs" />
+    <Compile Include="Elasticsearch\ApprenticeshipSearchServiceV2.cs" />
     <Compile Include="Elasticsearch\ProviderSearchService.cs" />
     <Compile Include="Elasticsearch\ElasticsearchProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\IProviderLocationSearchProvider.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="Elasticsearch\IQueryHelper.cs" />
     <Compile Include="Elasticsearch\ProviderRepository.cs" />
     <Compile Include="Elasticsearch\QueryHelper.cs" />
-    <Compile Include="Elasticsearch\ApprenticeshipSearchService.cs" />
+    <Compile Include="Elasticsearch\ApprenticeshipSearchServiceV1.cs" />
     <Compile Include="Elasticsearch\StandardRepository.cs" />
     <Compile Include="Elasticsearch\ElasticsearchClientFactory.cs" />
     <Compile Include="Elasticsearch\IElasticsearchClientFactory.cs" />
@@ -130,7 +131,9 @@
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Logging\DependencyLogEntry.cs" />
     <Compile Include="Logging\ElasticSearchLogEntry.cs" />
+    <Compile Include="Mapping\ApprenticeshipSearchResultsMapping.cs" />
     <Compile Include="Mapping\AssessmentOrgsMapping.cs" />
+    <Compile Include="Mapping\IApprenticeshipSearchResultsMapping.cs" />
     <Compile Include="Mapping\IAssessmentOrgsMapping.cs" />
     <Compile Include="Mapping\IProviderMapping.cs" />
     <Compile Include="Mapping\IApprenticeshipMapping.cs" />

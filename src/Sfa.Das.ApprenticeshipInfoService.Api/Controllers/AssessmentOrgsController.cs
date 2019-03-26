@@ -32,6 +32,7 @@
         /// <returns>colllection of assessment organisation summaries</returns>
         [SwaggerOperation("GetAllAssessmentOrgs")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<OrganisationSummary>))]
+        [Route("v{version:apiVersion}/assessment-organisations")]
         [Route("assessment-organisations")]
         [ExceptionHandling]
         public IEnumerable<OrganisationSummary> Get()
@@ -62,6 +63,7 @@
         /// <returns>an organisation</returns>
         [SwaggerOperation("GetAssessmentOrgById")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Organisation))]
+        [Route("v{version:apiVersion}/assessment-organisations/{id}")]
         [Route("assessment-organisations/{id}")]
         [ExceptionHandling]
         public Organisation Get(string id)
@@ -86,6 +88,7 @@
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/assessment-organisations")]
         [Route("assessment-organisations")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -100,6 +103,7 @@
         /// <param name="id">EPA00001</param>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/assessment-organisations/{id}")]
         [Route("assessment-organisations/{id}")]
         [ExceptionHandling]
         public void Head(string id)
@@ -114,6 +118,7 @@
         /// <returns>a collection of organisations</returns>
         [SwaggerOperation("GetAssessmentOrgByStandardId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Organisation>))]
+        [Route("v{version:apiVersion}/assessment-organisations/standards/{id}")]
         [Route("assessment-organisations/standards/{id}")]
         [ExceptionHandling]
         public IEnumerable<Organisation> GetByStandardId(string id)
@@ -144,6 +149,7 @@
         /// <returns>colllection of standards by specific organisation identifier</returns>
         [SwaggerOperation("GetStandardsByAssessmentOrgId")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
+        [Route("v{version:apiVersion}/assessment-organisations/{organisationId}/standards")]
         [Route("assessment-organisations/{organisationId}/standards", Name = "GetStandardsByOrganisationId")]
         [ExceptionHandling]
         public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationId(string organisationId)

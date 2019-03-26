@@ -13,14 +13,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using Mapping;
     using Nest;
 
-    public sealed class ApprenticeshipSearchService : IApprenticeshipSearchService
+    public sealed class ApprenticeshipSearchServiceV1 : IApprenticeshipSearchServiceV1
     {
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IStandardMapping _standardMapping;
         private readonly IQueryHelper _queryHelper;
 
-        public ApprenticeshipSearchService(
+        public ApprenticeshipSearchServiceV1(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
             IStandardMapping standardMapping,
