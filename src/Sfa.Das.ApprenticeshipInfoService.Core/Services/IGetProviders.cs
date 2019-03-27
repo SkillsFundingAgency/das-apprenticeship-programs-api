@@ -1,4 +1,5 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+﻿using System.Threading.Tasks;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
@@ -26,5 +27,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Services
         IEnumerable<ProviderStandard> GetStandardsByProviderUkprn(long ukprn);
 
         ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page);
+        Task<IEnumerable<StandardProviderSearchResultsItemResponse>> GetProvidersByPostCodeAndStandard(string postCode, int standardId, int page);
     }
 }

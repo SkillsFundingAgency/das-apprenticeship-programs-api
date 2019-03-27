@@ -1,4 +1,6 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
@@ -29,16 +31,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IQueryHelper _queryHelper;
         private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
         private readonly IPaginationHelper _paginationHelper;
+        private readonly IPostCodeIoLocator _postCodeIoLocator;
 
-        public ProviderRepository(
-            IElasticsearchCustomClient elasticsearchCustomClient,
+        public ProviderRepository(IElasticsearchCustomClient elasticsearchCustomClient,
             ILog applicationLogger,
             IConfigurationSettings applicationSettings,
             IProviderLocationSearchProvider providerLocationSearchProvider,
             IProviderMapping providerMapping,
             IQueryHelper queryHelper,
             IActiveApprenticeshipChecker activeApprenticeshipChecker,
-            IPaginationHelper paginationHelper)
+            IPaginationHelper paginationHelper, IPostCodeIoLocator postCodeIoLocator)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationLogger = applicationLogger;
@@ -48,6 +50,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _queryHelper = queryHelper;
             _activeApprenticeshipChecker = activeApprenticeshipChecker;
             _paginationHelper = paginationHelper;
+            _postCodeIoLocator = postCodeIoLocator;
         }
 
         public IEnumerable<ProviderSummary> GetAllProviders()
@@ -235,7 +238,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             return providers.Select(provider => _providerMapping.MapToStandardProviderResponse(provider)).ToList();
         }
-
+        
         public List<FrameworkProviderSearchResultsItemResponse> GetByFrameworkIdAndLocation(int id, double lat, double lon, int page)
         {
             var coordinates = new Coordinate
@@ -307,6 +310,26 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
 
             return results.Documents;
+        }
+
+        public async Task<IEnumerable<StandardProviderSearchResultsItemResponse>> GetProvidersByPostCodeAndStandard(string postCode, int standardId, int page)
+        {
+            var postCodeResponse = await _postCodeIoLocator.GetLatLongFromPostcode(postCode);
+
+            if (postCodeResponse.Status == 404)
+            {
+                return new List<StandardProviderSearchResultsItemResponse>();
+            }
+
+            var coordinates = new Coordinate
+            {
+                Lat = postCodeResponse.Result.Latitude.GetValueOrDefault(0),
+                Lon = postCodeResponse.Result.Longitude.GetValueOrDefault(0)
+            };
+
+            var providers = _providerLocationSearchProvider.SearchStandardProviders(standardId, coordinates, page);
+
+            return providers.Select(provider => _providerMapping.MapToStandardProviderResponse(provider)).ToList();
         }
 
         public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
@@ -401,5 +424,5 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 })
                 .ToList();
         }
-     }
+    }
 }

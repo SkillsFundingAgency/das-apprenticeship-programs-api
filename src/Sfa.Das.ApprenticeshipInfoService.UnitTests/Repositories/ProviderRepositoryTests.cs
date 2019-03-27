@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Elasticsearch.Net;
 using Moq;
 using Nest;
@@ -9,6 +10,7 @@ using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
@@ -31,6 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
         private Mock<IPaginationHelper> _mockPaginationHelper;
+        private Mock<IPostCodeIoLocator> _postCodeIoLocator;
 
         [SetUp]
         public void Setup()
@@ -44,6 +47,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             _queryHelper.Setup(x => x.GetProvidersByStandardTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersTotalAmount()).Returns(1);
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
+            _postCodeIoLocator = new Mock<IPostCodeIoLocator>();
+            _postCodeIoLocator.Setup(x => x.GetLatLongFromPostcode(It.IsAny<string>()))
+                .ReturnsAsync(new PostCodeResponse());
 
             _mockConfigurationSettings.Setup(x => x.PageSizeApprenticeshipSummary)
                 .Returns(PageSizeApprenticeshipSummary);
@@ -67,7 +73,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetAllProviders());
 
@@ -91,7 +98,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprn(1L));
 
@@ -115,7 +123,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprnList(new List<long> { 1L }));
 
@@ -140,7 +149,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
 
@@ -177,7 +187,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
             _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]"), Times.Once);
@@ -219,7 +230,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
              var result = repo.GetFrameworksByProviderUkprn(ukprn);
               Assert.AreEqual(result.Count(), providerFrameworks.Count );
@@ -245,7 +257,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
@@ -283,7 +296,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
             _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards apprenticeship details for ukprn [{ukprn}]"), Times.Once);
@@ -328,7 +342,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             var result = repo.GetStandardsByProviderUkprn(ukprn);
 
@@ -353,7 +368,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByStandardId(string.Empty));
 
@@ -377,7 +393,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                _mockPaginationHelper.Object);
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByFrameworkId(string.Empty));
 
@@ -478,7 +495,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                new PaginationHelper());
+                new PaginationHelper(),
+                _postCodeIoLocator.Object);
 
             var result = repo.GetActiveApprenticeshipTrainingByProvider(ukprn, 1);
 
@@ -588,7 +606,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>(),
                 _queryHelper.Object,
                 _mockActiveFrameworkChecker.Object,
-                new PaginationHelper());
+                new PaginationHelper(),
+                _postCodeIoLocator.Object);
 
             var result = repo.GetActiveApprenticeshipTrainingByProvider(ukprn, 2);
 
@@ -605,6 +624,64 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 $"Expect first item to be Standard Id [{providerStandardArcheologistEntry6.StandardId}], but was [{providerApprenticeships[1].Identifier}]");
             Assert.AreEqual(providerApprenticeships[2].Identifier, standardZebraWranglerEntry7.FrameworkId,
                 $"Expect first item to be Framework Id [{standardZebraWranglerEntry7.FrameworkId}], but was [{providerApprenticeships[2].Identifier}]");
+        }
+
+        [Test]
+        public async Task Then_Providers_Are_Returned_Based_On_Standard_And_Postcode()
+        {
+
+            var expectedPostCode = "AA14 1BB";
+            var expectedStandardId = 123;
+            _postCodeIoLocator.Setup(x => x.GetLatLongFromPostcode(It.IsAny<string>()))
+                .ReturnsAsync(new PostCodeResponse{Status = 200, Result = new PostCodeResult{Latitude = 12,Longitude = -10}});
+            var searchResponse = new Mock<ISearchResponse<StandardProviderSearchResultsItem>>();
+            var standards = new List<StandardProviderSearchResultsItem>
+            {
+                new StandardProviderSearchResultsItem()
+            };
+            searchResponse.Setup(x => x.Documents).Returns(standards);
+            _elasticClient.Setup(x => x.Search(It.IsAny<Func<SearchDescriptor<StandardProviderSearchResultsItem>, ISearchRequest>>(), It.IsAny<string>())).Returns(searchResponse.Object);
+            var providerLocationSearch = new Mock<IProviderLocationSearchProvider>();
+            providerLocationSearch.Setup(x => x.SearchStandardProviders(expectedStandardId,It.IsAny<Coordinate>(),It.IsAny<int>())).Returns(new List<StandardProviderSearchResultsItem>());
+            var repo = new ProviderRepository(
+                _elasticClient.Object,
+                _log.Object,
+                Mock.Of<IConfigurationSettings>(),
+                providerLocationSearch.Object,
+                Mock.Of<IProviderMapping>(),
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
+
+            await repo.GetProvidersByPostCodeAndStandard(expectedPostCode, expectedStandardId, 1);
+
+            _postCodeIoLocator.Verify(x => x.GetLatLongFromPostcode(expectedPostCode), Times.Once);
+            providerLocationSearch.Verify(x => x.SearchStandardProviders(expectedStandardId, It.IsAny<Coordinate>(), It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Then_If_Providers_Are_Searched_By_Postcode_And_Its_Invalid_The_SearchRepo_Is_Not_Called()
+        {
+            var expectedPostCode = "B";
+            var expectedStandardId = 123;
+            _postCodeIoLocator.Setup(x => x.GetLatLongFromPostcode("B"))
+                .ReturnsAsync(new PostCodeResponse {Status = 404});
+            var repo = new ProviderRepository(
+                _elasticClient.Object,
+                _log.Object,
+                Mock.Of<IConfigurationSettings>(),
+                Mock.Of<IProviderLocationSearchProvider>(),
+                Mock.Of<IProviderMapping>(),
+                _queryHelper.Object,
+                _mockActiveFrameworkChecker.Object,
+                _mockPaginationHelper.Object,
+                _postCodeIoLocator.Object);
+
+            var actual = await repo.GetProvidersByPostCodeAndStandard(expectedPostCode, expectedStandardId, 1);
+
+            Assert.IsEmpty(actual);
+            _elasticClient.Verify(x => x.Search(It.IsAny<Func<SearchDescriptor<StandardProviderSearchResultsItem>, ISearchRequest>>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

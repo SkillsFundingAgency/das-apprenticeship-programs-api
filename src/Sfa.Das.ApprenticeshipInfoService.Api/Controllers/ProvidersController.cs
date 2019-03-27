@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+﻿using System.Threading.Tasks;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -353,6 +355,22 @@
             }
 
             throw new HttpResponseException(HttpStatusCode.NotFound);
+        }
+
+        /// <summary>
+        /// Get list of providers by Standard and Postcode
+        /// </summary>
+        /// <param name="standardCode">standard code</param>
+        /// <param name="postCode">postcode to give distances from</param>
+        /// <param name="page">page number to return</param>
+        /// <returns>A list of providers and distance from postcode for that standard</returns>
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItemResponse>))]
+        [SwaggerResponse(HttpStatusCode.InternalServerError)]
+        [Route("standards/{standardCode}/providers/{postCode}", Name = "GetProvidersByStandardWithLocation")]
+        [ExceptionHandling]
+        public async Task<IEnumerable<StandardProviderSearchResultsItemResponse>> GetActiveApprenticeshipTrainingByProvider(int standardCode, string postCode, int page = 1)
+        {
+            return await _getProviders.GetProvidersByPostCodeAndStandard(postCode, standardCode, page);
         }
 
         private string Resolve(long ukprn)

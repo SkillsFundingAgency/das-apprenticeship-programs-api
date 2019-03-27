@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings
+﻿using Nest;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings
 {
     using System;
     using System.Collections.Generic;
@@ -29,6 +31,8 @@
 
         public string ElasticsearchPassword => CloudConfigurationManager.GetSetting("ElasticsearchPassword");
         public string IfaStandardApiUrl => ConfigurationManager.AppSettings["IFAStandardsApiUrl"];
+
+        public Uri PostCodeUrl => new Uri("https://postcodes.io/postcodes/");
 
         public int PageSizeApprenticeshipSummary => int.Parse(
             ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);

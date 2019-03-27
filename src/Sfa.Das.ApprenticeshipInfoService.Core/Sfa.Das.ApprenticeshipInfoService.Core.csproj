@@ -69,6 +69,8 @@
     <Compile Include="Models\ApprenticeshipProduct.cs" />
     <Compile Include="Models\ApprenticeshipBasic.cs" />
     <Compile Include="Models\ApprenticeshipSearchResults.cs" />
+    <Compile Include="Models\PostCodeResponse.cs" />
+    <Compile Include="Models\PostCodeResult.cs" />
     <Compile Include="Models\ProviderSearchResultsItem.cs" />
     <Compile Include="Models\DetailProviderResponse.cs" />
     <Compile Include="Models\ContactInformation.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Models\FrameworkSearchResultsItem.cs" />
     <Compile Include="Models\IApprenticeshipProduct.cs" />
     <Compile Include="Services\IApprenticeshipProviderRepository.cs" />
+    <Compile Include="Services\IPostCodeIoLocator.cs" />
     <Compile Include="Services\IProviderSearchService.cs" />
     <Compile Include="Services\IGetAssessmentOrgs.cs" />
     <Compile Include="Services\IGetProviders.cs" />

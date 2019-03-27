@@ -32,5 +32,6 @@
          int PageSizeApprenticeshipSummary { get; }
 
         string IfaStandardApiUrl { get; }
+        Uri PostCodeUrl { get; }
     }
 }

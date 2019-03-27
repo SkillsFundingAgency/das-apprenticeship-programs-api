@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Apprenticeships.Api.Client
 {
@@ -131,5 +132,21 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 			    return await RequestAndDeserialiseAsync<IEnumerable<Standard>>(request);
 		    }
 	    }
-	}
+
+        public async Task<IEnumerable<StandardProvider>> GetProvidersByStandardAndLocationAsync(int standardCode, string postCode, int page = 1)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/standards/{standardCode}/providers/{postCode}?page={page}"))
+            {
+                return await RequestAndDeserialiseAsync<IEnumerable<StandardProvider>>(request);
+            }
+        }
+
+        public IEnumerable<StandardProvider> GetProvidersByStandardAndLocation(int standardCode, string postCode,int page = 1)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/standards/{standardCode}/providers/{postCode}?page={page}"))
+            {
+                return RequestAndDeserialise<IEnumerable<StandardProvider>>(request);
+            }
+        }
+    }
 }
