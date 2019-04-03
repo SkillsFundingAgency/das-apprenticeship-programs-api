@@ -1,4 +1,6 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api
+﻿using System.Web.Http.Cors;
+
+namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
     using System.Web.Http;
     using Newtonsoft.Json;
@@ -20,6 +22,9 @@
             // Web API routes
             //config.MapHttpAttributeRoutes();
             config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
+            var corsAttr = new EnableCorsAttribute("http://localhost:3000,https://localhost:1045,http://fire-it-up.herokuapp.com,https://esfa-shopping-basket.herokuapp.com", "*", "*");
+            config.EnableCors(corsAttr);
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
