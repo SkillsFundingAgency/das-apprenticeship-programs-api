@@ -21,13 +21,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
 	    [SetUp]
         public void Init()
         {
-			_mockConfigurationSettings = new Mock<IConfigurationSettings>();
 			_mockFundingCapCalculator = new Mock<IFundingCapCalculator>();
 	        _mockFundingCapCalculator.Setup(x => x.CalculateCurrentFundingBand(It.IsAny<StandardSearchResultsItem>()))
 		        .Returns(0);
 			_mockFundingCapCalculator.Setup(x => x.CalculateCurrentFundingBand(It.IsAny<FrameworkSearchResultsItem>()))
 		        .Returns(0);
-            _activeApprenticeshipChecker = new ActiveApprenticeshipChecker(_mockConfigurationSettings.Object);
+            _activeApprenticeshipChecker = new ActiveApprenticeshipChecker();
 
             _sut = new FrameworkMapping(_activeApprenticeshipChecker, _mockFundingCapCalculator.Object);
 		}

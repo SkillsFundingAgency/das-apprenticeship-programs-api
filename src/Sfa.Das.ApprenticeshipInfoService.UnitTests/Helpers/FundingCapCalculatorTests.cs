@@ -19,10 +19,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
             _mockApprenticeshipChecker = new Mock<IActiveApprenticeshipChecker>();
 
             _mockApprenticeshipChecker
-                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Setup(x => x.IsActiveStandard(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(true);
             _mockApprenticeshipChecker
-                .Setup(x => x.CheckActiveFramework(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Setup(x => x.IsActiveFramework(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(true);
         }
 
@@ -51,10 +51,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
         public void ShouldReturnZeroIfApprenticeshipIsNotActive()
         {
             _mockApprenticeshipChecker
-                .Setup(x => x.CheckActiveStandard(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Setup(x => x.IsActiveStandard(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(false);
             _mockApprenticeshipChecker
-                .Setup(x => x.CheckActiveFramework(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Setup(x => x.IsActiveFramework(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .Returns(false);
 
             var sut = new FundingCapCalculator(_mockApprenticeshipChecker.Object);

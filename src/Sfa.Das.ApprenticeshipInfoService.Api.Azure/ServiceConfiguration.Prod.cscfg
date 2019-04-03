@@ -16,8 +16,6 @@
       <Setting name="ApprenticeshipIndexAlias" value="__ApprenticeshipIndexAlias__" />
       <Setting name="ProviderIndexAlias" value="__ProviderIndexAlias__" />
       <Setting name="AssessmentOrgsIndexAlias" value="__AssessmentOrgsIndexAlias__" />
-      <Setting name="FrameworksExpiredRequired" value="__FrameworksExpiredRequired__"/>
-      <Setting name="StandardsExpiredRequired" value="__StandardsExpiredRequired__"/>
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="5FF7EED8A02C7C758CFDA2458752E7EACDDFEE8B" thumbprintAlgorithm="sha1" />
