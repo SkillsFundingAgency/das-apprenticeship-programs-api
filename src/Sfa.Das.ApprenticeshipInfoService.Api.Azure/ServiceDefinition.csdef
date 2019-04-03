@@ -25,6 +25,7 @@
       <Setting name="AssessmentOrgsIndexAlias" />
       <Setting name="FrameworksExpiredRequired" />
       <Setting name="StandardsExpiredRequired"/>
+      <Setting name="AllowedCorsUrls" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />

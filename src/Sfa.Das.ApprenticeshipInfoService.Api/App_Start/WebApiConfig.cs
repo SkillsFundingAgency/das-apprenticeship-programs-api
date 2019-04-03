@@ -3,6 +3,7 @@
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
     using System.Web.Http;
+    using Microsoft.Azure;
     using Newtonsoft.Json;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
     using Sfa.Das.ApprenticeshipInfoService.Api.Swagger;
@@ -20,16 +21,25 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             }
 
             // Web API routes
-            //config.MapHttpAttributeRoutes();
             config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
-            var corsAttr = new EnableCorsAttribute("http://localhost:3000,https://localhost:1045,http://fire-it-up.herokuapp.com,https://esfa-shopping-basket.herokuapp.com", "*", "*");
-            config.EnableCors(corsAttr);
+            ConfigureCors(config);
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+        }
+
+        private static void ConfigureCors(HttpConfiguration config)
+        {
+            var corsUrls = CloudConfigurationManager.GetSetting("AllowedCorsUrls");
+
+            if (!string.IsNullOrWhiteSpace(corsUrls))
+            {
+                var corsAttr = new EnableCorsAttribute(corsUrls, "*", "*");
+                config.EnableCors(corsAttr);
+            }
         }
     }
 }
