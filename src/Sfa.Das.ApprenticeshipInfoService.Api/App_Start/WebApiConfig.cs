@@ -21,7 +21,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             config.MapHttpAttributeRoutes();
             config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
-            var corsAttr = new EnableCorsAttribute("https://localhost:1045,http://fire-it-up.herokuapp.com", "*", "*");
+            var corsAttr = new EnableCorsAttribute("https://localhost:1045,http://fire-it-up.herokuapp.com,https://esfa-shopping-basket.herokuapp.com", "*", "*");
             config.EnableCors(corsAttr);
 
             config.Routes.MapHttpRoute(
