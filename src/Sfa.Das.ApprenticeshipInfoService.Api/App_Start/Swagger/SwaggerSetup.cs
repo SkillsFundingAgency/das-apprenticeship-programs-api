@@ -21,7 +21,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Swagger
             });
 
             config.MapHttpAttributeRoutes(constraintResolver);
-
             // add the versioned IApiExplorer and capture the strongly-typed implementation (e.g. VersionedApiExplorer vs IApiExplorer)
             // note: the specified format code will format the version as "'v'major[.minor][-status]"
             var apiExplorer = config.AddVersionedApiExplorer(
