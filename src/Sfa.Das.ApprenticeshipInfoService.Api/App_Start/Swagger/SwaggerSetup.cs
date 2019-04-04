@@ -83,9 +83,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Swagger
                                 }
                             });
 
-                c.OperationFilter<SwaggerDefaultValues>();
-                c.OperationFilter<RemoveV1ApiVersionParameter>();
-                c.DocumentFilter<RemoveV1SpecificOperations>();
+                //c.OperationFilter<SwaggerDefaultValues>();
+                //c.OperationFilter<RemoveV1ApiVersionParameter>();
+                //c.DocumentFilter<RemoveV1SpecificOperations>();
 
                 // You can use "BasicAuth", "ApiKey" or "OAuth2" options to describe security schemes for the API.
                 // See https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md for more details.
