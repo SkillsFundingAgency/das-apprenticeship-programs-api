@@ -24,7 +24,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IConfigurationSettings>().Use<ApplicationSettings>();
             For<IElasticsearchClientFactory>().Use<ElasticsearchClientFactory>();
             For<IApprenticeshipSearchServiceV1>().Use<ApprenticeshipSearchServiceV1>();
-            For<IApprenticeshipSearchServiceV2>().Use<ApprenticeshipSearchServiceV2>();
+            For<IApprenticeshipSearchServiceV3>().Use<ApprenticeshipSearchServiceV3>();
             For<IProviderSearchService>().Use<ProviderSearchService>();
             For<IGetStandards>().Use<StandardRepository>();
             For<IGetFrameworks>().Use<FrameworkRepository>();

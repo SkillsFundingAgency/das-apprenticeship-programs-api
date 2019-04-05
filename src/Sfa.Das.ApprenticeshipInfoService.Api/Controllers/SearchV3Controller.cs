@@ -6,7 +6,7 @@ using System.Web.Http.Description;
 using Microsoft.Web.Http;
 using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using SFA.DAS.Apprenticeships.Api.Types.V2;
+using SFA.DAS.Apprenticeships.Api.Types.V3;
 using SFA.DAS.NLog.Logger;
 using Swashbuckle.Swagger.Annotations;
 
@@ -14,16 +14,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
     [ApiVersion("3.0")]
     [RoutePrefix("v{version:apiVersion}")]
-    public class Search2Controller : ApiController
+    public class SearchV3Controller : ApiController
     {
-        private readonly IApprenticeshipSearchServiceV2 _apprenticeshipSearchServiceV2;
+        private readonly IApprenticeshipSearchServiceV3 _apprenticeshipSearchServiceV3;
         private readonly ILog _logger;
 
-        public Search2Controller(
-            IApprenticeshipSearchServiceV2 apprenticeshipSearchServiceV2,
+        public SearchV3Controller(
+            IApprenticeshipSearchServiceV3 apprenticeshipSearchServiceV2,
             ILog logger)
         {
-            _apprenticeshipSearchServiceV2 = apprenticeshipSearchServiceV2;
+            _apprenticeshipSearchServiceV3 = apprenticeshipSearchServiceV2;
             _logger = logger;
         }
 
@@ -42,12 +42,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [HttpGet]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult SearchApprenticeshipsV2(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
+        public IHttpActionResult SearchApprenticeships(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
         {
             try
             {
                 var selectedLevels = ParseForLevels(levels);
-                var response = _apprenticeshipSearchServiceV2.SearchApprenticeships(keywords, page, pageSize, order, selectedLevels);
+                var response = _apprenticeshipSearchServiceV3.SearchApprenticeships(keywords, page, pageSize, order, selectedLevels);
 
                 return Ok(response);
             }

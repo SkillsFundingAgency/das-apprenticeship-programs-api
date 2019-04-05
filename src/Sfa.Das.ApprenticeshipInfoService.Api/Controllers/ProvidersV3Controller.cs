@@ -15,12 +15,12 @@
 
     [ApiVersion("3.0")]
     [RoutePrefix("v{version:apiVersion}")]
-    public class Providers2Controller : ApiController
+    public class ProvidersV3Controller : ApiController
     {
         private readonly IGetProviders _getProviders;
         private readonly IControllerHelper _controllerHelper;
 
-        public Providers2Controller(IGetProviders getProviders, IControllerHelper controllerHelper)
+        public ProvidersV3Controller(IGetProviders getProviders, IControllerHelper controllerHelper)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;

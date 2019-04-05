@@ -5,13 +5,12 @@ using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.Apprenticeships.Api.Types.V2;
+using SFA.DAS.Apprenticeships.Api.Types.V3;
 using ApprenticeshipSearchResultsItemV1 = SFA.DAS.Apprenticeships.Api.Types.ApprenticeshipSearchResultsItem;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
-    public sealed class ApprenticeshipSearchServiceV2 : IApprenticeshipSearchServiceV2
+    public sealed class ApprenticeshipSearchServiceV3 : IApprenticeshipSearchServiceV3
     {
         private const string LevelAggregateName = "level";
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
@@ -19,7 +18,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private readonly IQueryHelper _queryHelper;
         private readonly IApprenticeshipSearchResultsMapping _resultItemMapper;
 
-        public ApprenticeshipSearchServiceV2(
+        public ApprenticeshipSearchServiceV3(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
             IQueryHelper queryHelper,

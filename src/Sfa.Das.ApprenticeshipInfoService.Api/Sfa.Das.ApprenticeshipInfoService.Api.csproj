@@ -359,8 +359,8 @@
     <Compile Include="Controllers\ApprenticeshipProgrammesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AssessmentOrgsController.cs" />
-    <Compile Include="Controllers\Providers2Controller.cs" />
-    <Compile Include="Controllers\Search2Controller.cs" />
+    <Compile Include="Controllers\ProvidersV3Controller.cs" />
+    <Compile Include="Controllers\SearchV3Controller.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Extensions\ApplySchemaVendorExtensions.cs" />

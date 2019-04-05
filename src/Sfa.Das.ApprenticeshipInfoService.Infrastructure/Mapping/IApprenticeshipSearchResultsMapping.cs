@@ -1,5 +1,5 @@
 ﻿using V1ApprenticeshipSearchResultsItem = SFA.DAS.Apprenticeships.Api.Types.ApprenticeshipSearchResultsItem;
-using V2ApprenticeshipSearchResultsItem = SFA.DAS.Apprenticeships.Api.Types.V2.ApprenticeshipSearchResultsItem;
+using V2ApprenticeshipSearchResultsItem = SFA.DAS.Apprenticeships.Api.Types.V3.ApprenticeshipSearchResultsItem;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
