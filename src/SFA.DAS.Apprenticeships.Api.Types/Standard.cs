@@ -77,6 +77,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         public ProgrammeType ProgrammeType => ProgrammeType.Standard;
         public string Id => StandardId;
         public int CurrentFundingCap => CurrentFundingBand;
-        public string ExtendedTitle => $"{Title}, Level {Level} (Standard)";
+        public string ExtendedTitle => $"{Title}, Level: {Level} (Standard)";
     }
 }
