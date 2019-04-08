@@ -8,7 +8,7 @@ using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 using ApprenticeshipSearchResultsItemV1 = SFA.DAS.Apprenticeships.Api.Types.ApprenticeshipSearchResultsItem;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
 {
     public sealed class ApprenticeshipSearchServiceV3 : IApprenticeshipSearchServiceV3
     {

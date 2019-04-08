@@ -4,14 +4,12 @@ using System.Web.Http.Results;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using Sfa.Das.ApprenticeshipInfoService.Api.Controllers;
+using Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 using SFA.DAS.NLog.Logger;
 
-namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
+namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 {
     [TestFixture]
     public class SearchV3ControllerTests

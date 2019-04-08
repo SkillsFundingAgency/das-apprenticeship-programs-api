@@ -107,7 +107,7 @@
   <ItemGroup>
     <Compile Include="DependencyResolution\InfrastructureRegistry.cs" />
     <Compile Include="Elasticsearch\ApprenticeshipProviderRepository.cs" />
-    <Compile Include="Elasticsearch\ApprenticeshipSearchServiceV3.cs" />
+    <Compile Include="Elasticsearch\V3\ApprenticeshipSearchServiceV3.cs" />
     <Compile Include="Elasticsearch\ProviderSearchService.cs" />
     <Compile Include="Elasticsearch\ElasticsearchProviderLocationSearchProvider.cs" />
     <Compile Include="Elasticsearch\IProviderLocationSearchProvider.cs" />
@@ -122,6 +122,7 @@
     <Compile Include="Elasticsearch\ElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
+    <Compile Include="Elasticsearch\V3\ProviderRepositoryV3.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
     <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />

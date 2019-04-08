@@ -10,7 +10,7 @@ using SFA.DAS.Apprenticeships.Api.Types.V3;
 using SFA.DAS.NLog.Logger;
 using Swashbuckle.Swagger.Annotations;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
 {
     [ApiVersion("3.0")]
     [RoutePrefix("v{version:apiVersion}")]

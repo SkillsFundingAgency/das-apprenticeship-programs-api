@@ -14,6 +14,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
     using Helpers;
     using Mapping;
     using Settings;
+    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
     using StructureMap;
 
     public sealed class InfrastructureRegistry : Registry
@@ -29,6 +30,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IGetStandards>().Use<StandardRepository>();
             For<IGetFrameworks>().Use<FrameworkRepository>();
             For<IGetProviders>().Use<ProviderRepository>();
+            For<IGetV3Providers>().Use<ProviderRepositoryV3>();
             For<IGetAssessmentOrgs>().Use<AssessmentOrgsRepository>();
             For<IApprenticeshipProviderRepository>().Use<ApprenticeshipProviderRepository>();
             For<IApprenticeshipMapping>().Use<ApprenticeshipMapping>();

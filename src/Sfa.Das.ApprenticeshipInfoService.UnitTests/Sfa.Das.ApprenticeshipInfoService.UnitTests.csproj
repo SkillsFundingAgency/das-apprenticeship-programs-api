@@ -117,7 +117,8 @@
     <Compile Include="Controllers\ApprenticeshipProgrammesControllerTests.cs" />
     <Compile Include="Controllers\ProviderControllerTests.cs" />
     <Compile Include="Controllers\FrameworkControllerTests.cs" />
-    <Compile Include="Controllers\SearchV3ControllerTests.cs" />
+    <Compile Include="Controllers\V3\ProvidersV3ControllerTests.cs" />
+    <Compile Include="Controllers\V3\SearchV3ControllerTests.cs" />
     <Compile Include="Controllers\StandardControllerTests.cs" />
     <Compile Include="Helpers\FundingCapCalculatorTests.cs" />
     <Compile Include="Helpers\ActiveFrameworkCheckerTests.cs" />
