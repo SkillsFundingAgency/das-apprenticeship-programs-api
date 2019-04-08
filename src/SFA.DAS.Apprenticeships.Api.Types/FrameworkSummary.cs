@@ -60,6 +60,6 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         ///     A framework has sub groups if there are more than one pathway in the framework. e.g. Engineering\Aerospace Engineering\Moto
         /// </summary>
         public bool HasSubGroups => !string.Equals(FrameworkName.Trim(), PathwayName.Trim(), StringComparison.OrdinalIgnoreCase);
-        public string ExtendedTitle => $"{(HasSubGroups ? Title : FrameworkName)}";
+        public string ExtendedTitle => $"{(HasSubGroups ? $"{Title}, Level: {Level}" : FrameworkName)}";
     }
 }
