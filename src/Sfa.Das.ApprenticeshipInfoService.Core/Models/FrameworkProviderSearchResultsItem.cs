@@ -44,6 +44,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public List<string> DeliveryModes { get; set; }
 
+        public List<string> DeliveryModesKeywords { get; set; }
+
         public string Website { get; set; }
 
         public IEnumerable<TrainingLocation> TrainingLocations { get; set; }
@@ -66,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public bool IsLevyPayerOnly { get; set; }
 
-		public bool CurrentlyNotStartingNewApprentices { get; set; }
+        public bool CurrentlyNotStartingNewApprentices { get; set; }
 
         public Feedback ProviderFeedback { get; set; }
     }

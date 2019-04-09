@@ -1,59 +1,36 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
-using SFA.DAS.Apprenticeships.Api.Types;
-
+﻿using System.Collections.Generic;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
+using SFA.DAS.Apprenticeships.Api.Types.V3;
+using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Core.Configuration;
-    using Core.Models;
-    using Core.Models.Responses;
-    using Core.Services;
-    using Mapping;
-    using Nest;
-    using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.Apprenticeships.Api.Types.V3;
-    using SFA.DAS.NLog.Logger;
-
     public sealed class ProviderRepositoryV3 : IGetV3Providers
     {
-        private const string ProviderIndexType = "providerapidocument";
-
-        private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
-        private readonly ILog _applicationLogger;
-        private readonly IConfigurationSettings _applicationSettings;
-        private readonly IProviderLocationSearchProvider _providerLocationSearchProvider;
-        private readonly IProviderMapping _providerMapping;
-        private readonly IQueryHelper _queryHelper;
-        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
-        private readonly IPaginationHelper _paginationHelper;
+        private readonly ILog _logger;
+        private readonly IProviderLocationSearchProviderV3 _providerLocationSearchProvider;
 
         public ProviderRepositoryV3(
-            IElasticsearchCustomClient elasticsearchCustomClient,
             ILog applicationLogger,
-            IConfigurationSettings applicationSettings,
-            IProviderLocationSearchProvider providerLocationSearchProvider,
-            IProviderMapping providerMapping,
-            IQueryHelper queryHelper,
-            IActiveApprenticeshipChecker activeApprenticeshipChecker,
-            IPaginationHelper paginationHelper)
+            IProviderLocationSearchProviderV3 providerLocationSearchProvider)
         {
-            _elasticsearchCustomClient = elasticsearchCustomClient;
-            _applicationLogger = applicationLogger;
-            _applicationSettings = applicationSettings;
+            _logger = applicationLogger;
             _providerLocationSearchProvider = providerLocationSearchProvider;
-            _providerMapping = providerMapping;
-            _queryHelper = queryHelper;
-            _activeApprenticeshipChecker = activeApprenticeshipChecker;
-            _paginationHelper = paginationHelper;
         }
 
-        public StandardProviderSearchResult GetByStandardIdAndLocation(int id, double lat, double lon, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        public StandardProviderSearchResult GetByStandardIdAndLocation(int id, double lat, double lon, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
         {
-            throw new NotImplementedException();
+            var coordinates = new Coordinate
+            {
+                Lat = lat,
+                Lon = lon
+            };
+
+            var providers = _providerLocationSearchProvider.SearchStandardProviders(id, coordinates, page, pageSize, showForNonLevyOnly, showNationalOnly, deliveryModes);
+
+            return providers;
         }
      }
 }

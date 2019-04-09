@@ -39,6 +39,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IProviderMapping>().Use<ProviderMapping>();
             For<IAssessmentOrgsMapping>().Use<AssessmentOrgsMapping>();
             For<IProviderLocationSearchProvider>().Use<ElasticsearchProviderLocationSearchProvider>();
+            For<IProviderLocationSearchProviderV3>().Use<ElasticsearchProviderLocationSearchProviderV3>();
             For<IElasticsearchCustomClient>().Use<ElasticsearchCustomClient>();
             For<IControllerHelper>().Use<ControllerHelper>();
             For<IAnalyticsService>().Use<AnalyticsService>();

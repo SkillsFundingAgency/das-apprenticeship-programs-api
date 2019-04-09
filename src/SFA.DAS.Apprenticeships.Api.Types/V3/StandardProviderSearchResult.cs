@@ -11,5 +11,9 @@ namespace SFA.DAS.Apprenticeships.Api.Types.V3
         public int PageNumber { get; set; }
 
         public IEnumerable<ProviderSearchResultItem> Results { get; set; }
+
+        public Dictionary<string, long?> TrainingOptionsAggregation { get; set; }
+
+        public Dictionary<string, long?> NationalProvidersAggregation { get; set; }
     }
 }

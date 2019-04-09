@@ -20,7 +20,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         private readonly ILog _logger;
 
         public ProvidersV3Controller(
-            IGetV3Providers getProviders, 
+            IGetV3Providers getProviders,
             IControllerHelper controllerHelper,
             ILog logger)
         {

@@ -9,6 +9,8 @@
 
         List<string> DeliveryModes { get; set; }
 
+        List<string> DeliveryModesKeywords { get; set; }
+
         double Distance { get; set; }
 
         string Email { get; set; }
