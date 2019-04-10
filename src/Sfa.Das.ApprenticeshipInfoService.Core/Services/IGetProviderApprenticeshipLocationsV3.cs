@@ -6,8 +6,7 @@
 
     public interface IGetProviderApprenticeshipLocationsV3
     {
-        StandardProviderSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes);
-
-        //List<FrameworkProviderSearchResultsItem> SearchFrameworkProviders(int id, Coordinate coordinates, int page);
+        ProviderApprenticeshipLocationSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes);
+        ProviderApprenticeshipLocationSearchResult SearchFrameworkProviders(string frameworkId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes);
     }
 }

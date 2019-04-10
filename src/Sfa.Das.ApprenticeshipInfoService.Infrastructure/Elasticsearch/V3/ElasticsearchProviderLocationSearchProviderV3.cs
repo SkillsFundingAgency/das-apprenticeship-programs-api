@@ -27,10 +27,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _elasticsearchCustomClient = elasticsearchCustomClient;
         }
 
-        public StandardProviderSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        public ProviderApprenticeshipLocationSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
         {
             var qryStr = CreateStandardProviderSearchQuery(standardId.ToString(), coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
             return PerformStandardProviderSearchWithQuery(qryStr, page, pageSize);
+        }
+
+        public ProviderApprenticeshipLocationSearchResult SearchFrameworkProviders(string frameworkId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        {
+            var qryStr = CreateFrameworkProviderSearchQuery(frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+            return PerformFrameworkProviderSearchWithQuery(qryStr, page, pageSize);
         }
 
         private SearchDescriptor<StandardProviderSearchResultsItem> CreateStandardProviderSearchQuery(string standardId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
@@ -38,7 +44,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return CreateProviderQuery<StandardProviderSearchResultsItem>(x => x.StandardCode, standardId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
         }
 
-        private StandardProviderSearchResult PerformStandardProviderSearchWithQuery(SearchDescriptor<StandardProviderSearchResultsItem> qryStr, int page, int pageSize)
+        private SearchDescriptor<FrameworkProviderSearchResultsItem> CreateFrameworkProviderSearchQuery(string frameworkId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        {
+            return CreateProviderQuery<FrameworkProviderSearchResultsItem>(x => x.FrameworkId, frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+        }
+
+        private ProviderApprenticeshipLocationSearchResult PerformStandardProviderSearchWithQuery(SearchDescriptor<StandardProviderSearchResultsItem> qryStr, int page, int pageSize)
         {
             var skipAmount = pageSize * (page - 1);
 
@@ -46,16 +57,29 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall?.HttpStatusCode != 200)
             {
-                return new StandardProviderSearchResult();
+                return new ProviderApprenticeshipLocationSearchResult();
             }
 
-            return MapToStandardProviderSearchResult(results, page, pageSize);
+            return MapToProviderApprenticeshipLocationSearchResult(results, page, pageSize);
+        }
+
+        private ProviderApprenticeshipLocationSearchResult PerformFrameworkProviderSearchWithQuery(SearchDescriptor<FrameworkProviderSearchResultsItem> qryStr, int page, int pageSize)
+        {
+            var skipAmount = pageSize * (page - 1);
+
+            var results = _elasticsearchCustomClient.Search<FrameworkProviderSearchResultsItem>(_ => qryStr.Skip(skipAmount).Take(pageSize));
+
+            if (results.ApiCall?.HttpStatusCode != 200)
+            {
+                return new ProviderApprenticeshipLocationSearchResult();
+            }
+
+            return MapToProviderApprenticeshipLocationSearchResult(results, page, pageSize);
         }
 
         private SearchDescriptor<T> CreateProviderQuery<T>(Expression<Func<T, object>> selector, string code, Coordinate location, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
-            var lee = Enumerable.Empty<string>();
             var descriptor =
                 new SearchDescriptor<T>()
                     .Index(_applicationSettings.ProviderIndexAlias)
@@ -103,11 +127,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             {
                 yield return f => f.Term(t => t.Field(fi => fi.NationalProvider).Value(showNationalOnly));
             }
-
-            if (deliveryModes != null && deliveryModes.Count > 0)
-            {
-                yield return f => f.Terms(t => t.Field(fi => fi.DeliveryModes).Terms(deliveryModes.Select(x => x.GetMemberDescription())));
-            }
         }
 
         private Func<QueryContainerDescriptor<T>, QueryContainer> NestedLocationsQuery<T>(Coordinate location)
@@ -150,12 +169,30 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 .Ascending());
         }
 
-        private static StandardProviderSearchResult MapToStandardProviderSearchResult(ISearchResponse<StandardProviderSearchResultsItem> searchResponse, int page, int pageSize)
+        private static ProviderApprenticeshipLocationSearchResult MapToProviderApprenticeshipLocationSearchResult(ISearchResponse<StandardProviderSearchResultsItem> searchResponse, int page, int pageSize)
         {
             var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(TrainingTypeAggregateName));
             var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(NationalProviderAggregateName), useKeyAsString: true);
 
-            var result = new StandardProviderSearchResult
+            var result = new ProviderApprenticeshipLocationSearchResult
+            {
+                TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
+                PageNumber = page,
+                PageSize = pageSize,
+                Results = searchResponse.Hits?.Select(MapHitToStandardProviderSearchResultItem),
+                TrainingOptionsAggregation = trainingOptionsAggregation,
+                NationalProvidersAggregation = nationalProvidersAggregation
+            };
+
+            return result;
+        }
+
+        private static ProviderApprenticeshipLocationSearchResult MapToProviderApprenticeshipLocationSearchResult(ISearchResponse<FrameworkProviderSearchResultsItem> searchResponse, int page, int pageSize)
+        {
+            var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(TrainingTypeAggregateName));
+            var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(NationalProviderAggregateName), useKeyAsString: true);
+
+            var result = new ProviderApprenticeshipLocationSearchResult
             {
                 TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
                 PageNumber = page,
@@ -185,7 +222,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return aggregationResult;
         }
 
-        private static ProviderSearchResultItem MapHitToStandardProviderSearchResultItem(IHit<StandardProviderSearchResultsItem> hit)
+        private static ProviderSearchResultItem MapHitToStandardProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
         {
             return new ProviderSearchResultItem
             {
