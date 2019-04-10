@@ -88,7 +88,7 @@
     <Compile Include="Models\IApprenticeshipProduct.cs" />
     <Compile Include="Services\IApprenticeshipProviderRepository.cs" />
     <Compile Include="Services\IApprenticeshipSearchServiceV3.cs" />
-    <Compile Include="Services\IGetV3Providers.cs" />
+    <Compile Include="Services\IGetProviderApprenticeshipLocationsV3.cs" />
     <Compile Include="Services\IProviderSearchService.cs" />
     <Compile Include="Services\IGetAssessmentOrgs.cs" />
     <Compile Include="Services\IGetProviders.cs" />

@@ -30,7 +30,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IGetStandards>().Use<StandardRepository>();
             For<IGetFrameworks>().Use<FrameworkRepository>();
             For<IGetProviders>().Use<ProviderRepository>();
-            For<IGetV3Providers>().Use<ProviderRepositoryV3>();
             For<IGetAssessmentOrgs>().Use<AssessmentOrgsRepository>();
             For<IApprenticeshipProviderRepository>().Use<ApprenticeshipProviderRepository>();
             For<IApprenticeshipMapping>().Use<ApprenticeshipMapping>();
@@ -39,7 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IProviderMapping>().Use<ProviderMapping>();
             For<IAssessmentOrgsMapping>().Use<AssessmentOrgsMapping>();
             For<IProviderLocationSearchProvider>().Use<ElasticsearchProviderLocationSearchProvider>();
-            For<IProviderLocationSearchProviderV3>().Use<ElasticsearchProviderLocationSearchProviderV3>();
+            For<IGetProviderApprenticeshipLocationsV3>().Use<ElasticsearchProviderLocationSearchProviderV3>();
             For<IElasticsearchCustomClient>().Use<ElasticsearchCustomClient>();
             For<IControllerHelper>().Use<ControllerHelper>();
             For<IAnalyticsService>().Use<AnalyticsService>();

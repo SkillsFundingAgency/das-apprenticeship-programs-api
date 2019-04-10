@@ -123,8 +123,6 @@
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
     <Compile Include="Elasticsearch\V3\ElasticsearchProviderLocationSearchProviderV3.cs" />
-    <Compile Include="Elasticsearch\V3\IProviderLocationSearchProviderV3.cs" />
-    <Compile Include="Elasticsearch\V3\ProviderRepositoryV3.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
     <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />

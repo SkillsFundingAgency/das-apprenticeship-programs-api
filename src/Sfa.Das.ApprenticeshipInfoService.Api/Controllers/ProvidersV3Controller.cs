@@ -4,6 +4,7 @@ using System.Net;
 using System.Web.Http;
 using Microsoft.Web.Http;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 using SFA.DAS.NLog.Logger;
@@ -15,12 +16,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
     [RoutePrefix("v{version:apiVersion}")]
     public class ProvidersV3Controller : ApiController
     {
-        private readonly IGetV3Providers _getProviders;
+        private readonly IGetProviderApprenticeshipLocationsV3 _getProviders;
         private readonly IControllerHelper _controllerHelper;
         private readonly ILog _logger;
 
         public ProvidersV3Controller(
-            IGetV3Providers getProviders,
+            IGetProviderApprenticeshipLocationsV3 getProviders,
             IControllerHelper controllerHelper,
             ILog logger)
         {
@@ -52,8 +53,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
             {
                 var actualPage = _controllerHelper.GetActualPage(page);
                 var selectedDeliveryModes = ParseForDeliveryModes(deliveryModes);
+                var coordinates = new Coordinate { Lat = lat, Lon = lon };
 
-                var responseContent = _getProviders.GetByStandardIdAndLocation(id, lat, lon, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                var responseContent = _getProviders.SearchStandardProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
 
                 return Ok(responseContent);
             }

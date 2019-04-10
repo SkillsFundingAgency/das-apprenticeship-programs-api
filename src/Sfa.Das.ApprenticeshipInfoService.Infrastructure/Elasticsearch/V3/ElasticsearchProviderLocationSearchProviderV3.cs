@@ -5,13 +5,14 @@ using System.Linq.Expressions;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
-    public class ElasticsearchProviderLocationSearchProviderV3 : IProviderLocationSearchProviderV3
+    public class ElasticsearchProviderLocationSearchProviderV3 : IGetProviderApprenticeshipLocationsV3
     {
         private const string TrainingTypeAggregateName = "training_type";
         private const string NationalProviderAggregateName = "national_provider";
