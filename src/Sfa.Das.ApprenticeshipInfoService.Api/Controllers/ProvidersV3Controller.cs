@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Web.Http;
+using System.Web.Http.Description;
 using Microsoft.Web.Http;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
@@ -43,9 +44,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
         /// <returns>a paginated search result</returns>
         [SwaggerOperation("GetByStandardIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<ProviderApprenticeshipLocationSearchResult>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
-        //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("standards/{id}/providers")]
         public IHttpActionResult GetByStandardIdAndLocation(int id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
         {
@@ -84,9 +85,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
         /// <returns>a paginated search result</returns>
         [SwaggerOperation("GetByFrameworkIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<ProviderApprenticeshipLocationSearchResult>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
-        //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("frameworks/{id}/providers")]
         public IHttpActionResult GetByFrameworkIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
         {
