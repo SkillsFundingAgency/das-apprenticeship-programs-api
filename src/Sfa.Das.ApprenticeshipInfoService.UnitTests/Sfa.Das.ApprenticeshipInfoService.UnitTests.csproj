@@ -126,7 +126,6 @@
     <Compile Include="Helpers\DateHelperTests.cs" />
     <Compile Include="Helpers\PaginationHelperTests.cs" />
     <Compile Include="Infrastructure\ApplicationSettingsTests.cs" />
-    <Compile Include="Infrastructure\Mapping\ProviderSearchResultItemMappingTests.cs" />
     <Compile Include="Infrastructure\Mapping\ApprenticeshipSearchResultsMappingTests.cs" />
     <Compile Include="Infrastructure\Mapping\FrameworkMappingTests.cs" />
     <Compile Include="Infrastructure\Services\GetIfaStandardsUrlServiceTests.cs" />

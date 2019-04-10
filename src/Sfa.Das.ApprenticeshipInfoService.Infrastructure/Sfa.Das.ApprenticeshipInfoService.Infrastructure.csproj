@@ -139,10 +139,8 @@
     <Compile Include="Mapping\IAssessmentOrgsMapping.cs" />
     <Compile Include="Mapping\IProviderMapping.cs" />
     <Compile Include="Mapping\IApprenticeshipMapping.cs" />
-    <Compile Include="Mapping\IProviderSearchResultItemMapping.cs" />
     <Compile Include="Mapping\ProviderMapping.cs" />
     <Compile Include="Mapping\ApprenticeshipMapping.cs" />
-    <Compile Include="Mapping\ProviderSearchResultItemMapping.cs" />
     <Compile Include="Mapping\StandardMapping.cs" />
     <Compile Include="Mapping\IStandardMapping.cs" />
     <Compile Include="Mapping\FrameworkMapping.cs" />
