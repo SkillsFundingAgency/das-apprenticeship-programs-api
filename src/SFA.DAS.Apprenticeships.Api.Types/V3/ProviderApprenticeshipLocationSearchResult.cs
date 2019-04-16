@@ -2,16 +2,8 @@
 
 namespace SFA.DAS.Apprenticeships.Api.Types.V3
 {
-    public class ProviderApprenticeshipLocationSearchResult
+    public class ProviderApprenticeshipLocationSearchResult : PagedResults<ProviderSearchResultItem>
     {
-        public long TotalResults { get; set; }
-
-        public int PageSize { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public IEnumerable<ProviderSearchResultItem> Results { get; set; }
-
         public Dictionary<string, long?> TrainingOptionsAggregation { get; set; }
 
         public Dictionary<string, long?> NationalProvidersAggregation { get; set; }
