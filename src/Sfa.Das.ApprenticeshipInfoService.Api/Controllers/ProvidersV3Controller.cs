@@ -32,9 +32,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         }
 
         /// <summary>
-        /// Get Providers for a standard at a given location
+        /// Get Providers for a given apprenticeship at a given location
         /// </summary>
-        /// <param name="id">Standard Code</param>
+        /// <param name="id">{StandardCode} OR {FrameworkCode}-{ProgType}-{PathwayId}</param>
         /// <param name="lat">Latitude</param>
         /// <param name="lon">Longitude</param>
         /// <param name="page">Requested page</param>
@@ -43,12 +43,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="showNationalOnly">Show only National Providers</param>
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
         /// <returns>a paginated search result</returns>
-        [SwaggerOperation("GetByStandardIdAndLocation")]
+        [SwaggerOperation("GetByApprenticeshipIdAndLocation")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("standards/{id}/providers")]
-        public IHttpActionResult GetByStandardIdAndLocation(int id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
+        [Route("apprenticeships/{id}/providers")]
+        public IHttpActionResult GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
         {
             try
             {
@@ -56,48 +56,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
                 var selectedDeliveryModes = ParseForDeliveryModes(deliveryModes);
                 var coordinates = new Coordinate { Lat = lat, Lon = lon };
 
-                var responseContent = _getProviders.SearchStandardProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                ProviderApprenticeshipLocationSearchResult responseContent;
 
-                return Ok(responseContent);
-            }
-            catch (ArgumentException)
-            {
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, Request.RequestUri.PathAndQuery);
-                throw;
-            }
-        }
-
-
-        /// <summary>
-        /// Get Providers for a framework at a given location
-        /// </summary>
-        /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
-        /// <param name="lat">Latitude</param>
-        /// <param name="lon">Longitude</param>
-        /// <param name="page">Requested page</param>
-        /// <param name="pageSize">Results per page</param>
-        /// <param name="showForNonLevyOnly">Show only Non-Levy Providers</param>
-        /// <param name="showNationalOnly">Show only National Providers</param>
-        /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
-        /// <returns>a paginated search result</returns>
-        [SwaggerOperation("GetByFrameworkIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("frameworks/{id}/providers")]
-        public IHttpActionResult GetByFrameworkIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
-        {
-            try
-            {
-                var actualPage = _controllerHelper.GetActualPage(page);
-                var selectedDeliveryModes = ParseForDeliveryModes(deliveryModes);
-                var coordinates = new Coordinate { Lat = lat, Lon = lon };
-
-                var responseContent = _getProviders.SearchFrameworkProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                int standardId;
+                if (int.TryParse(id, out standardId))
+                {
+                    responseContent = _getProviders.SearchStandardProviders(standardId, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                }
+                else
+                {
+                    responseContent = _getProviders.SearchFrameworkProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                }
 
                 return Ok(responseContent);
             }
