@@ -41,7 +41,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         [Route("apprenticeship-programmes/search/")]
         [HttpGet]
         [ExceptionHandling]
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         public IHttpActionResult SearchApprenticeships(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
         {
             try

@@ -26,6 +26,7 @@
       <Setting name="FrameworksExpiredRequired" />
       <Setting name="StandardsExpiredRequired" />
       <Setting name="AllowedCorsUrls" />
+      <Setting name="APPINSIGHTS_INSTRUMENTATIONKEY"/>
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
