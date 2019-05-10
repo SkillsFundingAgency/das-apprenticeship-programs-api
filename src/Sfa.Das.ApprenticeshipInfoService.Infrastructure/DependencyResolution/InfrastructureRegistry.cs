@@ -14,6 +14,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
     using Helpers;
     using Mapping;
     using Settings;
+    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
     using StructureMap;
 
     public sealed class InfrastructureRegistry : Registry
@@ -23,7 +24,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<ILog>().Use(x => new NLogLogger(x.ParentType, x.GetInstance<IRequestContext>(), GetProperties())).AlwaysUnique();
             For<IConfigurationSettings>().Use<ApplicationSettings>();
             For<IElasticsearchClientFactory>().Use<ElasticsearchClientFactory>();
-            For<IApprenticeshipSearchService>().Use<ApprenticeshipSearchService>();
+            For<IApprenticeshipSearchServiceV1>().Use<ApprenticeshipSearchServiceV1>();
+            For<IApprenticeshipSearchServiceV3>().Use<ApprenticeshipSearchServiceV3>();
             For<IProviderSearchService>().Use<ProviderSearchService>();
             For<IGetStandards>().Use<StandardRepository>();
             For<IGetFrameworks>().Use<FrameworkRepository>();
@@ -36,6 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IProviderMapping>().Use<ProviderMapping>();
             For<IAssessmentOrgsMapping>().Use<AssessmentOrgsMapping>();
             For<IProviderLocationSearchProvider>().Use<ElasticsearchProviderLocationSearchProvider>();
+            For<IGetProviderApprenticeshipLocationsV3>().Use<ElasticsearchProviderLocationSearchProviderV3>();
             For<IElasticsearchCustomClient>().Use<ElasticsearchCustomClient>();
             For<IControllerHelper>().Use<ControllerHelper>();
             For<IAnalyticsService>().Use<AnalyticsService>();
@@ -44,6 +47,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IFundingCapCalculator>().Use<FundingCapCalculator>();
             For<IPaginationHelper>().Use<PaginationHelper>();
             For<IGetIfaStandardsUrlService>().Use<GetIfaStandardsUrlService>();
+            For<IApprenticeshipSearchResultsMapping>().Use<ApprenticeshipSearchResultsMapping>();
         }
 
         private IDictionary<string, object> GetProperties()

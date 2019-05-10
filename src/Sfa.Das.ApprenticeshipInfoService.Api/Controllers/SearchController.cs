@@ -9,6 +9,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using System;
     using System.Net;
     using System.Web.Http;
+    using Microsoft.Web.Http;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
     using SFA.DAS.NLog.Logger;
@@ -16,14 +17,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 
     public class SearchController : ApiController
     {
-        private readonly IApprenticeshipSearchService _apprenticeshipSearchService;
+        private readonly IApprenticeshipSearchServiceV1 _apprenticeshipSearchServiceV1;
         private readonly IProviderSearchService _providerSearchService;
         private readonly IProviderMapping _providerMapping;
         private readonly ILog _logger;
 
-        public SearchController(IApprenticeshipSearchService apprenticeshipSearchService, IProviderSearchService providerSearchService, IProviderMapping providerMapping, ILog logger)
+        public SearchController(
+            IApprenticeshipSearchServiceV1 apprenticeshipSearchServiceV1,
+            IProviderSearchService providerSearchService,
+            IProviderMapping providerMapping,
+            ILog logger)
         {
-            _apprenticeshipSearchService = apprenticeshipSearchService;
+            _apprenticeshipSearchServiceV1 = apprenticeshipSearchServiceV1;
             _providerSearchService = providerSearchService;
             _providerMapping = providerMapping;
             _logger = logger;
@@ -36,13 +41,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerOperation("SearchActiveApprenticeships")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSearchResultsItem>))]
         [Route("apprenticeship-programmes/search")]
-		[HttpGet]
+        [Route("v{version:apiVersion}/apprenticeship-programmes/search")]
+        [HttpGet]
         [ExceptionHandling]
         public IEnumerable<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page = 1)
         {
             try
             {
-                var response = _apprenticeshipSearchService.SearchApprenticeships(keywords, page);
+                var response = _apprenticeshipSearchServiceV1.SearchApprenticeships(keywords, page);
 
                 return response;
             }
@@ -60,7 +66,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [SwaggerOperation("SearchProviders")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
         [Route("providers/search")]
-		[HttpGet]
+        [Route("v{version:apiVersion}/providers/search")]
+        [HttpGet]
         [ExceptionHandling]
         public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page = 1)
         {

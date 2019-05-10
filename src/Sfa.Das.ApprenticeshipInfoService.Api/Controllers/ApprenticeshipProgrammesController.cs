@@ -7,6 +7,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
     using System.Net;
     using System.Web.Http;
     using System.Web.Http.Description;
+    using Microsoft.Web.Http;
     using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
     using Sfa.Das.ApprenticeshipInfoService.Core.Services;
     using SFA.DAS.Apprenticeships.Api.Types;
@@ -38,6 +39,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <returns>a collection of apprenticeships</returns>
         [SwaggerOperation("GetAllApprenticeships")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSummary>))]
+        [Route("v{version:apiVersion}/apprenticeship-programmes")]
         [Route("apprenticeship-programmes")]
         [ExceptionHandling]
         public IEnumerable<ApprenticeshipSummary> Get()
@@ -53,6 +55,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         [SwaggerResponse(HttpStatusCode.NoContent)]
         [SwaggerResponse(HttpStatusCode.NotFound)]
+        [Route("v{version:apiVersion}/apprenticeship-programmes")]
         [Route("apprenticeship-programmes")]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]

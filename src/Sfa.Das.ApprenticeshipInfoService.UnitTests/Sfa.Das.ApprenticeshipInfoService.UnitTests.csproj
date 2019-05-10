@@ -39,6 +39,9 @@
     <CodeAnalysisRuleSet>..\SharedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bogus, Version=26.0.2.0, Culture=neutral, PublicKeyToken=fa1bb3f3f218129a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bogus.26.0.2\lib\net40\Bogus.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
@@ -89,9 +92,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -103,9 +105,8 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -116,6 +117,8 @@
     <Compile Include="Controllers\ApprenticeshipProgrammesControllerTests.cs" />
     <Compile Include="Controllers\ProviderControllerTests.cs" />
     <Compile Include="Controllers\FrameworkControllerTests.cs" />
+    <Compile Include="Controllers\V3\ProvidersV3ControllerTests.cs" />
+    <Compile Include="Controllers\V3\SearchV3ControllerTests.cs" />
     <Compile Include="Controllers\StandardControllerTests.cs" />
     <Compile Include="Helpers\FundingCapCalculatorTests.cs" />
     <Compile Include="Helpers\ActiveFrameworkCheckerTests.cs" />
@@ -123,6 +126,7 @@
     <Compile Include="Helpers\DateHelperTests.cs" />
     <Compile Include="Helpers\PaginationHelperTests.cs" />
     <Compile Include="Infrastructure\ApplicationSettingsTests.cs" />
+    <Compile Include="Infrastructure\Mapping\ApprenticeshipSearchResultsMappingTests.cs" />
     <Compile Include="Infrastructure\Mapping\FrameworkMappingTests.cs" />
     <Compile Include="Infrastructure\Services\GetIfaStandardsUrlServiceTests.cs" />
     <Compile Include="JsonEnumSerializerTests.cs" />
