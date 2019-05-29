@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Bogus;
+﻿using Bogus;
 using FluentAssertions;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types;
+using System.Linq;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
 {
@@ -43,9 +41,31 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
         }
 
         [Test]
-        public void ShouldPopulatePropertiesForFramework()
+        public void ShouldPopulatePropertiesForFrameworkWithoutSubgroups()
         {
             ApprenticeshipSearchResultsItem source = CreateTestFrameworkSourceItem();
+
+            var result = _sut.MapToApprenticeshipSearchResult(source);
+
+            result.Id.Should().Be(source.FrameworkId);
+            result.ProgrammeType.Should().Be(ApprenticeshipTrainingType.Framework);
+            result.Title.Should().Be(source.FrameworkName);
+            result.Level.Should().Be(source.Level);
+            result.Duration.Should().Be(source.Duration);
+            result.EffectiveFrom.Should().Be(source.EffectiveFrom);
+            result.EffectiveTo.Should().Be(source.EffectiveTo);
+            result.LastDateForNewStarts.Should().Be(source.LastDateForNewStarts);
+            result.JobRoles.Should().BeEquivalentTo(source.JobRoleItems.Select(x => x.Title).ToList());
+            result.Keywords.Should().BeEquivalentTo(source.Keywords);
+            result.FrameworkName.Should().Be(source.FrameworkName);
+            result.PathwayName.Should().Be(source.PathwayName);
+            result.Published.Should().Be(source.Published);
+        }
+
+        [Test]
+        public void ShouldPopulatePropertiesForFrameworkWithSubgroups()
+        {
+            ApprenticeshipSearchResultsItem source = CreateTestFrameworkSourceItem(true);
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
 
@@ -101,7 +121,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
             return fakeResult.Generate();
         }
 
-        private ApprenticeshipSearchResultsItem CreateTestFrameworkSourceItem()
+        private ApprenticeshipSearchResultsItem CreateTestFrameworkSourceItem(bool hasSubGroups = false)
         {
             var fakeJobRoleItem = new Faker<JobRoleItem>()
                 .Rules((f, o) =>
@@ -114,10 +134,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
                 .StrictMode(false)
                 .Rules((f, o) =>
                 {
+                    if (hasSubGroups)
+                    {
+                        o.FrameworkName = f.Random.Words(2);
+                        o.PathwayName = f.Random.Words(2);
+                    }
+                    else
+                    {
+                        o.FrameworkName = f.Commerce.ProductName();
+                        o.PathwayName = o.FrameworkName;
+                    }
+
                     o.FrameworkId = f.Random.Replace("###-#-#");
-                    o.FrameworkName = f.Commerce.ProductName();
                     o.JobRoleItems = fakeJobRoleItem.Generate(2);
-                    o.PathwayName = f.Commerce.ProductName();
+
                     o.Duration = f.Random.Number(24);
                     o.EffectiveFrom = f.Date.Past();
                     o.EffectiveTo = f.Date.Future();
@@ -125,8 +155,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
                     o.LastDateForNewStarts = f.Date.Future();
                     o.Level = f.Random.Number(7);
                     o.Published = f.Random.Bool();
-                    o.Title = f.Commerce.ProductName();
-
                     o.StandardId = null;
                     o.JobRoles = null;
                 });

@@ -10,7 +10,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.V3
         public ApprenticeshipTrainingType ProgrammeType { get; set; }
 		public string Title
         {
-            get { return HasSubGroups && ProgrammeType == ApprenticeshipTrainingType.Framework ? _title : FrameworkName; }
+            get { return ProgrammeType == ApprenticeshipTrainingType.Framework && HasSubGroups == false ? FrameworkName : _title; }
             set { _title = value; }
         }
 		public List<string> JobRoles { get; set; }
