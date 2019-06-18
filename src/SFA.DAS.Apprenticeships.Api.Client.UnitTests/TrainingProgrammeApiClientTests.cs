@@ -88,6 +88,25 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
             Assert.AreEqual(expectedCount, trainingProgrammes.Count);
         }
 
+        [TestCase(RequiredProgrammeTypes.Framework, ProgrammeType.Framework)]
+        [TestCase(RequiredProgrammeTypes.Standard, ProgrammeType.Standard)]
+        [TestCase(RequiredProgrammeTypes.All, ProgrammeType.Standard, ProgrammeType.Framework)]
+        public async Task GetTrainingProgrammes_WithSpecifiedType_ShouldReturnJustThatType(RequiredProgrammeTypes requiredTypes, params ProgrammeType[] expectedReturnedProgrammeTypes)
+        {
+            // Arrange
+            var fixtures = new TrainingProgrammeApiClientTestFixtures()
+                .WithFramework("123")
+                .WithStandard("456");
+
+            var client = fixtures.CreateClient();
+
+            // Act
+            var trainingProgrammes = await client.GetTrainingProgrammes(requiredTypes);
+
+            // Assert
+            Assert.IsTrue(trainingProgrammes.All(tp => expectedReturnedProgrammeTypes.Contains(tp.ProgrammeType)));
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public async Task GetTrainingProgrammes_WithMultipleStandardAndOneFrameworks_ShouldReturnAll(bool populateCache)
@@ -167,11 +186,11 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
 
         public TrainingProgrammeApiClient CreateClient()
         {
-            IReadOnlyList<ITrainingProgramme> programmes = null;
+            TrainingProgrammeApiClient.ProgrammeLists programmes = null;
 
             if (PopulateCache)
             {
-                programmes = _standards.Cast<ITrainingProgramme>().Union(_frameworks).ToList();
+                programmes = new TrainingProgrammeApiClient.ProgrammeLists(_frameworks, _standards);
             }
 
             object tempProgrammes = programmes;
