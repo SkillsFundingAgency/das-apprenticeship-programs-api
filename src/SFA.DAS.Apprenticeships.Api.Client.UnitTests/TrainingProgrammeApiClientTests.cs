@@ -13,9 +13,6 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
     [TestFixture]
     public class TrainingProgrammeApiClientTests
     {
-        private const string FrameworkCode = "123";
-        private const string StandardCode = "456";
-
         [Test]
         public void Constructor_ValidCall_ShouldThrowException()
         {
@@ -27,9 +24,8 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
         public async Task GetTrainingProgramme_WithIdDefinedForStandard_ShouldReturnStandard()
         {
             // Arrange
-            const string id = FrameworkCode;
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithStandard(id);
+            const string id = "123";
+            var fixtures = new TrainingProgrammeApiClientTestFixtures().WithStandard(id);
             var client = fixtures.CreateClient();
 
             // Act
@@ -45,7 +41,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
         public async Task GetTrainingProgramme_WithIdDefinedForFramework_ShouldReturnFramework()
         {
             // Arrange
-            const string id = FrameworkCode;
+            const string id = "123";
             var fixtures = new TrainingProgrammeApiClientTestFixtures().WithFramework(id);
             var client = fixtures.CreateClient();
 
@@ -79,8 +75,8 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
         {
             // Arrange
             var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode)
-                .WithStandard(StandardCode);
+                .WithFramework("123")
+                .WithStandard("456");
 
             var client = fixtures.CreateClient();
 
@@ -92,166 +88,51 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
             Assert.AreEqual(expectedCount, trainingProgrammes.Count);
         }
 
-        [Test]
-        public async Task GetAllTrainingProgrammes_WithOnlyStandard_ShouldReturnStandard()
+        [TestCase(RequiredProgrammeTypes.Framework, ProgrammeType.Framework)]
+        [TestCase(RequiredProgrammeTypes.Standard, ProgrammeType.Standard)]
+        [TestCase(RequiredProgrammeTypes.All, ProgrammeType.Standard, ProgrammeType.Framework)]
+        public async Task GetTrainingProgrammes_WithSpecifiedType_ShouldReturnJustThatType(RequiredProgrammeTypes requiredTypes, params ProgrammeType[] expectedReturnedProgrammeTypes)
         {
             // Arrange
             var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithStandard(StandardCode);
+                .WithFramework("123")
+                .WithStandard("456");
 
             var client = fixtures.CreateClient();
 
             // Act
-            var trainingProgrammes = await client.GetAllTrainingProgrammes();
+            var trainingProgrammes = await client.GetTrainingProgrammes(requiredTypes);
 
             // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Standard, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(StandardCode, trainingProgrammes[0].Id);
+            Assert.IsTrue(trainingProgrammes.All(tp => expectedReturnedProgrammeTypes.Contains(tp.ProgrammeType)));
         }
 
-        [Test]
-        public async Task GetAllTrainingProgrammes_WithOnlyFramework_ShouldReturnFramework()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task GetTrainingProgrammes_WithMultipleStandardAndOneFrameworks_ShouldReturnAll(bool populateCache)
         {
             // Arrange
             var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode);
+                .WithFramework("123")
+                .WithFramework("124")
+                .WithFramework("125")
+                .WithStandard("456")
+                .WithStandard("457")
+                .WithStandard("458");
+
+            if (populateCache)
+            {
+                fixtures.WithPopulatedCache();
+            }
 
             var client = fixtures.CreateClient();
 
             // Act
-            var trainingProgrammes = await client.GetAllTrainingProgrammes();
+            var trainingProgrammes = await client.GetTrainingProgrammes();
 
             // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Framework, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(FrameworkCode, trainingProgrammes[0].Id);
-        }
-
-        [Test]
-        public async Task GetAllTrainingProgrammes_WithStandardAndFramework_ShouldReturnStandardAndFramework()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode)
-                .WithStandard(StandardCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetAllTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(2, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.IsTrue(trainingProgrammes.Any(tp => tp.Id== FrameworkCode && tp.ProgrammeType==ProgrammeType.Framework));
-            Assert.IsTrue(trainingProgrammes.Any(tp => tp.Id == StandardCode && tp.ProgrammeType == ProgrammeType.Standard));
-        }
-
-        [Test]
-        public async Task GetStandardTrainingProgrammes_WithOnlyStandard_ShouldReturnStandard()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithStandard(StandardCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetStandardTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Standard, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(StandardCode, trainingProgrammes[0].Id);
-        }
-
-        [Test]
-        public async Task GetStandardTrainingProgrammes_WithOnlyFramework_ShouldReturnEmptyList()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetStandardTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(0, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-        }
-
-        [Test]
-        public async Task GetStandardTrainingProgrammes_WithFrameworkAndStandard_ShouldReturnJustStandard()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode)
-                .WithStandard(StandardCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetStandardTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Standard, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(StandardCode, trainingProgrammes[0].Id);
-        }
-
-        [Test]
-        public async Task GetFrameworkTrainingProgrammes_WithOnlyStandard_ShouldReturnEmptyList()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithStandard(StandardCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetFrameworkTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(0, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-        }
-
-        [Test]
-        public async Task GetFrameworkTrainingProgrammes_WithOnlyFramework_ShouldReturnFramework()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetFrameworkTrainingProgrammes();
-
-            // Assert
-            // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Framework, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(FrameworkCode, trainingProgrammes[0].Id);
-        }
-
-        [Test]
-        public async Task GetFrameworkTrainingProgrammes_WithFrameworkAndStandard_ShouldReturnJustFramework()
-        {
-            // Arrange
-            var fixtures = new TrainingProgrammeApiClientTestFixtures()
-                .WithFramework(FrameworkCode)
-                .WithStandard(StandardCode);
-
-            var client = fixtures.CreateClient();
-
-            // Act
-            var trainingProgrammes = await client.GetFrameworkTrainingProgrammes();
-
-            // Assert
-            Assert.AreEqual(1, trainingProgrammes.Count, "Incorrect number of training programmes returned");
-            Assert.AreEqual(ProgrammeType.Framework, trainingProgrammes[0].ProgrammeType);
-            Assert.AreEqual(FrameworkCode, trainingProgrammes[0].Id);
+            const int expectedCount = 6;
+            Assert.AreEqual(expectedCount, trainingProgrammes.Count);
         }
     }
 
@@ -259,10 +140,6 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
     {
         private readonly List<Standard> _standards;
         private readonly List<Framework> _frameworks;
-
-        IReadOnlyList<ITrainingProgramme> _allCachedItem;
-        IReadOnlyList<ITrainingProgramme> _standardCachedItem;
-        IReadOnlyList<ITrainingProgramme> _frameworkCachedItem;
 
         public TrainingProgrammeApiClientTestFixtures()
         {
@@ -272,18 +149,27 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
             StandardApiClientMock = new Mock<IStandardApiClient>();
             FrameworkApiClientMock = new Mock<IFrameworkApiClient>();
             MemoryCacheMock = new Mock<IMemoryCache>();
+            CacheEntryMock = new Mock<ICacheEntry>();
 
-            AllCacheEntryMock = new Mock<ICacheEntry>();
-            StandardCacheEntryMock = new Mock<ICacheEntry>();
-            FrameworkCacheEntryMock = new Mock<ICacheEntry>();
+            StandardApiClientMock
+                .Setup(client => client.GetAsync(It.IsAny<string>()))
+                .Returns<string>(GetStandardAsync);
 
-            //StandardApiClientMock
-            //    .Setup(client => client.GetAsync(It.IsAny<string>()))
-            //    .Returns<string>(GetStandardAsync);
+            FrameworkApiClientMock
+                .Setup(client => client.GetAsync(It.IsAny<string>()))
+                .Returns<string>(GetFrameworkAsync);
 
-            //FrameworkApiClientMock
-            //    .Setup(client => client.GetAsync(It.IsAny<string>()))
-            //    .Returns<string>(GetFrameworkAsync);
+            StandardApiClientMock
+                .Setup(client => client.GetAllAsync())
+                .ReturnsAsync(() => _standards.Select(s => new StandardSummary {Id = s.Id, Title = s.Title}));
+
+            FrameworkApiClientMock
+                .Setup(client => client.GetAllAsync())
+                .ReturnsAsync(() => _frameworks.Select(f => new FrameworkSummary {Id = f.Id, Title = f.Title}));
+
+            MemoryCacheMock
+                .Setup(mc => mc.CreateEntry(It.IsAny<string>()))
+                .Returns<string>(key => CacheEntry);
         }
 
         public Mock<IStandardApiClient> StandardApiClientMock { get; }
@@ -295,105 +181,55 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
         public Mock<IMemoryCache> MemoryCacheMock { get; }
         public IMemoryCache MemoryCache => MemoryCacheMock.Object;
 
-        public Mock<ICacheEntry> AllCacheEntryMock { get; }
-        public ICacheEntry AllCacheEntry => AllCacheEntryMock.Object;
-
-        public Mock<ICacheEntry> StandardCacheEntryMock { get; }
-        public ICacheEntry StandardCacheEntry => StandardCacheEntryMock.Object;
-
-        public Mock<ICacheEntry> FrameworkCacheEntryMock { get; }
-        public ICacheEntry FrameworkCacheEntry => FrameworkCacheEntryMock.Object;
+        public Mock<ICacheEntry> CacheEntryMock { get; }
+        public ICacheEntry CacheEntry => CacheEntryMock.Object;
 
         public TrainingProgrammeApiClient CreateClient()
         {
-            SetStandard();
-            SetFramework();
-            SetAll();
+            TrainingProgrammeApiClient.ProgrammeLists programmes = null;
+
+            if (PopulateCache)
+            {
+                programmes = new TrainingProgrammeApiClient.ProgrammeLists(_frameworks, _standards);
+            }
+
+            object tempProgrammes = programmes;
+
+            MemoryCacheMock
+                .Setup(mc => mc.TryGetValue(It.IsAny<object>(), out tempProgrammes))
+                .Returns(PopulateCache);
 
             return new TrainingProgrammeApiClient(MemoryCache, FrameworkApiClient, StandardApiClient);
         }
 
-        private void SetStandard()
-        {
-            // Setup API call
-            StandardApiClientMock
-                .Setup(client => client.GetAllAsync())
-                .ReturnsAsync(() => _standards.Select(s => new StandardSummary { Id = s.Id, Title = s.Title }));
-
-            // Setup call to check cache
-            object obj;
-
-            MemoryCacheMock
-                .Setup(mc => mc.TryGetValue(TrainingProgrammeApiClient.StandardProgrammesCacheKey, out obj))
-                .Returns(_standardCachedItem != null);
-
-            // Setup call to create cache item
-            MemoryCacheMock
-                .Setup(mc => mc.CreateEntry(TrainingProgrammeApiClient.StandardProgrammesCacheKey))
-                .Returns<string>(key => StandardCacheEntry);
-        }
-
-        private void SetFramework()
-        {
-            // Setup API call
-            FrameworkApiClientMock
-                .Setup(client => client.GetAllAsync())
-                .ReturnsAsync(() => _frameworks.Select(s => new FrameworkSummary { Id = s.Id, Title = s.Title }));
-
-            // Setup call to check cache
-            object obj;
-
-            MemoryCacheMock
-                .Setup(mc => mc.TryGetValue(TrainingProgrammeApiClient.FrameworkProgrammesCacheKey, out obj))
-                .Returns(_frameworkCachedItem != null);
-
-            // Setup call to create cache item
-            MemoryCacheMock
-                .Setup(mc => mc.CreateEntry(TrainingProgrammeApiClient.FrameworkProgrammesCacheKey))
-                .Returns<string>(key => FrameworkCacheEntry);
-        }
-
-        private void SetAll()
-        {
-            // Setup call to check cache
-            object obj;
-
-            MemoryCacheMock
-                .Setup(mc => mc.TryGetValue(TrainingProgrammeApiClient.AllProgrammesCacheKey, out obj))
-                .Returns(_allCachedItem != null);
-
-            // Setup call to create cache item
-            MemoryCacheMock
-                .Setup(mc => mc.CreateEntry(TrainingProgrammeApiClient.AllProgrammesCacheKey))
-                .Returns<string>(key => AllCacheEntry);
-        }
-
-        /// <summary>
-        ///     Adds a response to the simulated call to the apprentice info call
-        /// </summary>
         public TrainingProgrammeApiClientTestFixtures WithStandard(string id)
         {
             _standards.Add(new Standard{StandardId =  id, Title = $"Title {id}"});
             return this;
         }
 
-        /// <summary>
-        ///     Adds a response to the simulated call to the apprentice info call
-        /// </summary>
         public TrainingProgrammeApiClientTestFixtures WithFramework(string id)
         {
             _frameworks.Add(new Framework {FrameworkId = id, Title = $"Title {id}"});
             return this;
         }
 
-        //private Task<Standard> GetStandardAsync(string id)
-        //{
-        //    return Task.FromResult(_standards.FirstOrDefault(s => s.StandardId == id));
-        //}
+        public TrainingProgrammeApiClientTestFixtures WithPopulatedCache()
+        {
+            PopulateCache = true;
+            return this;
+        }
 
-        //private Task<Framework> GetFrameworkAsync(string id)
-        //{
-        //    return Task.FromResult(_frameworks.FirstOrDefault(f => f.FrameworkId == id));
-        //}
+        public bool PopulateCache { get; private set; }
+
+        private Task<Standard> GetStandardAsync(string id)
+        {
+            return Task.FromResult(_standards.FirstOrDefault(s => s.StandardId == id));
+        }
+
+        private Task<Framework> GetFrameworkAsync(string id)
+        {
+            return Task.FromResult(_frameworks.FirstOrDefault(f => f.FrameworkId == id));
+        }
     }
 }

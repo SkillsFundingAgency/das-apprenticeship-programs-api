@@ -23,29 +23,25 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             _memoryCache = memoryCache;
         }
 
-        // These need to public to support the unit tests
-        public static readonly string AllProgrammesCacheKey = $"{nameof(TrainingProgrammeApiClient)}.allProgrammes";
-        public static readonly string StandardProgrammesCacheKey = $"{nameof(TrainingProgrammeApiClient)}.standardProgrammes";
-        public static readonly string FrameworkProgrammesCacheKey = $"{nameof(TrainingProgrammeApiClient)}.frameworkProgrammes";
+        private readonly string ProgrammesCacheKey = $"{nameof(TrainingProgrammeApiClient)}.programmes";
 
         public Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes()
         {
-            return GetAllTrainingProgrammes();
+            return GetTrainingProgrammes(RequiredProgrammeTypes.All);
         }
 
-        public Task<IReadOnlyList<ITrainingProgramme>> GetAllTrainingProgrammes()
+        public async Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes(RequiredProgrammeTypes requiredProgrammeTypes)
         {
-            return _memoryCache.GetOrCreateAsync(AllProgrammesCacheKey, LoadAllProgrammes);
-        }
+            var programmeLists = await _memoryCache.GetOrCreateAsync(ProgrammesCacheKey, LoadProgrammes);
 
-        public Task<IReadOnlyList<ITrainingProgramme>> GetFrameworkTrainingProgrammes()
-        {
-            return _memoryCache.GetOrCreateAsync(FrameworkProgrammesCacheKey, LoadFrameworkProgrammes);
-        }
-
-        public Task<IReadOnlyList<ITrainingProgramme>> GetStandardTrainingProgrammes()
-        {
-            return _memoryCache.GetOrCreateAsync(StandardProgrammesCacheKey, LoadStandardProgrammes);
+            switch (requiredProgrammeTypes)
+            {
+                case RequiredProgrammeTypes.Framework: return programmeLists.Frameworks;
+                case RequiredProgrammeTypes.Standard: return programmeLists.Standards;
+                case RequiredProgrammeTypes.All: return programmeLists.AllProgrammes;
+                default:
+                    throw new InvalidOperationException($"{nameof(GetTrainingProgrammes)} does not support {requiredProgrammeTypes}");
+            }
         }
 
         public async Task<ITrainingProgramme> GetTrainingProgramme(string id)
@@ -55,26 +51,37 @@ namespace SFA.DAS.Apprenticeships.Api.Client
             return programmes.FirstOrDefault(p => p.Id == id);
         }
 
-        private async Task<IReadOnlyList<ITrainingProgramme>> LoadAllProgrammes(ICacheEntry cacheEntry)
+        private async Task<ProgrammeLists> LoadProgrammes(ICacheEntry cacheEntry)
         {
-            var frameworkTask = GetFrameworkTrainingProgrammes();
-            var standardsTask = GetStandardTrainingProgrammes();
+            var frameworkTask = _frameworkApiClient.GetAllAsync()
+                .ContinueWith(t => t.Result as IEnumerable<ITrainingProgramme>);
+
+            var standardsTask = _standardApiClient.GetAllAsync()
+                .ContinueWith(t => t.Result as IEnumerable<ITrainingProgramme>);
  
             await Task.WhenAll(frameworkTask, standardsTask);
 
-            return frameworkTask.Result.Union(standardsTask.Result).OrderBy(tp => tp.Title).ToList();
+            return new ProgrammeLists(frameworkTask.Result, standardsTask.Result);
         }
 
-        private Task<IReadOnlyList<ITrainingProgramme>> LoadStandardProgrammes(ICacheEntry cacheEntry)
+        public class ProgrammeLists
         {
-            return _standardApiClient.GetAllAsync()
-                .ContinueWith(t => t.Result.OrderBy(tp => tp.Title).ToList() as IReadOnlyList<ITrainingProgramme>);
-        }
+            public ProgrammeLists(IEnumerable<ITrainingProgramme> frameworks, IEnumerable<ITrainingProgramme> standards)
+            {
+                Frameworks = ToListByTitle(frameworks);
+                Standards = ToListByTitle(standards);
 
-        private Task<IReadOnlyList<ITrainingProgramme>> LoadFrameworkProgrammes(ICacheEntry cacheEntry)
-        {
-            return _frameworkApiClient.GetAllAsync()
-                .ContinueWith(t => t.Result.OrderBy(tp => tp.Title).ToList() as IReadOnlyList<ITrainingProgramme>);
+                AllProgrammes = ToListByTitle(Frameworks.Union(Standards));
+            }
+
+            public IReadOnlyList<ITrainingProgramme> AllProgrammes { get; }
+            public IReadOnlyList<ITrainingProgramme> Frameworks { get; }
+            public IReadOnlyList<ITrainingProgramme> Standards { get; }
+
+            private List<ITrainingProgramme> ToListByTitle(IEnumerable<ITrainingProgramme> trainingProgrammes)
+            {
+                return trainingProgrammes.OrderBy(fw => fw.Title).ToList();
+            }
         }
     }
 }

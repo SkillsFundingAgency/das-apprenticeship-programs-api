@@ -23,8 +23,9 @@ namespace SFA.DAS.Apprenticeships.Api.Client
         /// </summary>
         Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes();
 
-        Task<IReadOnlyList<ITrainingProgramme>> GetAllTrainingProgrammes();
-        Task<IReadOnlyList<ITrainingProgramme>> GetFrameworkTrainingProgrammes();
-        Task<IReadOnlyList<ITrainingProgramme>> GetStandardTrainingProgrammes();
+        /// <summary>
+        ///     Returns training programmes of the specified types ordered by title.
+        /// </summary>
+        Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes(RequiredProgrammeTypes programmeType);
     }
 }
