@@ -27,21 +27,25 @@ namespace SFA.DAS.Apprenticeships.Api.Client
 
         public Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes()
         {
-            return GetTrainingProgrammes(RequiredProgrammeTypes.All);
+            return GetAllTrainingProgrammes();
         }
 
-        public async Task<IReadOnlyList<ITrainingProgramme>> GetTrainingProgrammes(RequiredProgrammeTypes requiredProgrammeTypes)
+        public async Task<IReadOnlyList<ITrainingProgramme>> GetAllTrainingProgrammes()
         {
             var programmeLists = await _memoryCache.GetOrCreateAsync(ProgrammesCacheKey, LoadProgrammes);
+            return programmeLists.AllProgrammes;
+        }
 
-            switch (requiredProgrammeTypes)
-            {
-                case RequiredProgrammeTypes.Framework: return programmeLists.Frameworks;
-                case RequiredProgrammeTypes.Standard: return programmeLists.Standards;
-                case RequiredProgrammeTypes.All: return programmeLists.AllProgrammes;
-                default:
-                    throw new InvalidOperationException($"{nameof(GetTrainingProgrammes)} does not support {requiredProgrammeTypes}");
-            }
+        public async Task<IReadOnlyList<ITrainingProgramme>> GetStandardTrainingProgrammes()
+        {
+            var programmeLists = await _memoryCache.GetOrCreateAsync(ProgrammesCacheKey, LoadProgrammes);
+            return programmeLists.Standards;
+        }
+
+        public async Task<IReadOnlyList<ITrainingProgramme>> GetFrameworkTrainingProgrammes()
+        {
+            var programmeLists = await _memoryCache.GetOrCreateAsync(ProgrammesCacheKey, LoadProgrammes);
+            return programmeLists.Frameworks;
         }
 
         public async Task<ITrainingProgramme> GetTrainingProgramme(string id)
