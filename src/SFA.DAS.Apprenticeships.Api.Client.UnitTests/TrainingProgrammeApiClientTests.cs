@@ -88,6 +88,55 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
             Assert.AreEqual(expectedCount, trainingProgrammes.Count);
         }
 
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public Task GetAllTrainingProgrammes_WithOnlySpecifiedTypesAvailable_ShouldReturnWhateverHasBeenAdded(bool addFramework, bool addStandard)
+        {
+            // For all we expect all programmes that have been added to be returned
+            return CheckCallReturnsExpectedTypes(client => client.GetAllTrainingProgrammes(), addFramework, addStandard, addFramework, addStandard);
+        }
+
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public Task GetStandardTrainingProgrammes_WithOnlySpecifiedTypesAvailable_ShouldOnlyEverReturnStandard(bool addFramework, bool addStandard)
+        {
+            return CheckCallReturnsExpectedTypes(client => client.GetStandardTrainingProgrammes(), addFramework, addStandard, false, addStandard);
+        }
+
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public Task GetFrameworkTrainingProgrammes_WithOnlySpecifiedTypesAvailable_ShouldOnlyEverReturnFramework(bool addFramework, bool addStandard)
+        {
+            return CheckCallReturnsExpectedTypes(client => client.GetFrameworkTrainingProgrammes(), addFramework, addStandard, addFramework, false);
+        }
+
+        private async Task CheckCallReturnsExpectedTypes(Func<TrainingProgrammeApiClient, Task<IReadOnlyList<ITrainingProgramme>>> getter, bool addFramework, bool addStandard, bool expectFramework, bool expectStandard)
+        {
+            // Arrange
+            var fixtures = new TrainingProgrammeApiClientTestFixtures();
+            
+            if(addFramework) fixtures.WithFramework("123");
+            if(addStandard) fixtures.WithStandard("456");
+
+            var client = fixtures.CreateClient();
+
+            // Act
+            var trainingProgrammes = await getter(client);
+
+            var actualFramework = trainingProgrammes.Any(tp => tp.ProgrammeType == ProgrammeType.Framework);
+            var actualStandard = trainingProgrammes.Any(tp => tp.ProgrammeType == ProgrammeType.Standard);
+
+            // Assert
+            Assert.AreEqual(expectFramework, actualFramework, $"Framework result not correct: expected={expectFramework} actual:{actualFramework}");
+            Assert.AreEqual(expectStandard, actualStandard, $"Standard result not correct: expected={expectStandard} actual:{actualStandard}");
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public async Task GetTrainingProgrammes_WithMultipleStandardAndOneFrameworks_ShouldReturnAll(bool populateCache)
@@ -167,11 +216,11 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
 
         public TrainingProgrammeApiClient CreateClient()
         {
-            IReadOnlyList<ITrainingProgramme> programmes = null;
+            TrainingProgrammeApiClient.ProgrammeLists programmes = null;
 
             if (PopulateCache)
             {
-                programmes = _standards.Cast<ITrainingProgramme>().Union(_frameworks).ToList();
+                programmes = new TrainingProgrammeApiClient.ProgrammeLists(_frameworks, _standards);
             }
 
             object tempProgrammes = programmes;
