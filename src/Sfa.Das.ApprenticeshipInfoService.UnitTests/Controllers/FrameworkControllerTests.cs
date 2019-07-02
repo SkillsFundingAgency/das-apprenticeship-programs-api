@@ -79,7 +79,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         [Test]
         public void ShouldReturnFramework()
         {
-            _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title", IsActiveFramework = true});
+            _mockGetFrameworks.Setup(m => m.GetFrameworkById("1234")).Returns(new Framework { FrameworkId = "1234", Title = "test title",FrameworkName = "Framework Title", PathwayName = "Pathway Name", IsActiveFramework = true});
 
             var framework = _sut.Get("1234");
 
