@@ -13,16 +13,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 name: "HealthRoute",
                 url: "health/{action}/{id}",
                 defaults: new { controller = "Health", action = "Index", id = UrlParameter.Optional });
-
-            routes.MapRoute(
-                name: "HomeRoute",
-                url: "home/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
-
-            routes.MapRoute(
-                name: "DefaultRoute",
-                url: string.Empty,
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
         }
     }
 }

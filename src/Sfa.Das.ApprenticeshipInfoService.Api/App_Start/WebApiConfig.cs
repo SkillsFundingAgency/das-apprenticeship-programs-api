@@ -6,6 +6,7 @@ using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
 using Sfa.Das.ApprenticeshipInfoService.Api.Swagger;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.NLog.Logger;
+using Swashbuckle.Application;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
@@ -27,6 +28,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+
+            config.Routes.MapHttpRoute(
+                name: "Swagger UI",
+                routeTemplate: string.Empty,
+                defaults: null,
+                constraints: null,
+                handler: new RedirectHandler(SwaggerDocsConfig.DefaultRootUrlResolver, "swagger/ui/index"));
+
         }
 
         public static void ConfigureCors(HttpConfiguration config, ILog logger)

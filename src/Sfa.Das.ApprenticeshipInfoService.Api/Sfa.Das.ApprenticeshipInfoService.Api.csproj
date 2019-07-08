@@ -231,6 +231,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Xml.Linq" />
@@ -388,7 +389,6 @@
     <Compile Include="Attributes\ExceptionHandlingAttribute.cs" />
     <Compile Include="Attributes\GaActionFilterAttribute.cs" />
     <Compile Include="Controllers\ApprenticeshipProgrammesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AssessmentOrgsController.cs" />
     <Compile Include="Controllers\ProvidersV3Controller.cs" />
     <Compile Include="Controllers\SearchV3Controller.cs" />
@@ -420,11 +420,7 @@
     <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\Health\Index.cshtml" />
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\_Header.cshtml" />
-    <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Sfa.Das.ApprenticeshipInfoService.Api.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

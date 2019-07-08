@@ -5,6 +5,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 {
     public sealed class Framework : ITrainingProgramme
     {
+        private string _title;
         /// <summary>
         /// A composite framework Id {framework-code}{program-type}{pathway-code}
         /// </summary>
@@ -15,7 +16,11 @@ namespace SFA.DAS.Apprenticeships.Api.Types
         /// </summary>
         public string Uri { get; set; }
 
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return HasSubGroups ? _title : FrameworkName; }
+            set { _title = value; }
+        }
 
         public string FrameworkName { get; set; }
 

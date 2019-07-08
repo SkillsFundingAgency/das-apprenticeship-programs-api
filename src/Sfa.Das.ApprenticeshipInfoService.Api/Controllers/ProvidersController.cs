@@ -147,6 +147,7 @@
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
         [SwaggerResponse(HttpStatusCode.InternalServerError)]
         [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
+        [SwaggerOperation("GetActiveApprenticeshipTrainingByProviderAndPage")]
         [Route("v{version:apiVersion}/providers/{ukprn:long}/active-apprenticeship-training/{page}")]
         [Route("providers/{ukprn:long}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
         [ExceptionHandling]
