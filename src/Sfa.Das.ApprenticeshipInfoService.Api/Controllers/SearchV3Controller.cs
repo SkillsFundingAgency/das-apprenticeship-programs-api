@@ -68,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="searchString">String to search for</param>
         /// <returns>a search result object</returns>
         [SwaggerOperation("SearchActiveApprenticeshipsAutocomplete")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipAutocompleteSearchResults>))]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipAutocompleteSearchResults))]
         [Route("apprenticeship-programmes/autocomplete/")]
         [HttpGet]
         [ExceptionHandling]
