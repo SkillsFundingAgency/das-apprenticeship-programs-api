@@ -64,11 +64,13 @@
     <Compile Include="Helpers\IFundingCapCalculator.cs" />
     <Compile Include="Helpers\IPaginationHelper.cs" />
     <Compile Include="Helpers\PaginationHelper.cs" />
+    <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApprenticeshipDetails.cs" />
     <Compile Include="Models\ApprenticeshipProduct.cs" />
     <Compile Include="Models\ApprenticeshipBasic.cs" />
     <Compile Include="Models\ApprenticeshipSearchResults.cs" />
+    <Compile Include="Models\ProviderNameSearchResult.cs" />
     <Compile Include="Models\ProviderSearchResultsItem.cs" />
     <Compile Include="Models\DetailProviderResponse.cs" />
     <Compile Include="Models\ContactInformation.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\FrameworkProviderSearchResultsItem.cs" />
     <Compile Include="Models\Coordinate.cs" />
+    <Compile Include="Models\Responses\ProviderNameSearchResponseCodes.cs" />
     <Compile Include="Models\Responses\StandardProviderSearchResultsItemResponse.cs" />
     <Compile Include="Models\StandardProviderSearchResultsItem.cs" />
     <Compile Include="Models\TrainingLocation.cs" />
@@ -89,6 +92,7 @@
     <Compile Include="Services\IApprenticeshipProviderRepository.cs" />
     <Compile Include="Services\IApprenticeshipSearchServiceV3.cs" />
     <Compile Include="Services\IGetProviderApprenticeshipLocationsV3.cs" />
+    <Compile Include="Services\IProviderNameSearchServiceV3.cs" />
     <Compile Include="Services\IProviderSearchService.cs" />
     <Compile Include="Services\IGetAssessmentOrgs.cs" />
     <Compile Include="Services\IGetProviders.cs" />

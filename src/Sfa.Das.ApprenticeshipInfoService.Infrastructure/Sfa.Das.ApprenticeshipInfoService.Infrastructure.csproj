@@ -123,6 +123,10 @@
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
     <Compile Include="Elasticsearch\V3\ElasticsearchProviderLocationSearchProviderV3.cs" />
+    <Compile Include="Elasticsearch\V3\IProviderNameSearchProvider.cs" />
+    <Compile Include="Elasticsearch\V3\IProviderNameSearchProviderQuery.cs" />
+    <Compile Include="Elasticsearch\V3\ProviderNameSearchProvider.cs" />
+    <Compile Include="Elasticsearch\V3\ProviderNameSearchProviderQuery.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
     <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />
@@ -139,8 +143,10 @@
     <Compile Include="Mapping\IAssessmentOrgsMapping.cs" />
     <Compile Include="Mapping\IProviderMapping.cs" />
     <Compile Include="Mapping\IApprenticeshipMapping.cs" />
+    <Compile Include="Mapping\IProviderNameSearchMapping.cs" />
     <Compile Include="Mapping\ProviderMapping.cs" />
     <Compile Include="Mapping\ApprenticeshipMapping.cs" />
+    <Compile Include="Mapping\ProviderNameSearchMapping.cs" />
     <Compile Include="Mapping\StandardMapping.cs" />
     <Compile Include="Mapping\IStandardMapping.cs" />
     <Compile Include="Mapping\FrameworkMapping.cs" />

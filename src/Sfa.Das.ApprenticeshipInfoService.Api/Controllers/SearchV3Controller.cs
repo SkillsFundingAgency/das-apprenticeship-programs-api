@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Web.Http;
-using System.Web.Http.Description;
-using Microsoft.Web.Http;
+﻿using Microsoft.Web.Http;
 using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 using SFA.DAS.NLog.Logger;
 using Swashbuckle.Swagger.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
 {
@@ -17,14 +19,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
     public class SearchV3Controller : ApiController
     {
         private readonly IApprenticeshipSearchServiceV3 _apprenticeshipSearchServiceV3;
+        private readonly IProviderNameSearchServiceV3 _providerNameSearchService;
         private readonly ILog _logger;
 
         public SearchV3Controller(
             IApprenticeshipSearchServiceV3 apprenticeshipSearchServiceV2,
-            ILog logger)
+            ILog logger, IProviderNameSearchServiceV3 providerNameSearchService)
         {
             _apprenticeshipSearchServiceV3 = apprenticeshipSearchServiceV2;
             _logger = logger;
+            _providerNameSearchService = providerNameSearchService;
         }
 
         /// <summary>
@@ -60,6 +64,42 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
                 _logger.Error(e, "/apprenticeship-programmes/search");
                 throw;
             }
+
+        }
+
+        /// <summary>
+        /// Search for providers
+        /// </summary>
+        /// <returns>a search result object</returns>
+        [SwaggerOperation("SearchProviders")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderSearchResults))]
+        [Route("providers/search")]
+        [HttpGet]
+        [ExceptionHandling]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<IHttpActionResult> SearchProviders(string keywords, int page = 1, int take = 20)
+        {
+            try
+            {
+
+
+                var response = await _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, take);
+                //var response = providerSearchResults.Select(providerSearchResultsItem => _providerMapping.MapToProviderSearchItem(providerSearchResultsItem)).ToList();
+
+                foreach (var providerSearchResponseItem in response.Results)
+                {
+                    providerSearchResponseItem.Uri = ResolveProviderUri(providerSearchResponseItem.Ukprn.ToString());
+                }
+
+
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "/providers/search");
+                throw;
+            }
         }
 
         private List<int> ParseForLevels(string ids)
@@ -87,6 +127,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
             }
 
             return null;
+        }
+
+        private string ResolveProviderUri(string id)
+        {
+            return Url.Link("DefaultApi", new { controller = "Providers", id = id });
         }
     }
 }

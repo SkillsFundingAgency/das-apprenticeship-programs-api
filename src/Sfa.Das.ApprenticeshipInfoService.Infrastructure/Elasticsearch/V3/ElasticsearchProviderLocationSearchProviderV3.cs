@@ -179,7 +179,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
-                Results = searchResponse.Hits?.Select(MapHitToStandardProviderSearchResultItem),
+                Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),
                 TrainingOptionsAggregation = trainingOptionsAggregation,
                 NationalProvidersAggregation = nationalProvidersAggregation
             };
@@ -197,7 +197,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
-                Results = searchResponse.Hits?.Select(MapHitToStandardProviderSearchResultItem),
+                Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),
                 TrainingOptionsAggregation = trainingOptionsAggregation,
                 NationalProvidersAggregation = nationalProvidersAggregation
             };
@@ -222,7 +222,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return aggregationResult;
         }
 
-        private static ProviderSearchResultItem MapHitToStandardProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
+        private static ProviderSearchResultItem MapHitToProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
         {
             return new ProviderSearchResultItem
             {
@@ -239,7 +239,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 OverallCohort = hit.Source.OverallCohort,
                 HasNonLevyContract = hit.Source.HasNonLevyContract,
                 IsLevyPayerOnly = hit.Source.IsLevyPayerOnly,
-                CurrentlyNotStartingNewApprentices = hit.Source.CurrentlyNotStartingNewApprentices
+                CurrentlyNotStartingNewApprentices = hit.Source.CurrentlyNotStartingNewApprentices,
+                IsHigherEducationInstitute = hit.Source.IsHigherEducationInstitute
             };
         }
     }
