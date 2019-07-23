@@ -62,6 +62,32 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
             }
         }
 
+        /// <summary>
+        /// Search all apprenticeships
+        /// </summary>
+        /// <param name="searchString">String to search for</param>
+        /// <returns>a search result object</returns>
+        [SwaggerOperation("SearchActiveApprenticeshipsAutocomplete")]
+        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipAutocompleteSearchResults))]
+        [Route("apprenticeship-programmes/autocomplete/")]
+        [HttpGet]
+        [ExceptionHandling]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IHttpActionResult ApprenticeshipsAutocomplete(string searchString)
+        {
+            try
+            {
+                var response = _apprenticeshipSearchServiceV3.GetCompletions(searchString);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "/apprenticeship-programmes/autocomplete");
+                throw;
+            }
+        }
+
         private List<int> ParseForLevels(string ids)
         {
             if (ids != null && !string.IsNullOrWhiteSpace(ids))
