@@ -92,6 +92,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -123,10 +124,9 @@
     <Compile Include="Elasticsearch\IElasticsearchCustomClient.cs" />
     <Compile Include="Elasticsearch\FrameworkRepository.cs" />
     <Compile Include="Elasticsearch\V3\ElasticsearchProviderLocationSearchProviderV3.cs" />
-    <Compile Include="Elasticsearch\V3\IProviderNameSearchProvider.cs" />
-    <Compile Include="Elasticsearch\V3\IProviderNameSearchProviderQuery.cs" />
-    <Compile Include="Elasticsearch\V3\ProviderNameSearchProvider.cs" />
-    <Compile Include="Elasticsearch\V3\ProviderNameSearchProviderQuery.cs" />
+    <Compile Include="Elasticsearch\Querys\IProviderNameSearchProviderQuery.cs" />
+    <Compile Include="Elasticsearch\V3\ProviderNameSearchServiceV3.cs" />
+    <Compile Include="Elasticsearch\Querys\ProviderNameSearchProviderQuery.cs" />
     <Compile Include="Extensions\MyCertificateIgnoringHttpConnection.cs" />
     <Compile Include="FeatureToggles\CloudConfigToggleValueProvider.cs" />
     <Compile Include="FeatureToggles\IgnoreSslCertificateFeature.cs" />

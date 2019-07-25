@@ -1,7 +1,7 @@
 ﻿using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys
 {
     public interface IProviderNameSearchProviderQuery
     {

@@ -1,19 +1,15 @@
-﻿using Nest;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
-using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
+using SFA.DAS.NLog.Logger;
 
-namespace Sfa.Das.Sas.Infrastructure.Elasticsearch
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
 {
-    using System.Threading.Tasks;
-    using SFA.DAS.NLog.Logger;
-
-
     public class ProviderNameSearchServiceV3 : IProviderNameSearchServiceV3
     {
         private readonly ILog _logger;
@@ -30,7 +26,7 @@ namespace Sfa.Das.Sas.Infrastructure.Elasticsearch
 
         public async Task<ProviderSearchResults> SearchProviderNameAndAliases(string searchTerm, int page, int take)
         {
-            var formattedSearchTerm = QueryHelper.FormatQueryReturningEmptyStringIfEmptyOrNull(searchTerm).Trim();
+            var formattedSearchTerm = Core.Helpers.QueryHelper.FormatQueryReturningEmptyStringIfEmptyOrNull(searchTerm).Trim();
 
             _logger.Info(
                 $"Provider Name Search provider formatting query: SearchTerm: [{searchTerm}] formatted to: [{formattedSearchTerm}]");
@@ -40,7 +36,7 @@ namespace Sfa.Das.Sas.Infrastructure.Elasticsearch
                 _logger.Info(
                     $"Formatted search term causing SearchTermTooShort: [{formattedSearchTerm}]");
 
-               // return MapProviderNameSearchResultsAndPaginationTooShortDetails(formattedSearchTerm);
+              throw new ValidationException($"The search term must be at least 3 characters long, entered search term: {formattedSearchTerm}");
             }
 
             var term = $"*{formattedSearchTerm}*";
@@ -53,14 +49,6 @@ namespace Sfa.Das.Sas.Infrastructure.Elasticsearch
 
             return resultsMappedAndPaginated;
         }
-
-        //private static ProviderSearchResults MapProviderNameSearchResultsAndPaginationTooShortDetails(string formattedSearchTerm)
-        //{
-        //    return new ProviderSearchResults
-        //    {
-        //        PageNumber = 1,
-        //        };
-        //}
 
         private ProviderSearchResults MapResultsAndPaginationDetails(int page, int take, string formattedSearchTerm, ISearchResponse<ProviderNameSearchResult> returnedResults, long totalHits)
         {

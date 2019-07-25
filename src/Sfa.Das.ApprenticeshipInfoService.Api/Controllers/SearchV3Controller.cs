@@ -6,6 +6,7 @@ using SFA.DAS.NLog.Logger;
 using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -77,23 +78,25 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         [HttpGet]
         [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IHttpActionResult> SearchProviders(string keywords, int page = 1, int take = 20)
+        public async Task<IHttpActionResult> SearchProviders(string keywords, int page = 1, int pageSize = 20)
         {
             try
             {
 
 
-                var response = await _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, take);
-                //var response = providerSearchResults.Select(providerSearchResultsItem => _providerMapping.MapToProviderSearchItem(providerSearchResultsItem)).ToList();
+                var response = await _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, pageSize);
 
                 foreach (var providerSearchResponseItem in response.Results)
                 {
                     providerSearchResponseItem.Uri = ResolveProviderUri(providerSearchResponseItem.Ukprn.ToString());
                 }
 
-
-
                 return Ok(response);
+            }
+            catch (ValidationException ex)
+            {
+                _logger.Error(ex, "/providers/search");
+                return BadRequest(ex.ToString());
             }
             catch (Exception e)
             {

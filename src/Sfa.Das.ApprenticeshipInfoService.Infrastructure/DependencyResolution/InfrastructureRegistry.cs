@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
 using SFA.DAS.NLog.Logger;
-using Sfa.Das.Sas.Infrastructure.Elasticsearch;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
 {

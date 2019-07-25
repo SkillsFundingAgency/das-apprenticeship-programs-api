@@ -4,11 +4,11 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="AchievementRateDataBaseConnectionString" value=""/>
-      <Setting name="ElasticServerUrls" value="https://dev-elastic.apprenticeships.sfa.bis.gov.uk:9200/"/>
+      <Setting name="ElasticServerUrls" value="https://localhost:9200/"/>
       <Setting name="EnvironmentName" value="local" />
       <Setting name="ga.trackingid" value="" />
-      <Setting name="ElasticsearchUsername" value="MattDerry" />
-      <Setting name="ElasticsearchPassword" value="44R@YG2^XyptnKY7Z@kf!" />
+      <Setting name="ElasticsearchUsername" value="" />
+      <Setting name="ElasticsearchPassword" value="" />
       <Setting name="FeatureToggle.Elk5Feature" value="true" />
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" value="" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="" />
