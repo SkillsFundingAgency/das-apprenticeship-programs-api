@@ -69,14 +69,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         [Test]
         public void ApprenticeshipsAutocompleteV3Return200StatusCodeOnSuccessfulSearch()
         {
-            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchResult());
+            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchApprenticeResult());
 
             var result = _sut.ApprenticeshipsAutocomplete("admin");
 
             result.Should().BeOfType<OkNegotiatedContentResult<ApprenticeshipAutocompleteSearchResults>>();
         }
 
-        private static ApprenticeshipSearchResults TestSearchResult()
+        private static ApprenticeshipSearchResults TestSearchApprenticeResult()
         {
             return new ApprenticeshipSearchResults();
         }
