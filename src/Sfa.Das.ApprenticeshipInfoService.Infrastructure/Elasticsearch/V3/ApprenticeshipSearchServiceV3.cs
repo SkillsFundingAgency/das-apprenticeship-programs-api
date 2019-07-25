@@ -43,6 +43,35 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
             return MapToApprenticeshipSearchResults(pageNumber, pageSize, results, levelAggregation);
         }
 
+        public ApprenticeshipAutocompleteSearchResults GetCompletions(string searchString)
+        {
+            var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItemV1>()
+                .Index(_applicationSettings.ApprenticeshipIndexAlias)
+                .AllTypes()
+                .Query(q => q
+                    .Bool(b => b
+                        .Filter(
+                            PublishedApprenticeship(),
+                            MustBeStartedApprenticeship(),
+                            MustBeNonExpiredApprenticceship(),
+                            MustBeNotPastLastDateForNewStartsApprenticceship())
+                        .Must(m => m
+                            .MultiMatch(mm => mm
+                                    .Type(TextQueryType.MostFields)
+                                    .Fields(fi => fi
+                                        .Field("title.auto", 3)
+                                        .Field("keywords.auto")
+                                        .Field("jobRoles.auto")
+                                        .Field("jobRoleItems.title.auto"))
+                                    .Query(searchString)))));
+
+            var results = _elasticsearchCustomClient.Search<ApprenticeshipSearchResultsItemV1>(s => searchDescriptor);
+            return new ApprenticeshipAutocompleteSearchResults
+            {
+                Results = results.Documents.Select(doc => new ApprenticeshipAutocompleteSearchResultsItem { Title = doc.Title })
+            };
+        }
+
         private ApprenticeshipSearchResults MapToApprenticeshipSearchResults(
             int requestedPageNumber,
             int pageSize,

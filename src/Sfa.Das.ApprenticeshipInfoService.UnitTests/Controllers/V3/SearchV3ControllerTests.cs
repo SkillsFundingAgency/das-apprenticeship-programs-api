@@ -66,7 +66,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             result.Should().BeOfType<BadRequestResult>();
         }
 
-        private static ApprenticeshipSearchResults TestSearchApprenticeResult()
+        [Test]
+        public void ApprenticeshipsAutocompleteV3Return200StatusCodeOnSuccessfulSearch()
+        {
+            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchResult());
+
+            var result = _sut.ApprenticeshipsAutocomplete("admin");
+
+            result.Should().BeOfType<OkNegotiatedContentResult<ApprenticeshipAutocompleteSearchResults>>();
+        }
+
+        private static ApprenticeshipSearchResults TestSearchResult()
         {
             return new ApprenticeshipSearchResults();
         }
