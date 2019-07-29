@@ -13,9 +13,9 @@
       <Setting name="FeatureToggle.GaApiAnalyticsFeature" value="" />
       <Setting name="FeatureToggle.IgnoreSslCertificateFeature" value="" />
       <Setting name="LoggingRedisConnectionString" value="" />
-      <Setting name="ApprenticeshipIndexAlias" value="testapprenticeshipindexalias" />
-      <Setting name="ProviderIndexAlias" value="testproviderindexalias" />
-      <Setting name="AssessmentOrgsIndexAlias" value="testassessmentorgsindexalias" />
+      <Setting name="ApprenticeshipIndexAlias" value="localapprenticeshipindexalias" />
+      <Setting name="ProviderIndexAlias" value="localproviderindexalias" />
+      <Setting name="AssessmentOrgsIndexAlias" value="localassessmentorgsindexalias" />
       <Setting name="FrameworksExpiredRequired" value=""/>
       <Setting name="StandardsExpiredRequired" value="73"/>
       <Setting name="AllowedCorsUrls" value=""/>
