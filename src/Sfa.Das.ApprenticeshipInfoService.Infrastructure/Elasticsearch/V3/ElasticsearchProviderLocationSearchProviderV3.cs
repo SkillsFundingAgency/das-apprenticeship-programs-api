@@ -113,7 +113,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             return aggs => aggs
                 .Terms(TrainingTypeAggregateName, tt => tt.Field(fi => fi.DeliveryModesKeywords).MinimumDocumentCount(0))
-                .Terms(NationalProviderAggregateName, tt => tt.Field(fi => fi.NationalProvider));
+                .Terms(NationalProviderAggregateName, tt => tt.Field(fi => fi.NationalProvider).MinimumDocumentCount(0));
         }
 
         private static IEnumerable<Func<QueryContainerDescriptor<T>, QueryContainer>> GenerateFilters<T>(Expression<Func<T, object>> selector, string apprenticeshipIdentifier, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
