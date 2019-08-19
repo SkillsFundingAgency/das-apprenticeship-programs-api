@@ -24,40 +24,49 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<OrganisationDocument>(
                     s =>
                         s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                            .Type(Types.Parse("organisationdocument"))
                             .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field("documentType")
+                                    .Query("OrganisationDocument"))));
+                                
+            return (int)results.HitsMetadata.Total.Value;
         }
 
         public int GetOrganisationsAmountByStandardId(string standardId)
         {
             var results =
-                _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
+                _elasticsearchCustomClient.Count<StandardOrganisationDocument>(
                     s =>
                         s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                            .Type(Types.Parse("standardorganisationdocument"))
-                            .From(0)
                             .Query(q => q
-                                .Match(m => m
-                                    .Field(f => f.StandardCode)
-                                    .Query(standardId))));
-            return (int)results.HitsMetaData.Total;
+                                .Bool(b => b
+                                    .Must(mu => mu
+                                        .Match(m => m
+                                            .Field(f => f.StandardCode)
+                                            .Query(standardId)), mu => mu
+                                        .Match(m => m
+                                            .Field("documentType")
+                                            .Query("StandardOrganisationDocument"))))));
+            return (int)results.Count;
         }
 
         public int GetStandardsByOrganisationIdentifierAmount(string organisationId)
         {
             var results =
-                _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
+                _elasticsearchCustomClient.Count<StandardOrganisationDocument>(
                     s =>
                         s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                            .Type(Types.Parse("standardorganisationdocument"))
-                            .From(0)
                             .Query(q => q
-                                .Match(m => m
-                                    .Field(f => f.EpaOrganisationIdentifier)
-                                    .Query(organisationId))));
-            return (int)results.HitsMetaData.Total;
+                                .Bool(b => b
+                                    .Must(mu => mu
+                                        .Match(m => m
+                                            .Field(f => f.EpaOrganisationIdentifier)
+                                            .Query(organisationId)), mu => mu
+                                        .Match(m => m
+                                            .Field("documentType")
+                                            .Query("StandardOrganisationDocument"))))));
+            return (int)results.Count;
         }
 
 	    public string FormatKeywords(string query)
@@ -75,71 +84,68 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 	    public int GetFrameworksTotalAmount()
         {
             var results =
-                _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
+                _elasticsearchCustomClient.Count<FrameworkSearchResultsItem>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("frameworkdocument"))
-                            .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field("documentType")
+                                    .Query("FrameworkDocument"))));
+            return (int)results.Count;
         }
 
         public int GetProvidersTotalAmount()
         {
             var results =
-                _elasticsearchCustomClient.Search<Provider>(
+                _elasticsearchCustomClient.Count<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("providerapidocument"))
-                            .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field("documentType")
+                                    .Query("ProviderApiDocument"))));
+            return (int)results.Count;
         }
 
         public int GetStandardsTotalAmount()
         {
             var results =
-                _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
+                _elasticsearchCustomClient.Count<StandardSearchResultsItem>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("standarddocument"))
-                            .From(0)
-                            .MatchAll());
-            return (int)results.HitsMetaData.Total;
+                            .Query(q => q
+                                .Match(m => m
+                                    .Field("documentType")
+                                    .Query("StandardDocument"))));
+            return (int)results.Count;
         }
 
         public int GetProvidersByFrameworkTotalAmount(string frameworkId)
         {
             var results =
-                _elasticsearchCustomClient.Search<FrameworkProviderSearchResultsItem>(
+                _elasticsearchCustomClient.Count<FrameworkProviderSearchResultsItem>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(100)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.FrameworkId)
                                     .Terms(frameworkId))));
 
-            return (int)results.HitsMetaData.Total;
+            return (int)results.Count;
         }
 
         public int GetProvidersByStandardTotalAmount(string standardId)
         {
             var results =
-                _elasticsearchCustomClient.Search<StandardProviderSearchResultsItem>(
+                _elasticsearchCustomClient.Count<StandardProviderSearchResultsItem>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .From(0)
-                            .Sort(sort => sort.Ascending(f => f.Ukprn))
-                            .Take(100)
                             .Query(q => q
                                 .Terms(t => t
                                     .Field(f => f.StandardCode)
                                     .Terms(int.Parse(standardId)))));
 
-            return (int)results.HitsMetaData.Total;
+            return (int)results.Count;
         }
     }
 }

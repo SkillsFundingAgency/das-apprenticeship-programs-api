@@ -288,10 +288,7 @@
     <Content Include="Content\favicons\mstile-310x310.png" />
     <Content Include="Content\favicons\mstile-70x70.png" />
     <Content Include="Content\favicons\safari-pinned-tab.svg" />
-    <Content Include="Content\green_16.png" />
     <Content Include="Content\Gruntfile.js" />
-    <Content Include="Content\orange_16.png" />
-    <Content Include="Content\red_16.png" />
     <Content Include="Content\src\images\gov.uk_logotype_crown.svg" />
     <Content Include="Content\src\images\govuk-crest.svg" />
     <Content Include="Content\src\images\icons\icon-important-2x.png" />
@@ -399,7 +396,6 @@
     <Compile Include="Controllers\ProvidersController.cs" />
     <Compile Include="Controllers\StandardsController.cs" />
     <Compile Include="Controllers\FrameworksController.cs" />
-    <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="DependencyResolution\WebRegistry.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
@@ -442,10 +438,6 @@
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Core\Sfa.Das.ApprenticeshipInfoService.Core.csproj">
       <Project>{00CEBB2D-C8DC-45E3-8AE0-A38E8BEB8509}</Project>
       <Name>Sfa.Das.ApprenticeshipInfoService.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Health\Sfa.Das.ApprenticeshipInfoService.Health.csproj">
-      <Project>{8EF19D68-8CCA-4477-B401-D447B7C4627A}</Project>
-      <Name>Sfa.Das.ApprenticeshipInfoService.Health</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Infrastructure\Sfa.Das.ApprenticeshipInfoService.Infrastructure.csproj">
       <Project>{3CF1B822-17E6-4F67-B5AB-A031390CB635}</Project>

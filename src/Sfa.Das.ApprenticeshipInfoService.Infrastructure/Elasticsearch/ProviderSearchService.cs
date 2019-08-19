@@ -65,16 +65,21 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
 	        var searchDescriptor = new SearchDescriptor<ProviderSearchResultsItem>()
 		        .Index(_applicationSettings.ProviderIndexAlias)
-		        .Type(Types.Parse("providerapidocument"))
 		        .Skip(skip)
 		        .Take(take)
 		        .Analyzer(typeof(KeywordAnalyzer).ToString())
 		        .Query(q => q
-			        .QueryString(qs => qs
-				        .Fields(fs => fs
-					        .Field(f => f.ProviderName)
-					        .Field(p => p.Aliases))
-				        .Query(formattedKeywords)));
+                    .Bool(b => b
+                        .Must(s => s
+                            .Match(m => m
+                                .Field("documentType")
+                                .Query("ProviderApiDocument")))
+                        .Should(s => s
+                            .QueryString(qs => qs
+				                .Fields(fs => fs
+					                .Field(f => f.ProviderName)
+					                .Field(p => p.Aliases))
+				                .Query(formattedKeywords)))));
 
             return searchDescriptor;
         }
@@ -82,19 +87,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private SearchDescriptor<ProviderSearchResultsItem> GetKeywordSearchDescriptor(
             int page, int take, string formattedKeywords)
         {
-	        var keywords = AddRequirementsToKeywords(formattedKeywords);
+            var keywords = AddRequirementsToKeywords(formattedKeywords);
             var skip = (page - 1) * take;
             var searchDescriptor = new SearchDescriptor<ProviderSearchResultsItem>()
                     .Index(_applicationSettings.ProviderIndexAlias)
-                    .Type(Types.Parse("providerapidocument"))
                     .Skip(skip)
                     .Take(take)
 					.Query(q => q
-						.QueryString(qs => qs
-							.Fields(fs => fs
-								.Field(f => f.ProviderName)
-								.Field(p => p.Aliases))
-							.Query(keywords)));
+                        .Bool(b => b
+                            .Must(mu => mu
+                                .Match(m => m
+                                    .Field("documentType")
+                                    .Query("ProviderApiDocument")))
+                            .Should(s => s
+                                .QueryString(qs => qs
+							        .Fields(fs => fs
+								        .Field(f => f.ProviderName)
+								        .Field(p => p.Aliases))
+							        .Query(keywords)))));
 
 			return searchDescriptor;
         }

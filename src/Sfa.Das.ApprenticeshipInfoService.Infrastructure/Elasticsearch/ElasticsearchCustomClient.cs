@@ -34,6 +34,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return result;
         }
 
+        public CountResponse Count<T>(Func<CountDescriptor<T>, ICountRequest> selector, [CallerMemberName] string callerName = "")
+            where T : class
+        {
+            var client = _elasticsearchClientFactory.Create();
+            var result = client.Count(selector);
+
+            return result;
+        }
+
         private void SendLog<T>(ISearchResponse<T> result, string identifier, TimeSpan clientRequestTime)
             where T : class
         {

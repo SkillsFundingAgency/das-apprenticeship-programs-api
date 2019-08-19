@@ -15,7 +15,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.DependencyResolution {
     // limitations under the License.
     // </copyright>
     // --------------------------------------------------------------------------------------------------------------------
-    using Sfa.Das.ApprenticeshipInfoService.Health.DependencyResolution;
     using Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution;
     using StructureMap;
 
@@ -26,7 +25,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.DependencyResolution {
                 c.AddRegistry<DefaultRegistry>();
                 c.AddRegistry<InfrastructureRegistry>();
                 c.AddRegistry<WebRegistry>();
-                c.AddRegistry<HealthRegistry>();
             });
         }
     }

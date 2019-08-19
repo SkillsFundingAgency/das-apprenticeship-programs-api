@@ -60,7 +60,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .AllTypes()
                 .Skip(skip)
                 .Take(take)
                 .Query(q => q
@@ -92,7 +91,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var skip = (page - 1) * take;
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
                     .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .AllTypes()
                     .Skip(skip)
                     .Take(take)
                     .Query(q => q
@@ -131,21 +129,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         }
 
         private void GetSortingOrder(SearchDescriptor<ApprenticeshipSearchResultsItem> searchDescriptor)
-        {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                searchDescriptor.Sort(s => s
-                    .Descending(SortSpecialField.Score)
-                    .Descending(f => f.TitleKeyword)
-                    .Descending(f => f.Level));
-            }
-            else
-            {
-                searchDescriptor.Sort(s => s
-                    .Descending(SortSpecialField.Score)
-                    .Descending(f => f.Title)
-                    .Descending(f => f.Level));
-            }
+        {            
+            searchDescriptor.Sort(s => s
+                .Descending(SortSpecialField.Score)
+                .Descending(f => f.TitleKeyword)
+                .Descending(f => f.Level));
         }
 
         private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> PublishedApprenticeship()

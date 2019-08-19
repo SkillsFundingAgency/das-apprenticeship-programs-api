@@ -61,12 +61,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var results = _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
                 s =>
                 s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .Type(Types.Parse("standarddocument"))
                 .From(0)
                 .Size(1)
                 .Query(q => q
-                    .Term(t => t
-                        .Field(fi => fi.StandardId).Value(id))));
+                    .Bool(b => b
+                        .Must(mu => mu
+                            .Term(t => t
+                                .Field(fi => fi.StandardId).Value(id)), mu => mu
+                            .Match(m => m
+                                .Field("documentType")
+                                .Query("StandardDocument"))))));
 
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
@@ -88,11 +92,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var results = _elasticsearchCustomClient.Search<StandardSearchResultsItem>(
                 s =>
                     s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("standarddocument"))
                         .Take(Take)
                         .Query(q => q
-                            .Terms(t => t
-                                .Field(fi => fi.StandardId).Terms(elements))));
+                            .Bool(b => b
+                                .Must(mu => mu                                    
+                                    .Terms(t => t
+                                        .Field(fi => fi.StandardId).Terms(elements)), mu => mu
+                                    .Match(m => m
+                                        .Field("documentType")
+                                        .Query("StandardDocument"))))));
 
             var documents = results.Documents.Any() ? results.Documents : null;
 
@@ -121,24 +129,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private ISearchRequest GetAllStandardsSeachDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<StandardSearchResultsItem>()
-                    .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .Type(Types.Parse("standarddocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
             return new SearchDescriptor<StandardSearchResultsItem>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .Type(Types.Parse("standarddocument"))
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.StandardId))
+                .Sort(sort => sort.Ascending(f => f.StandardIdKeyword))
                 .Take(take)
-                .MatchAll();
+                .Query(q => q
+                    .Match(m => m
+                        .Field("documentType")
+                        .Query("StandardDocument")));
         }
     }
 }

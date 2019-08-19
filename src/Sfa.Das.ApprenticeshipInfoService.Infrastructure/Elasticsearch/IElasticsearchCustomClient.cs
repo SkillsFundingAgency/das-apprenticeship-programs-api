@@ -8,5 +8,7 @@
     {
         ISearchResponse<T> Search<T>(Func<SearchDescriptor<T>, ISearchRequest> selector, [CallerMemberName] string callerName = "")
             where T : class;
+        CountResponse Count<T>(Func<CountDescriptor<T>, ICountRequest> selector, [CallerMemberName] string callerName = "")
+            where T : class;
     }
 }
