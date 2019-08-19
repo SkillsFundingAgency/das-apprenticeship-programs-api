@@ -1,5 +1,5 @@
 ﻿using FeatureToggle.Core;
-using Microsoft.Azure;
+using System.Configuration;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles
 {
@@ -7,7 +7,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles
     {
         public bool EvaluateBooleanToggleValue(IFeatureToggle toggle)
         {
-	        var setting = CloudConfigurationManager.GetSetting($"FeatureToggle.{toggle.GetType().Name}");
+	        var setting = ConfigurationManager.AppSettings[$"FeatureToggle.{toggle.GetType().Name}"];
 
 	        return !string.IsNullOrEmpty(setting) && bool.Parse(setting);
         }

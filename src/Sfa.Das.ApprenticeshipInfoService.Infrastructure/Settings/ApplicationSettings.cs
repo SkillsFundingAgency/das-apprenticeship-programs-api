@@ -5,29 +5,28 @@
     using System.Configuration;
     using System.Linq;
     using Core.Configuration;
-    using Microsoft.Azure;
 
     public sealed class ApplicationSettings : IConfigurationSettings
     {
-        public string ApprenticeshipIndexAlias => CloudConfigurationManager.GetSetting("ApprenticeshipIndexAlias");
+        public string ApprenticeshipIndexAlias => ConfigurationManager.AppSettings["ApprenticeshipIndexAlias"];
 
-        public string ProviderIndexAlias => CloudConfigurationManager.GetSetting("ProviderIndexAlias");
+        public string ProviderIndexAlias => ConfigurationManager.AppSettings["ProviderIndexAlias"];
 
-        public string AssessmentOrgsIndexAlias => CloudConfigurationManager.GetSetting("AssessmentOrgsIndexAlias");
+        public string AssessmentOrgsIndexAlias => ConfigurationManager.AppSettings["AssessmentOrgsIndexAlias"];
 
         public IEnumerable<Uri> ElasticServerUrls => GetElasticSearchIps();
 
-        public string EnvironmentName => CloudConfigurationManager.GetSetting("EnvironmentName");
+        public string EnvironmentName => ConfigurationManager.AppSettings["EnvironmentName"];
 
         public string ApplicationName => ConfigurationManager.AppSettings["ApplicationName"];
 
-        public string GaTrackingCode => CloudConfigurationManager.GetSetting("ga.trackingid");
+        public string GaTrackingCode => ConfigurationManager.AppSettings["ga.trackingid"];
 
         public int ApprenticeshipProviderElements => int.Parse(ConfigurationManager.AppSettings["ApprenticeshipProviderElements"]);
 
-        public string ElasticsearchUsername => CloudConfigurationManager.GetSetting("ElasticsearchUsername");
+        public string ElasticsearchUsername => ConfigurationManager.AppSettings["ElasticsearchUsername"];
 
-        public string ElasticsearchPassword => CloudConfigurationManager.GetSetting("ElasticsearchPassword");
+        public string ElasticsearchPassword => ConfigurationManager.AppSettings["ElasticsearchPassword"];
         public string IfaStandardApiUrl => ConfigurationManager.AppSettings["IFAStandardsApiUrl"];
 
         public int PageSizeApprenticeshipSummary => int.Parse(
@@ -38,7 +37,7 @@
             get
             {
                 return
-                    CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
+                    ConfigurationManager.AppSettings["FrameworksExpiredRequired"]
                         ?.Split(',')
                         .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
                     ?? new List<string>();
@@ -50,7 +49,7 @@
             get
             {
                 return
-	                CloudConfigurationManager.GetSetting("StandardsExpiredRequired")
+                    ConfigurationManager.AppSettings["StandardsExpiredRequired"]
                         ?.Split(',')
                         .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
                     ?? new List<string>();
@@ -59,7 +58,7 @@
 
         private IEnumerable<Uri> GetElasticSearchIps()
         {
-            var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');
+            var urlStrings = ConfigurationManager.AppSettings["ElasticServerUrls"].Split(',');
             return urlStrings.Select(url => new Uri(url));
         }
 

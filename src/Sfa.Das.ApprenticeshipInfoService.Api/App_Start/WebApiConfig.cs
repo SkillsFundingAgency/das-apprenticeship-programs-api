@@ -1,12 +1,12 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Cors;
-using Microsoft.Azure;
 using Newtonsoft.Json;
 using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
 using Sfa.Das.ApprenticeshipInfoService.Api.Swagger;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.NLog.Logger;
 using Swashbuckle.Application;
+using System.Configuration;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
@@ -40,7 +40,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
 
         public static void ConfigureCors(HttpConfiguration config, ILog logger)
         {
-            var corsUrls = CloudConfigurationManager.GetSetting("AllowedCorsUrls");
+            var corsUrls = ConfigurationManager.AppSettings["AllowedCorsUrls"];
 
             logger.Debug("Allowing CORS for: " + corsUrls);
 

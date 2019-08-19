@@ -1,6 +1,5 @@
 ﻿namespace Sfa.Das.ApprenticeshipInfoService.Health
 {
-    using Microsoft.Azure;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -8,7 +7,7 @@
 
     public class HealthSettings : IHealthSettings
     {
-        public string Environment => CloudConfigurationManager.GetSetting("EnvironmentName");
+        public string Environment => ConfigurationManager.AppSettings["EnvironmentName"];
 
         public IEnumerable<Uri> ElasticsearchUrls => GetElasticSearchIps("ElasticServerUrls");
 
@@ -22,7 +21,7 @@
 
         private IEnumerable<Uri> GetElasticSearchIps(string configString)
         {
-            var urlStrings = CloudConfigurationManager.GetSetting(configString).Split(',');
+            var urlStrings = ConfigurationManager.AppSettings[configString].Split(',');
             return urlStrings.Select(url => new Uri(url));
         }
 

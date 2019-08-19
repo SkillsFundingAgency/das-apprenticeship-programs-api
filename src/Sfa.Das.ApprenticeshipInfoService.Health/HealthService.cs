@@ -9,7 +9,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
     using System.Collections.Generic;
     using System.Diagnostics;
     using Elasticsearch;
-    using Microsoft.Azure;
     using Models;
 
     public class HealthService : IHealthService
@@ -48,7 +47,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Health
             var larsDownloadPageStatus = _httpServer.ResponseCode(larsDownloadPageUrl);
             var courseDirectoryStatus = _httpServer.ResponseCode(_healthSettings.CourseDirectoryUrl);
 
-            var fechoicesStatus = _sqlService.TestConnection(CloudConfigurationManager.GetSetting("AchievementRateDataBaseConnectionString"));
+            var fechoicesStatus = _sqlService.TestConnection(ConfigurationManager.AppSettings["AchievementRateDataBaseConnectionString"]);
 
             var model = new HealthModel
             {

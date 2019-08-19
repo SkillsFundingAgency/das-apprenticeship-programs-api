@@ -3,8 +3,8 @@
 namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
     using Microsoft.ApplicationInsights.Extensibility;
-    using Microsoft.Azure;
     using System;
+    using System.Configuration;
     using System.Web;
     using System.Web.Http;
     using System.Web.Mvc;
@@ -23,7 +23,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
         {
             _logger.Info("Starting Web Role");
 
-            TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("APPINSIGHTS_INSTRUMENTATIONKEY");
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["APPINSIGHTS_INSTRUMENTATIONKEY"];
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             GlobalConfiguration.Configure(x =>
             {
