@@ -1,0 +1,75 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+
+pr: none
+
+workspace:
+    clean: all
+
+variables:
+  buildConfiguration: 'Release'
+  buildPlatform: 'Any CPU'
+  Build.MajorNumber: 1
+  Build.MinorNumber: 0
+
+pool:
+  name: 'Continuous Integration 02 - SSD - 160ACU'
+  demands: 
+  - msbuild
+  - visualstudio
+
+steps:
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.x'
+  inputs:
+    versionSpec: 4.x
+    checkLatest: true
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: 'src\Sfa.Das.ApprenticeshipInfoService.sln'
+    noCache: true
+
+- task: VSBuild@1
+  displayName: 'Build solution'
+  inputs:
+    solution: 'src\Sfa.Das.ApprenticeshipInfoService.sln'
+    vsVersion: 15.0
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    clean: true
+
+- task: VSTest@2
+  displayName: 'VsTest - testAssemblies'
+  inputs:
+    testAssemblyVer2: '**/bin/**/*UnitTests.dll'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: '**\SFA.DAS.Providers.Api.Client.csproj;**\SFA.DAS.Apprenticeships.Api.Client.csproj;**\SFA.DAS.Apprenticeships.Api.Types.csproj'
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    Contents: |
+     azure\**
+    TargetFolder: '$(build.artifactstagingdirectory)'
+    OverWrite: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: Publish
