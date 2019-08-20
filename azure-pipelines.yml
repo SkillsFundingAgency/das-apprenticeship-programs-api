@@ -49,7 +49,7 @@ steps:
 - task: VSTest@2
   displayName: 'VsTest - testAssemblies'
   inputs:
-    testAssemblyVer2: '**/bin/**/*UnitTests.dll'
+    testAssemblyVer2: '**/bin/**/*ApprenticeshipInfoService.UnitTests.dll'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
