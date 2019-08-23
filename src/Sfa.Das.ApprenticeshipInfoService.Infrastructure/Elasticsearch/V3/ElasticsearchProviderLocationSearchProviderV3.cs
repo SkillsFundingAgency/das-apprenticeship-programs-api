@@ -89,12 +89,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                             .Must(NestedLocationsQuery<T>(location))))
                     .Sort(SortByDistanceFromGivenLocation<T>(location))
                     .Aggregations(GetProviderSearchAggregationsSelector<T>())
-                    .PostFilter(pf => FilterByDeliveryModes(pf, deliveryModes?.Select(x => x.GetMemberDescription() ?? string.Empty)));
+                    .PostFilter(pf => GeneratePostFilter(pf, deliveryModes?.Select(x => x.GetMemberDescription() ?? string.Empty), showNationalOnly));
 
             return descriptor;
         }
 
-        private static QueryContainer FilterByDeliveryModes<T>(QueryContainerDescriptor<T> descriptor, IEnumerable<string> deliveryModes)
+        private static QueryContainer GeneratePostFilter<T>(QueryContainerDescriptor<T> descriptor, IEnumerable<string> deliveryModes, bool showNationalOnly)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
             if (deliveryModes == null || !deliveryModes.Any())
@@ -102,10 +102,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 return descriptor;
             }
 
+            if (showNationalOnly)
+            {
+                return descriptor.Bool(b => b
+                .Filter(
+                    f => f
+                    .Terms(t => t
+                        .Field(x => x.DeliveryModesKeywords)
+                        .Terms(deliveryModes)),
+                    f => f
+                    .Term(t => t
+                        .Field(x => x.NationalProvider)
+                        .Value(showNationalOnly))));
+            }
+
             return descriptor
-                .Terms(t => t
-                    .Field(x => x.DeliveryModesKeywords)
-                    .Terms(deliveryModes));
+                    .Terms(t => t
+                        .Field(x => x.DeliveryModesKeywords)
+                        .Terms(deliveryModes));
         }
 
         private Func<AggregationContainerDescriptor<T>, IAggregationContainer> GetProviderSearchAggregationsSelector<T>()
@@ -113,7 +127,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             return aggs => aggs
                 .Terms(TrainingTypeAggregateName, tt => tt.Field(fi => fi.DeliveryModesKeywords).MinimumDocumentCount(0))
-                .Terms(NationalProviderAggregateName, tt => tt.Field(fi => fi.NationalProvider));
+                .Terms(NationalProviderAggregateName, tt => tt.Field(fi => fi.NationalProvider).MinimumDocumentCount(0));
         }
 
         private static IEnumerable<Func<QueryContainerDescriptor<T>, QueryContainer>> GenerateFilters<T>(Expression<Func<T, object>> selector, string apprenticeshipIdentifier, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
@@ -122,11 +136,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             yield return f => f.Term(t => t.Field(selector).Value(apprenticeshipIdentifier));
 
             yield return f => f.Term(t => t.Field(fi => fi.HasNonLevyContract).Value(showForNonLevyOnly));
-
-            if (showNationalOnly)
-            {
-                yield return f => f.Term(t => t.Field(fi => fi.NationalProvider).Value(showNationalOnly));
-            }
         }
 
         private Func<QueryContainerDescriptor<T>, QueryContainer> NestedLocationsQuery<T>(Coordinate location)
