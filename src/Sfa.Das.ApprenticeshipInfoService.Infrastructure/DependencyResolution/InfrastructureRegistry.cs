@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services;
 using SFA.DAS.NLog.Logger;
@@ -42,12 +43,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             For<IElasticsearchCustomClient>().Use<ElasticsearchCustomClient>();
             For<IControllerHelper>().Use<ControllerHelper>();
             For<IAnalyticsService>().Use<AnalyticsService>();
-            For<IQueryHelper>().Use<QueryHelper>();
+            For<IQueryHelper>().Use<Elasticsearch.QueryHelper>();
             For<IActiveApprenticeshipChecker>().Use<ActiveApprenticeshipChecker>();
             For<IFundingCapCalculator>().Use<FundingCapCalculator>();
             For<IPaginationHelper>().Use<PaginationHelper>();
             For<IGetIfaStandardsUrlService>().Use<GetIfaStandardsUrlService>();
             For<IApprenticeshipSearchResultsMapping>().Use<ApprenticeshipSearchResultsMapping>();
+            For<IProviderNameSearchServiceV3>().Use<ProviderNameSearchServiceV3>();
+            For<IProviderNameSearchProviderQuery>().Use<ProviderNameSearchProviderQuery>();
+            For<IProviderNameSearchMapping>().Use<ProviderNameSearchMapping>();
         }
 
         private IDictionary<string, object> GetProperties()

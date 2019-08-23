@@ -16,7 +16,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types.V3
 
         public List<string> DeliveryModes { get; set; }
 
-        public double Distance { get; set; }
+        public double? Distance { get; set; }
 
         public double? EmployerSatisfaction { get; set; }
 
@@ -31,5 +31,8 @@ namespace SFA.DAS.Apprenticeships.Api.Types.V3
         public bool IsLevyPayerOnly { get; set; }
 
         public bool CurrentlyNotStartingNewApprentices { get; set; }
+        public bool IsHigherEducationInstitute { get; set; }
+        public IList<string> Aliases { get; set; }
+        public string Uri { get; set; }
     }
 }

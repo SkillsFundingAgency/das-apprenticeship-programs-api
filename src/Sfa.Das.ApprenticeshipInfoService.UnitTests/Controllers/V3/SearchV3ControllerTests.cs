@@ -16,20 +16,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
     {
         private SearchV3Controller _sut;
         private Mock<IApprenticeshipSearchServiceV3> _apprenticeshipSearchServiceV3;
+        private Mock<IProviderNameSearchServiceV3> _providerNameSearchServiceV3;
 
         [SetUp]
         public void Init()
         {
             _apprenticeshipSearchServiceV3 = new Mock<IApprenticeshipSearchServiceV3>();
+            _providerNameSearchServiceV3 = new Mock<IProviderNameSearchServiceV3>();
             _sut = new SearchV3Controller(
                 _apprenticeshipSearchServiceV3.Object,
-                Mock.Of<ILog>());
+                Mock.Of<ILog>(),
+                _providerNameSearchServiceV3.Object);
         }
 
         [Test]
         public void SearchV3Return200StatusCodeOnSuccessfulSearch()
         {
-            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchResult());
+            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchApprenticeResult());
 
             var result = _sut.SearchApprenticeships("admin", 2, 30, 3);
 
@@ -66,14 +69,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         [Test]
         public void ApprenticeshipsAutocompleteV3Return200StatusCodeOnSuccessfulSearch()
         {
-            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchResult());
+            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchApprenticeResult());
 
             var result = _sut.ApprenticeshipsAutocomplete("admin");
 
             result.Should().BeOfType<OkNegotiatedContentResult<ApprenticeshipAutocompleteSearchResults>>();
         }
 
-        private static ApprenticeshipSearchResults TestSearchResult()
+        private static ApprenticeshipSearchResults TestSearchApprenticeResult()
         {
             return new ApprenticeshipSearchResults();
         }
@@ -83,5 +86,37 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             var result = l.Intersect(new List<int> { 1, 2, 3, 4 }).Count() == 4;
             return result;
         }
+
+
+
+        #region Provider name search
+        [Test]
+        public void SearchProviderNameV3Return200StatusCodeOnSuccessfulSearch()
+        {
+            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(TestSearchProviderNameResult());
+
+            var result = _sut.SearchProviders("Lon", 2, 30).Result;
+
+            result.Should().BeOfType<OkNegotiatedContentResult<ProviderSearchResults>>();
+        }
+
+        [Test]
+        public void SearchProviderNameV3PassesRequestParametersToSearchService()
+        {
+            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(TestSearchProviderNameResult());
+
+            var result = _sut.SearchProviders("test", 2, 30).Result;
+
+            _providerNameSearchServiceV3.Verify(x => x.SearchProviderNameAndAliases("test", 2, 30), Times.Once);
+        }
+
+        private static ProviderSearchResults TestSearchProviderNameResult()
+        {
+            return new ProviderSearchResults()
+            {
+                Results = new List<ProviderSearchResultItem>()
+            };
+        }
+        #endregion
     }
 }
