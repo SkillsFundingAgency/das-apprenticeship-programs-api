@@ -10,7 +10,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
     {
         public V2ApprenticeshipSearchResultsItem MapToApprenticeshipSearchResult(V1ApprenticeshipSearchResultsItem document)
         {
-            var isStandard = IsStandard(document.StandardId);
+            var isStandard = IsStandard(document.StandardId.ToString());
 
             if (isStandard)
             {
@@ -24,7 +24,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         {
             return new V2ApprenticeshipSearchResultsItem
             {
-                Id = document.StandardId,
+                Id = document.StandardId.ToString(),
                 ProgrammeType = ApprenticeshipTrainingType.Standard,
                 Title = document.Title,
                 Level = document.Level,

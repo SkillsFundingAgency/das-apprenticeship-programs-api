@@ -60,7 +60,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .AllTypes()
                 .Skip(skip)
                 .Take(take)
                 .Query(q => q
@@ -86,18 +85,22 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return searchDescriptor;
         }
 
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> AllTypesOfApprenticeship()
+        {
+            return f => f.Terms(t => t.Field("documentType").Terms<string>("frameworkdocument", "standarddocument"));
+        }
+
         private SearchDescriptor<ApprenticeshipSearchResultsItem> GetKeywordSearchDescriptor(
             int page, int take, string formattedKeywords)
         {
             var skip = (page - 1) * take;
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
                     .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .AllTypes()
                     .Skip(skip)
                     .Take(take)
                     .Query(q => q
                         .Bool(b => b
-                            .Filter(PublishedApprenticeship())
+                            .Filter(AllTypesOfApprenticeship(), PublishedApprenticeship())
                             .Must(
                                 MustBeStartedApprenticeship(),
                                 MustBeNonExpiredApprenticceship(),

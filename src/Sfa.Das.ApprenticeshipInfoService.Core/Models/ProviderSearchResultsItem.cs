@@ -5,7 +5,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 {
     public class ProviderSearchResultsItem
     {
-        public string Ukprn { get; set; }
+        public int Ukprn { get; set; }
 
         public bool IsHigherEducationInstitute { get; set; }
 
@@ -27,8 +27,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
         public string Website { get; set; }
 
-		public string EmployerSatisfaction { get; set; }
+		public float? EmployerSatisfaction { get; set; }
 
-        public string LearnerSatisfaction { get; set; }
+        public float? LearnerSatisfaction { get; set; }
     }
 }

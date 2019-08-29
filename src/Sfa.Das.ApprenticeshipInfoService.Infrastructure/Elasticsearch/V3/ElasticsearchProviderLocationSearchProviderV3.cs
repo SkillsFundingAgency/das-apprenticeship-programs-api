@@ -156,7 +156,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             return f => f.GeoDistance(g => g
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(location.Lat, location.Lon))
+                .Points(new GeoLocation(location.Lat, location.Lon))
                 .Unit(DistanceUnit.Miles)
                 .Ascending());
         }
@@ -164,28 +164,30 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private static Func<QueryContainerDescriptor<T>, QueryContainer> FilterByLocation<T>(Coordinate location)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
-            return f => f.GeoShapePoint(gp => gp.Field(fd => fd.TrainingLocations.First().Location).Coordinates(location.Lon, location.Lat));
+            return f => f.GeoShape(gp => gp
+                            .Field(fd => fd.TrainingLocations.First().Location)
+                            .Shape(s => s.Point(new GeoCoordinate(location.Lon, location.Lat))));
         }
 
         private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortByDistanceFromGivenLocation<T>(Coordinate location)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
             return f => f.GeoDistance(g => g
-                .NestedPath(x => x.TrainingLocations)
+                .Nested(x => x.Path(p => p.TrainingLocations))
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(location.Lat, location.Lon))
+                .Points(new GeoLocation(location.Lat, location.Lon))
                 .Unit(DistanceUnit.Miles)
                 .Ascending());
         }
 
         private static ProviderApprenticeshipLocationSearchResult MapToProviderApprenticeshipLocationSearchResult(ISearchResponse<StandardProviderSearchResultsItem> searchResponse, int page, int pageSize)
         {
-            var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(TrainingTypeAggregateName));
-            var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(NationalProviderAggregateName), useKeyAsString: true);
+            var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggregations.Terms(TrainingTypeAggregateName));
+            var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggregations.Terms(NationalProviderAggregateName), useKeyAsString: true);
 
             var result = new ProviderApprenticeshipLocationSearchResult
             {
-                TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
+                TotalResults = searchResponse.HitsMetadata?.Total.Value ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
                 Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),
@@ -198,12 +200,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private static ProviderApprenticeshipLocationSearchResult MapToProviderApprenticeshipLocationSearchResult(ISearchResponse<FrameworkProviderSearchResultsItem> searchResponse, int page, int pageSize)
         {
-            var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(TrainingTypeAggregateName));
-            var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggs.Terms(NationalProviderAggregateName), useKeyAsString: true);
+            var trainingOptionsAggregation = RetrieveAggregationElements(searchResponse.Aggregations.Terms(TrainingTypeAggregateName));
+            var nationalProvidersAggregation = RetrieveAggregationElements(searchResponse.Aggregations.Terms(NationalProviderAggregateName), useKeyAsString: true);
 
             var result = new ProviderApprenticeshipLocationSearchResult
             {
-                TotalResults = searchResponse.HitsMetaData?.Total ?? 0,
+                TotalResults = searchResponse.HitsMetadata?.Total.Value ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
                 Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),

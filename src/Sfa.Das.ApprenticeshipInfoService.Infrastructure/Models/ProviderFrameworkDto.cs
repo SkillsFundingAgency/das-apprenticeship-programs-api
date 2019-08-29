@@ -2,7 +2,7 @@
 {
     public class ProviderFrameworkDto
     {
-        public string Ukprn { get; set; }
+        public int Ukprn { get; set; }
         public string FrameworkId { get; set; }
     }
 

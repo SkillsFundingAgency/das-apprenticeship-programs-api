@@ -57,11 +57,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                     s.Index(_applicationSettings.ProviderIndexAlias)
-                        .Type(Types.Parse(ProviderIndexType))
                         .From(0)
                         .Sort(sort => sort.Ascending(f => f.Ukprn))
                         .Take(take)
-                        .MatchAll());
+                        .Query(q => +q.Term("documentType", ProviderIndexType)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -78,14 +77,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(100)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn))));
+                            .Query(q => +q.Term("documentType", ProviderIndexType) && +q.Term(t => t.Ukprn, ukprn)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -107,14 +102,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(ukprns.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprns))));
+                            .Query(q => +q.Term("documentType", ProviderIndexType) && +q.Terms(t => t.Field(f => f.Ukprn).Terms(ukprns))));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -138,12 +129,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("frameworkprovider"))
                             .From(0)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn)))
+                            .Query(q => +q.Term("documentType", "frameworkprovider") && +q.Term(t => t.Ukprn, ukprn))
                             .Aggregations(agg => agg.Terms(aggregateKeyName, frm => frm.Size(totalTakeForFrameworkDocuments).Field(fi => fi.FrameworkId))));
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
@@ -158,13 +145,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderFramework>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("frameworkdocument"))
                             .From(0)
                             .Take(matchingFrameworkIds.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.FrameworkId)
-                                    .Terms(matchingFrameworkIds))));
+                            .Query(q => +q.Term("documentType", "frameworkdocument") && +q.Terms(t => t.Field(f => f.FrameworkId).Terms(matchingFrameworkIds))));
 
             if (providerFrameworks.ApiCall.HttpStatusCode != 200)
             {
@@ -183,12 +166,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderStandardDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("standardprovider"))
                             .From(0)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn)))
+                            .Query(q => +q.Term("documentType", "standardprovider") && +q.Term(t => t.Ukprn, ukprn))
                             .Aggregations(agg => agg
                                 .Terms(aggregateKeyName, frm => frm
                                     .Size(totalTakeForStandardDocuments)
@@ -206,13 +185,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderStandard>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("standarddocument"))
                             .From(0)
                             .Take(matchingStandardIds.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.StandardId)
-                                    .Terms(matchingStandardIds))));
+                            .Query(q => +q.Term("documentType", "standarddocument") && +q.Terms(t => t.Field(f => f.StandardId).Terms(matchingStandardIds))));
 
             if (providerStandards.ApiCall.HttpStatusCode != 200)
             {

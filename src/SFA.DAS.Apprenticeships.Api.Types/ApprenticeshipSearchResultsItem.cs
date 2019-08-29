@@ -8,7 +8,7 @@ namespace SFA.DAS.Apprenticeships.Api.Types
 		public string Title { get; set; }
 
 		// Standards
-		public string StandardId { get; set; }
+		public int? StandardId { get; set; }
 
 		public List<string> JobRoles { get; set; }
 

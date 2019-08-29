@@ -47,10 +47,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
         {
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItemV1>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .AllTypes()
                 .Query(q => q
                     .Bool(b => b
                         .Filter(
+                            AllTypesOfApprenticeship(),
                             PublishedApprenticeship(),
                             MustBeStartedApprenticeship(),
                             MustBeNonExpiredApprenticceship(),
@@ -78,7 +78,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
             ISearchResponse<ApprenticeshipSearchResultsItemV1> results,
             Dictionary<int, long?> levelAggregation)
         {
-            var totalHits = results.HitsMetaData?.Total ?? 0;
+            var totalHits = results.HitsMetadata?.Total.Value ?? 0;
 
             return new ApprenticeshipSearchResults
             {
@@ -94,9 +94,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
         {
             var levelAggregation = new Dictionary<int, long?>();
 
-            if (results.Aggs.Terms(LevelAggregateName) != null)
+            if (results.Aggregations.Terms(LevelAggregateName) != null)
             {
-                foreach (var item in results.Aggs.Terms(LevelAggregateName).Buckets)
+                foreach (var item in results.Aggregations.Terms(LevelAggregateName).Buckets)
                 {
                     int iKey;
                     if (int.TryParse(item.Key, out iKey))
@@ -138,6 +138,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
                                        .MustNot(mn => mn
                                            .Exists(e => e
                                                .Field(f => f.LastDateForNewStarts))))));
+        }
+
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItemV1>, QueryContainer> AllTypesOfApprenticeship()
+        {
+            return f => f.Terms(t => t.Field("documentType").Terms<string>("frameworkdocument", "standarddocument"));
         }
 
         private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItemV1>, QueryContainer> PublishedApprenticeship()
@@ -194,7 +199,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
 
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItemV1>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .AllTypes()
                 .Skip(skip)
                 .Take(take)
                 .Query(q => q
@@ -236,7 +240,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
             var skip = (page - 1) * take;
             var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItemV1>()
                     .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .AllTypes()
                     .Skip(skip)
                     .Take(take)
                     .Query(q => q

@@ -164,8 +164,8 @@
       <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.IdentityModel.Tokens.Jwt">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
@@ -399,7 +399,6 @@
     <Compile Include="Controllers\ProvidersController.cs" />
     <Compile Include="Controllers\StandardsController.cs" />
     <Compile Include="Controllers\FrameworksController.cs" />
-    <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="DependencyResolution\WebRegistry.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
@@ -442,10 +441,6 @@
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Core\Sfa.Das.ApprenticeshipInfoService.Core.csproj">
       <Project>{00CEBB2D-C8DC-45E3-8AE0-A38E8BEB8509}</Project>
       <Name>Sfa.Das.ApprenticeshipInfoService.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Health\Sfa.Das.ApprenticeshipInfoService.Health.csproj">
-      <Project>{8EF19D68-8CCA-4477-B401-D447B7C4627A}</Project>
-      <Name>Sfa.Das.ApprenticeshipInfoService.Health</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sfa.Das.ApprenticeshipInfoService.Infrastructure\Sfa.Das.ApprenticeshipInfoService.Infrastructure.csproj">
       <Project>{3CF1B822-17E6-4F67-B5AB-A031390CB635}</Project>

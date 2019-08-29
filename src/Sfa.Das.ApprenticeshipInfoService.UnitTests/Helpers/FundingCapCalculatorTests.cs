@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
 
             var standardResult = sut.CalculateCurrentFundingBand(new StandardSearchResultsItem
             {
-                StandardId = "1",
+                StandardId = 1,
                 FundingPeriods = null
             });
 
@@ -61,7 +61,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
 
             var standardResult = sut.CalculateCurrentFundingBand(new StandardSearchResultsItem
             {
-                StandardId = "1",
+                StandardId = 1,
                 EffectiveFrom = DateTime.Today,
                 EffectiveTo = DateTime.Today.AddDays(1)
             });
@@ -84,7 +84,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
 
             var standardResult = sut.CalculateCurrentFundingBand(new StandardSearchResultsItem
             {
-                StandardId = "1",
+                StandardId = 1,
                 EffectiveFrom = DateTime.Today,
                 EffectiveTo = DateTime.Today.AddDays(1),
                 FundingPeriods = new List<FundingPeriod>
@@ -149,7 +149,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
 
             var standardResult = sut.CalculateCurrentFundingBand(new StandardSearchResultsItem
             {
-                StandardId = "1",
+                StandardId = 1,
                 EffectiveFrom = DateTime.Today,
                 EffectiveTo = DateTime.Today.AddDays(1),
                 FundingPeriods = new List<FundingPeriod>

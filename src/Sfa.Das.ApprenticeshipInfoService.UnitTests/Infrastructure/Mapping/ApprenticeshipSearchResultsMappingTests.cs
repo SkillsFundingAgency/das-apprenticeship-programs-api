@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
 
-            result.Id.Should().Be(source.StandardId);
+            result.Id.Should().Be(source.StandardId.ToString());
             result.ProgrammeType.Should().Be(ApprenticeshipTrainingType.Standard);
             result.Title.Should().Be(source.Title);
             result.Level.Should().Be(source.Level);
@@ -101,7 +101,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
                 .StrictMode(false)
                 .Rules((f, o) =>
                     {
-                        o.StandardId = "123";
+                        o.StandardId = 123;
                         o.Duration = f.Random.Number(24);
                         o.EffectiveFrom = f.Date.Past();
                         o.EffectiveTo = f.Date.Future();

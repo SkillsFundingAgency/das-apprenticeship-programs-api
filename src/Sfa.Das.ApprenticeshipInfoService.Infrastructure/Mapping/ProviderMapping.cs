@@ -134,7 +134,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             var response = new ProviderSearchResponseItem
             {
                 Aliases = provider.Aliases,
-                Ukprn = provider.Ukprn,
+                Ukprn = provider.Ukprn.ToString(),
                 IsHigherEducationInstitute = provider.IsHigherEducationInstitute,
                 IsEmployerProvider = provider.IsEmployerProvider,
                 ProviderName = provider.ProviderName,
@@ -145,15 +145,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Addresses = provider.Addresses
             };
 
-            if (!string.IsNullOrWhiteSpace(provider.EmployerSatisfaction))
+            if (provider.EmployerSatisfaction.HasValue)
             {
-                var employerSatisfaction = double.Parse(provider.EmployerSatisfaction);
+                var employerSatisfaction = provider.EmployerSatisfaction;
                 response.EmployerSatisfaction = employerSatisfaction;
             }
 
-            if (!string.IsNullOrWhiteSpace(provider.LearnerSatisfaction))
+            if (provider.LearnerSatisfaction.HasValue)
             {
-                var learnerSatisfaction = double.Parse(provider.LearnerSatisfaction);
+                var learnerSatisfaction = provider.LearnerSatisfaction;
                 response.LearnerSatisfaction = learnerSatisfaction;
             }
 

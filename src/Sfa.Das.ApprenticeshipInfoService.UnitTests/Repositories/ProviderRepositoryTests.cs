@@ -150,14 +150,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         [Test]
         public void GetProviderFrameworksByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
         {
-            var ukprn = 1L;
+            var ukprn = 1;
             var searchResponseForFrameworkDtos = new Mock<ISearchResponse<ProviderFrameworkDto>>();
             var apiCallForFrameworkDtos = new Mock<IApiCallDetails>();
             var searchResponseForFrameworks = new Mock<ISearchResponse<ProviderFramework>>();
             var apiCallForFrameworks = new Mock<IApiCallDetails>();
 
-            var frameworkDto1 = new ProviderFrameworkDto {FrameworkId = "321-3-1", Ukprn = ukprn.ToString() };
-            var frameworkDto2 = new ProviderFrameworkDto { FrameworkId = "322-3-1", Ukprn = ukprn.ToString() };
+            var frameworkDto1 = new ProviderFrameworkDto {FrameworkId = "321-3-1", Ukprn = ukprn };
+            var frameworkDto2 = new ProviderFrameworkDto { FrameworkId = "322-3-1", Ukprn = ukprn };
 
             searchResponseForFrameworkDtos.Setup(x => x.Documents).Returns(new List<ProviderFrameworkDto> { frameworkDto1, frameworkDto2 });
 
@@ -256,14 +256,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         [Test]
         public void GetProviderStandardsByUkprnShouldLogWhenApprenticeshipDetailsDoNotRespondAsExpected()
         {
-            var ukprn = 1L;
+            var ukprn = 1;
             var searchResponseForStandardsDtos = new Mock<ISearchResponse<ProviderStandardDto>>();
             var apiCallForStandardDtos = new Mock<IApiCallDetails>();
             var searchResponseForStandards = new Mock<ISearchResponse<ProviderStandard>>();
             var apiCallForFrameworks = new Mock<IApiCallDetails>();
 
-            var standardDto1 = new ProviderStandardDto { StandardCode = 1, Ukprn = ukprn.ToString() };
-            var standardDto2 = new ProviderStandardDto { StandardCode = 2, Ukprn = ukprn.ToString() };
+            var standardDto1 = new ProviderStandardDto { StandardCode = 1, Ukprn = ukprn };
+            var standardDto2 = new ProviderStandardDto { StandardCode = 2, Ukprn = ukprn };
 
             searchResponseForStandardsDtos.Setup(x => x.Documents).Returns(new List<ProviderStandardDto> { standardDto1, standardDto2 });
 
