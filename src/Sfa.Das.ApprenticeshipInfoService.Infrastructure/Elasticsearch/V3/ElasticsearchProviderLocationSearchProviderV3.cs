@@ -166,7 +166,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             return f => f.GeoShape(gp => gp
                             .Field(fd => fd.TrainingLocations.First().Location)
-                            .Shape(s => s.Point(new GeoCoordinate(location.Lon, location.Lat))));
+                            .Shape(s => s.Point(new GeoCoordinate(location.Lat, location.Lon))));
         }
 
         private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortByDistanceFromGivenLocation<T>(Coordinate location)

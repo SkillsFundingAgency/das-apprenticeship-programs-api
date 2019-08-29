@@ -46,7 +46,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         [SwaggerOperation("GetByApprenticeshipIdAndLocation")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [Route("apprenticeships/{id}/providers")]
         public IHttpActionResult GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
         {
