@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FeatureToggle.Core.Fluent;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
 
@@ -92,24 +90,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private ISearchRequest GetAllAssessmentOrgsSearchDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<OrganisationDocument>()
-                    .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
-                    .Take(take)
-                    .Query(q => +q.Term("documentType", "organisationdocument"));
-
-            }
-
             return new SearchDescriptor<OrganisationDocument>()
                 .Index(_applicationSettings.AssessmentOrgsIndexAlias)
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
+                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
                 .Take(take)
                 .Query(q => +q.Term("documentType", "organisationdocument"));
-
         }
 
         public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId)

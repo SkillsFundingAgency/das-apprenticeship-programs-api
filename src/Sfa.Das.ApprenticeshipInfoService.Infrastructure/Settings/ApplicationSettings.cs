@@ -1,67 +1,37 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Linq;
-    using Core.Configuration;
-    using Microsoft.Azure;
+﻿using System;
+using System.Collections.Generic;
+using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
+namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings
+{
     public sealed class ApplicationSettings : IConfigurationSettings
     {
-        public string ApprenticeshipIndexAlias => CloudConfigurationManager.GetSetting("ApprenticeshipIndexAlias");
+        public string ApprenticeshipIndexAlias { get; set; }
 
-        public string ProviderIndexAlias => CloudConfigurationManager.GetSetting("ProviderIndexAlias");
+        public string ProviderIndexAlias { get; set; }
 
-        public string AssessmentOrgsIndexAlias => CloudConfigurationManager.GetSetting("AssessmentOrgsIndexAlias");
+        public string AssessmentOrgsIndexAlias { get; set; }
 
-        public IEnumerable<Uri> ElasticServerUrls => GetElasticSearchIps();
+        public List<Uri> ElasticServerUrls { get; set; }
 
-        public string EnvironmentName => CloudConfigurationManager.GetSetting("EnvironmentName");
+        public string EnvironmentName { get; set; }
 
-        public string ApplicationName => ConfigurationManager.AppSettings["ApplicationName"];
+        public string ApplicationName { get; set; }
 
-        public string GaTrackingCode => CloudConfigurationManager.GetSetting("ga.trackingid");
+        public string GaTrackingCode { get; set; }
 
-        public int ApprenticeshipProviderElements => int.Parse(ConfigurationManager.AppSettings["ApprenticeshipProviderElements"]);
+        public int ApprenticeshipProviderElements { get; set; }
 
-        public string ElasticsearchUsername => CloudConfigurationManager.GetSetting("ElasticsearchUsername");
+        public string ElasticsearchUsername { get; set; }
 
-        public string ElasticsearchPassword => CloudConfigurationManager.GetSetting("ElasticsearchPassword");
-        public string IfaStandardApiUrl => ConfigurationManager.AppSettings["IFAStandardsApiUrl"];
+        public string ElasticsearchPassword { get; set; }
 
-        public int PageSizeApprenticeshipSummary => int.Parse(
-            ConfigurationManager.AppSettings["PageSizeApprenticeshipSummary"]);
+        public string IfaStandardApiUrl { get; set; }
 
-        public List<string> FrameworksExpiredRequired
-        {
-            get
-            {
-                return
-                    CloudConfigurationManager.GetSetting("FrameworksExpiredRequired")
-                        ?.Split(',')
-                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
-                    ?? new List<string>();
-            }
-        }
+        public int PageSizeApprenticeshipSummary { get; set; }
 
-        public List<string> StandardsExpiredRequired
-        {
-            get
-            {
-                return
-	                CloudConfigurationManager.GetSetting("StandardsExpiredRequired")
-                        ?.Split(',')
-                        .Where(s => s != string.Empty).Select(x => x.Trim()).ToList()
-                    ?? new List<string>();
-            }
-        }
+        public List<string> FrameworksExpiredRequired { get; set; }
 
-        private IEnumerable<Uri> GetElasticSearchIps()
-        {
-            var urlStrings = CloudConfigurationManager.GetSetting("ElasticServerUrls").Split(',');
-            return urlStrings.Select(url => new Uri(url));
-        }
-
+        public List<string> StandardsExpiredRequired { get; set; }
       }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Elasticsearch.Net;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using Nest;
 using NUnit.Framework;
@@ -15,7 +17,6 @@ using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Pagination;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 {
@@ -25,7 +26,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         private const int PageSizeApprenticeshipSummary = 4;
         private Mock<IElasticsearchCustomClient> _elasticClient;
 
-        private Mock<ILog> _log;
+        private Mock<ILogger<ProviderRepository>> _log;
 
         private Mock<IQueryHelper> _queryHelper;
         private Mock<IActiveApprenticeshipChecker> _mockActiveFrameworkChecker;
@@ -36,9 +37,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         public void Setup()
         {
             _elasticClient = new Mock<IElasticsearchCustomClient>();
-            _log = new Mock<ILog>();
+            _log = new Mock<ILogger<ProviderRepository>>();
             _mockActiveFrameworkChecker = new Mock<IActiveApprenticeshipChecker>();
-            _log.Setup(x => x.Warn(It.IsAny<string>())).Verifiable();
             _queryHelper = new Mock<IQueryHelper>();
             _queryHelper.Setup(x => x.GetProvidersByFrameworkTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersByStandardTotalAmount(It.IsAny<string>())).Returns(1);
@@ -71,7 +71,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetAllProviders());
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+
+            
         }
 
         [Test]
@@ -95,7 +97,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprn(1L));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+
         }
 
         [Test]
@@ -119,7 +122,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetProviderByUkprnList(new List<long> { 1L }));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]
@@ -144,7 +147,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
 
-            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks for ukprn [{ukprn}]"), Times.Once);
+            var message = $"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks for ukprn [{ukprn}]";
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.Is<FormattedLogValues>(a => a.ToString() == message), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]
@@ -180,7 +184,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetFrameworksByProviderUkprn(ukprn));
-            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]"), Times.Once);
+            var message = $"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]";
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.Is<FormattedLogValues>(a => a.ToString() == message), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]
@@ -221,10 +226,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 _mockActiveFrameworkChecker.Object,
                 _mockPaginationHelper.Object);
 
-             var result = repo.GetFrameworksByProviderUkprn(ukprn);
-              Assert.AreEqual(result.Count(), providerFrameworks.Count );
-             _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Never);
-
+            var result = repo.GetFrameworksByProviderUkprn(ukprn);
+            Assert.AreEqual(result.Count(), providerFrameworks.Count );
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Never);
         }
 
         [Test]
@@ -249,8 +253,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
 
-            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]"), Times.Once);
-
+            var message = $"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards for ukprn [{ukprn}]";
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.Is<FormattedLogValues>(a => a.ToString() == message), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
         
         [Test]
@@ -286,7 +290,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 _mockPaginationHelper.Object);
 
             Assert.Throws<ApplicationException>(() => repo.GetStandardsByProviderUkprn(ukprn));
-            _log.Verify(x => x.Warn($"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards apprenticeship details for ukprn [{ukprn}]"), Times.Once);
+            var message = $"httpStatusCode was {(int)HttpStatusCode.Ambiguous} when querying provider standards apprenticeship details for ukprn [{ukprn}]";
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.Is<FormattedLogValues>(a => a.ToString() == message), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]
@@ -333,7 +338,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
             var result = repo.GetStandardsByProviderUkprn(ukprn);
 
             Assert.AreEqual(numberReturnedActiveAndPublished, result.Count());
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Never);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Never);
         }
 
         [Test]
@@ -357,7 +362,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByStandardId(string.Empty));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]
@@ -381,7 +386,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetProvidersByFrameworkId(string.Empty));
 
-            _log.Verify(x => x.Warn(It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
 
         [Test]

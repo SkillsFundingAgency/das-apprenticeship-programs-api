@@ -1,32 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
-    using System;
-    using System.Net;
-    using System.Web.Http;
-    using Microsoft.Web.Http;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using SFA.DAS.NLog.Logger;
-    using Swashbuckle.Swagger.Annotations;
-
-    public class SearchController : ApiController
+    [ApiExplorerSettings(GroupName = "v1")]   
+    public class SearchController : ControllerBase
     {
         private readonly IApprenticeshipSearchServiceV1 _apprenticeshipSearchServiceV1;
         private readonly IProviderSearchService _providerSearchService;
         private readonly IProviderMapping _providerMapping;
-        private readonly ILog _logger;
+        private readonly ILogger<SearchController> _logger;
 
         public SearchController(
             IApprenticeshipSearchServiceV1 apprenticeshipSearchServiceV1,
             IProviderSearchService providerSearchService,
             IProviderMapping providerMapping,
-            ILog logger)
+            ILogger<SearchController> logger)
         {
             _apprenticeshipSearchServiceV1 = apprenticeshipSearchServiceV1;
             _providerSearchService = providerSearchService;
@@ -38,13 +36,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// Search all apprenticeships
         /// </summary>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchActiveApprenticeships")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSearchResultsItem>))]
-        [Route("apprenticeship-programmes/search")]
-        [Route("v{version:apiVersion}/apprenticeship-programmes/search")]
-        [HttpGet]
-        [ExceptionHandling]
-        public IEnumerable<ApprenticeshipSearchResultsItem> SearchApprenticeships(string keywords, int page = 1)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("apprenticeship-programmes/search", Name="SearchActiveApprenticeships")]
+        public ActionResult<IEnumerable<ApprenticeshipSearchResultsItem>> SearchApprenticeships(string keywords, int page = 1)
         {
             try
             {
@@ -54,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/apprenticeship-programmes/search");
+                _logger.LogError(e, "/apprenticeship-programmes/search");
                 throw;
             }
         }
@@ -63,13 +57,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// Search for providers
         /// </summary>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchProviders")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSearchResponseItem>))]
-        [Route("providers/search")]
-        [Route("v{version:apiVersion}/providers/search")]
-        [HttpGet]
-        [ExceptionHandling]
-        public IEnumerable<ProviderSearchResponseItem> SearchProviders(string keywords, int page = 1)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("providers/search", Name="SearchProviders")]
+        public ActionResult<IEnumerable<ProviderSearchResponseItem>> SearchProviders(string keywords, int page = 1)
         {
             try
             {
@@ -85,7 +75,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/providers/search");
+                _logger.LogError(e, "/providers/search");
                 throw;
             }
         }

@@ -11,7 +11,7 @@
 
         string AssessmentOrgsIndexAlias { get; }
 
-        IEnumerable<Uri> ElasticServerUrls { get; }
+        List<Uri> ElasticServerUrls { get; }
 
         string EnvironmentName { get; }
 
@@ -29,7 +29,7 @@
 
         List<string> StandardsExpiredRequired { get; }
 
-         int PageSizeApprenticeshipSummary { get; }
+        int PageSizeApprenticeshipSummary { get; }
 
         string IfaStandardApiUrl { get; }
     }

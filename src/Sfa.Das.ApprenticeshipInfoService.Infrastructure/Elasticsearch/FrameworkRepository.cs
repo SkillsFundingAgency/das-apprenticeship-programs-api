@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FeatureToggle.Core.Fluent;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
@@ -12,19 +9,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using Core.Models;
     using Core.Services;
     using Mapping;
+    using Microsoft.Extensions.Logging;
     using Nest;
 
     public sealed class FrameworkRepository : IGetFrameworks
     {
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
-        private readonly ILog _applicationLogger;
+        private readonly ILogger<FrameworkRepository> _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IFrameworkMapping _frameworkMapping;
         private readonly IQueryHelper _queryHelper;
 
         public FrameworkRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
-            ILog applicationLogger,
+            ILogger<FrameworkRepository> applicationLogger,
             IConfigurationSettings applicationSettings,
             IFrameworkMapping frameworkMapping,
             IQueryHelper queryHelper)

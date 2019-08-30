@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http.Results;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 {
@@ -25,7 +25,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             _providerNameSearchServiceV3 = new Mock<IProviderNameSearchServiceV3>();
             _sut = new SearchV3Controller(
                 _apprenticeshipSearchServiceV3.Object,
-                Mock.Of<ILog>(),
+                Mock.Of<ILogger<SearchV3Controller>>(),
                 _providerNameSearchServiceV3.Object);
         }
 
@@ -36,7 +36,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 
             var result = _sut.SearchApprenticeships("admin", 2, 30, 3);
 
-            result.Should().BeOfType<OkNegotiatedContentResult<ApprenticeshipSearchResults>>();
+            result.Value.Should().BeOfType<ApprenticeshipSearchResults>();
         }
 
         [Test]
@@ -63,18 +63,24 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         {
             var result = _sut.SearchApprenticeships("admin", levels: levels);
 
-            result.Should().BeOfType<BadRequestResult>();
+            result.Result.Should().BeOfType<BadRequestResult>();
         }
 
         [Test]
         public void ApprenticeshipsAutocompleteV3Return200StatusCodeOnSuccessfulSearch()
         {
-            _apprenticeshipSearchServiceV3.Setup(x => x.SearchApprenticeships(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<List<int>>())).Returns(TestSearchApprenticeResult());
+            _apprenticeshipSearchServiceV3.Setup(x => x.GetCompletions(It.IsAny<string>())).Returns(TestAutoCompleteSearchResult);
 
             var result = _sut.ApprenticeshipsAutocomplete("admin");
 
-            result.Should().BeOfType<OkNegotiatedContentResult<ApprenticeshipAutocompleteSearchResults>>();
+            result.Value.Should().BeOfType<ApprenticeshipAutocompleteSearchResults>();
         }
+
+        private static ApprenticeshipAutocompleteSearchResults TestAutoCompleteSearchResult()
+        {
+            return new ApprenticeshipAutocompleteSearchResults();
+        }
+
 
         private static ApprenticeshipSearchResults TestSearchApprenticeResult()
         {
@@ -97,7 +103,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 
             var result = _sut.SearchProviders("Lon", 2, 30).Result;
 
-            result.Should().BeOfType<OkNegotiatedContentResult<ProviderSearchResults>>();
+            result.Value.Should().BeOfType<ProviderSearchResults>();
         }
 
         [Test]

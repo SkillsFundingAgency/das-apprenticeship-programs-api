@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     public sealed class ApprenticeshipProviderRepository : IApprenticeshipProviderRepository
     {
-        private readonly ILog _applicationLogger;
+        private readonly ILogger<ApprenticeshipProviderRepository> _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IProviderMapping _providerMapping;
 
         public ApprenticeshipProviderRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
-            ILog applicationLogger,
+            ILogger<ApprenticeshipProviderRepository> applicationLogger,
             IConfigurationSettings applicationSettings,
             IProviderMapping providerMapping)
         {
@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
             catch (Exception ex)
             {
-                _applicationLogger.Error(
+                _applicationLogger.LogError(
                     ex,
                     $"Trying to get standard with provider id {ukprn}, standard code {standardCode} and location id {locationId}");
                 throw;
@@ -68,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
             catch (Exception ex)
             {
-                _applicationLogger.Error(
+                _applicationLogger.LogError(
                     ex,
                     $"Trying to get standard with provider id {ukprn}, framework id {frameworkId} and location id {locationId}");
                 throw;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FeatureToggle.Core.Fluent;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch

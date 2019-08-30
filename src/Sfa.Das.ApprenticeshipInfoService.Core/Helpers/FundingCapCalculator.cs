@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 

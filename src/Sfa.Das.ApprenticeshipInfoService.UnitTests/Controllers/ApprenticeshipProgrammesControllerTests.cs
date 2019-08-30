@@ -1,23 +1,17 @@
-﻿using System.Net;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using StructureMap;
+﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
-    using System.Web.Http;
-    using System.Web.Http.Routing;
     using Api.Controllers;
     using Core.Services;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
-    using NUnit.Framework.Constraints;
     using SFA.DAS.Apprenticeships.Api.Types;
-    using SFA.DAS.NLog.Logger;
     using Assert = NUnit.Framework.Assert;
 
     [TestFixture]
@@ -25,7 +19,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     {
         private ApprenticeshipProgrammesController _sut;
         private Mock<IGetFrameworks> _mockGetFrameworks;
-        private Mock<ILog> _mockLogger;
+        private Mock<ILogger<ApprenticeshipProgrammesController>> _mockLogger;
         private Mock<IGetStandards> _mockGetStandards;
         private IApprenticeshipMapping _apprenticeshipMapping;
 
@@ -35,30 +29,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetFrameworks = new Mock<IGetFrameworks>();
             _mockGetStandards = new Mock<IGetStandards>();
             _apprenticeshipMapping = new ApprenticeshipMapping();
-            _mockLogger = new Mock<ILog>();
+            _mockLogger = new Mock<ILogger<ApprenticeshipProgrammesController>>();
 
             _sut = new ApprenticeshipProgrammesController(_mockGetFrameworks.Object, _mockGetStandards.Object, _apprenticeshipMapping, _mockLogger.Object);
-
-            _sut.Request = new HttpRequestMessage
-            {
-                RequestUri = new Uri("http://localhost/frameworks")
-            };
-            _sut.Configuration = new HttpConfiguration();
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "GetFrameworkProviders",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "GetByFrameworkCode",
-                routeTemplate: "{controller}/codes/{frameworkCode}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.RequestContext.RouteData = new HttpRouteData(
-                route: new HttpRoute(),
-                values: new HttpRouteValueDictionary { { "controller", "frameworks" } });
+            _sut.Url = new Mock<IUrlHelper>().Object;
         }
 
         [Test]
@@ -70,9 +44,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             var apprenticeshipSummaries = _sut.Get();
 
             Assert.NotNull(apprenticeshipSummaries);
-            apprenticeshipSummaries.Count().Should().Be(4);
-            apprenticeshipSummaries.First().Id.Should().Be("1234");
-            apprenticeshipSummaries.Last().Id.Should().Be("1239");
+            apprenticeshipSummaries.Value.Count().Should().Be(4);
+            apprenticeshipSummaries.Value.First().Id.Should().Be("1234");
+            apprenticeshipSummaries.Value.Last().Id.Should().Be("1239");
         }
 
         private IEnumerable<FrameworkSummary> LoadFrameworkSummaryData()

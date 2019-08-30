@@ -3,20 +3,21 @@
     using System;
     using ApprenticeshipInfoService.Infrastructure.Services;
     using Core.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Internal;
     using Moq;
     using NUnit.Framework;
-    using SFA.DAS.NLog.Logger;
 
     [TestFixture]
     public class GetIfaStandardsUrlServiceTests
     {
-        private Mock<ILog> _mockLogger;
+        private Mock<ILogger<GetIfaStandardsUrlService>> _mockLogger;
         private Mock<IConfigurationSettings> _mockConfigurationSettings;
 
         [Test]
         public void TestBadLinkReturnsEmptyStringAndIsLogged()
         {
-             _mockLogger = new Mock<ILog>();
+             _mockLogger = new Mock<ILogger<GetIfaStandardsUrlService>>();
             _mockConfigurationSettings = new Mock<IConfigurationSettings>();
             const string ifaUrlBase = "http://sss.dummylink.con";
             _mockConfigurationSettings.Setup(x => x.IfaStandardApiUrl).Returns(ifaUrlBase);
@@ -30,8 +31,7 @@
             var logWarning = $"IFA Url [{urlToCall}] failed to return details";
 
             Assert.AreEqual(string.Empty, res);
-            _mockLogger.Verify(x => x.Warn(It.IsAny<Exception>(), logWarning), Times.Once);
-
+            _mockLogger.Verify(x => x.Log(LogLevel.Warning, It.IsAny<EventId>(), It.Is<FormattedLogValues>(a => a.ToString() == logWarning), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
         }
     }
 }

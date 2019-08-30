@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FeatureToggle.Core.Fluent;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -135,20 +133,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private void GetSortingOrder(SearchDescriptor<ApprenticeshipSearchResultsItem> searchDescriptor)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                searchDescriptor.Sort(s => s
-                    .Descending(SortSpecialField.Score)
-                    .Descending(f => f.TitleKeyword)
-                    .Descending(f => f.Level));
-            }
-            else
-            {
-                searchDescriptor.Sort(s => s
-                    .Descending(SortSpecialField.Score)
-                    .Descending(f => f.Title)
-                    .Descending(f => f.Level));
-            }
+            searchDescriptor.Sort(s => s
+                .Descending(SortSpecialField.Score)
+                .Descending(f => f.TitleKeyword)
+                .Descending(f => f.Level));
         }
 
         private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> PublishedApprenticeship()

@@ -1,26 +1,23 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Web.Http;
-    using System.Web.Http.Description;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Helpers;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
-    using SFA.DAS.NLog.Logger;
-    using Swashbuckle.Swagger.Annotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
 
-    public class AssessmentOrgsController : ApiController
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+{
+    [ApiExplorerSettings(GroupName = "v1")]
+    public class AssessmentOrgsController : ControllerBase
     {
         private readonly IGetAssessmentOrgs _getAssessmentOrgs;
-        private readonly ILog _logger;
+        private readonly ILogger<AssessmentOrgsController> _logger;
 
         public AssessmentOrgsController(
             IGetAssessmentOrgs getAssessmentOrgs,
-            ILog logger)
+            ILogger<AssessmentOrgsController> logger)
         {
             _getAssessmentOrgs = getAssessmentOrgs;
             _logger = logger;
@@ -30,12 +27,9 @@
         /// Get all the assessment organisations
         /// </summary>
         /// <returns>colllection of assessment organisation summaries</returns>
-        [SwaggerOperation("GetAllAssessmentOrgs")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<OrganisationSummary>))]
-        [Route("v{version:apiVersion}/assessment-organisations")]
-        [Route("assessment-organisations")]
-        [ExceptionHandling]
-        public IEnumerable<OrganisationSummary> Get()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/assessment-organisations", Name="GetAllAssessmentOrgs")]
+        public ActionResult<IEnumerable<OrganisationSummary>> Get()
         {
             try
             {
@@ -51,7 +45,7 @@
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/assessment-organisations");
+                _logger.LogError(e, "/assessment-organisations");
                 throw;
             }
         }
@@ -61,20 +55,15 @@
         /// </summary>
         /// <param name="id">EPA00001</param>
         /// <returns>an organisation</returns>
-        [SwaggerOperation("GetAssessmentOrgById")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Organisation))]
-        [Route("v{version:apiVersion}/assessment-organisations/{id}")]
-        [Route("assessment-organisations/{id}")]
-        [ExceptionHandling]
-        public Organisation Get(string id)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/assessment-organisations/{id}", Name="GetAssessmentOrgById")]
+        public ActionResult<Organisation> Get(string id)
         {
             var response = _getAssessmentOrgs.GetOrganisationById(id);
 
             if (response == null)
             {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No organisation with EpaOrganisationIdentifier {id} found");
+                return NotFound($"No organisation with EpaOrganisationIdentifier {id} found");
             }
 
             response.Uri = Resolve(response.Id);
@@ -86,12 +75,10 @@
         /// <summary>
         /// Do we have assessment organisations?
         /// </summary>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/assessment-organisations")]
-        [Route("assessment-organisations")]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/assessment-organisations")]
         public void Head()
         {
             Get();
@@ -101,11 +88,10 @@
         /// Assessment organisation exists?
         /// </summary>
         /// <param name="id">EPA00001</param>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/assessment-organisations/{id}")]
-        [Route("assessment-organisations/{id}")]
-        [ExceptionHandling]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/assessment-organisations/{id}")]
         public void Head(string id)
         {
             Get(id);
@@ -116,30 +102,25 @@
         /// </summary>
         /// <param name="id">standard code</param>
         /// <returns>a collection of organisations</returns>
-        [SwaggerOperation("GetAssessmentOrgByStandardId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Organisation>))]
-        [Route("v{version:apiVersion}/assessment-organisations/standards/{id}")]
-        [Route("assessment-organisations/standards/{id}")]
-        [ExceptionHandling]
-        public IEnumerable<Organisation> GetByStandardId(string id)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/assessment-organisations/standards/{id}", Name="GetAssessmentOrgByStandardId")]
+        public ActionResult<IEnumerable<Organisation>> GetByStandardId(string id)
         {
             var response = _getAssessmentOrgs.GetOrganisationsByStandardId(id);
 
             if (response == null)
             {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No organisation found for Standard {id}");
+                return NotFound($"No organisation found for Standard {id}");
             }
 
-            response = response.ToList();
-            foreach (var organisation in response)
+            var result = response.ToList();
+            foreach (var organisation in result)
             {
                 organisation.Uri = Resolve(organisation.Id);
                 organisation.Links = ResolveLinks(organisation.Id);
             }
 
-            return response;
+            return result;
         }
 
         /// <summary>
@@ -147,12 +128,9 @@
         /// </summary>
         /// <param name="organisationId">Assessment Organisation Id</param>
         /// <returns>colllection of standards by specific organisation identifier</returns>
-        [SwaggerOperation("GetStandardsByAssessmentOrgId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardOrganisationSummary>))]
-        [Route("v{version:apiVersion}/assessment-organisations/{organisationId}/standards")]
-        [Route("assessment-organisations/{organisationId}/standards", Name = "GetStandardsByOrganisationId")]
-        [ExceptionHandling]
-        public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationId(string organisationId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/assessment-organisations/{organisationId}/standards", Name="GetStandardsByAssessmentOrgId")]
+        public ActionResult<IEnumerable<StandardOrganisationSummary>> GetStandardsByOrganisationId(string organisationId)
         {
             var response = _getAssessmentOrgs.GetStandardsByOrganisationIdentifier(organisationId).ToList();
 
@@ -166,12 +144,12 @@
 
         private string Resolve(string organisationId)
         {
-            return Url.Link("DefaultApi", new { controller = "assessmentorgs", id = organisationId }).Replace("assessmentorgs", "assessment-organisations");
+            return Url.Link("GetAssessmentOrgById", new { id = organisationId });
         }
 
         private string ResolveStandardUri(string standardCode)
         {
-            return Url.Link("DefaultApi", new { controller = "Standards", id = standardCode });
+            return Url.Link("GetStandardById", new { id = standardCode });
         }
 
         private List<Link> ResolveLinks(string organisationId)

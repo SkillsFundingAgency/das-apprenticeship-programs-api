@@ -32,7 +32,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers
                 NumberOfRecordsToSkip = noOfRecordsToSkip,
                 NumberPerPage = pageSize
             };
-            result.ShouldBeEquivalentTo(expectedResult);
+
+            result.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

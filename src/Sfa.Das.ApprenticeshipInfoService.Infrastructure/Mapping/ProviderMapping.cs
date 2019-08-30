@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
 using SFA.DAS.Apprenticeships.Api.Types.enums;
 using SFA.DAS.Apprenticeships.Api.Types.Exceptions;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
     public class ProviderMapping : IProviderMapping
     {
-        private readonly ILog _applicationLogger;
+        private readonly ILogger<ProviderMapping> _applicationLogger;
 
-        public ProviderMapping(ILog applicationLogger)
+        public ProviderMapping(ILogger<ProviderMapping> applicationLogger)
         {
             _applicationLogger = applicationLogger;
         }
@@ -178,7 +178,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                         break;
                     default:
                         var errorMessage = $"Unknown DeliveryMode [{mode}] could not be mapped.";
-                        _applicationLogger.Error(new UnknownDeliveryModeException(errorMessage), errorMessage);
+                        _applicationLogger.LogError(new UnknownDeliveryModeException(errorMessage), errorMessage);
                         break;
                 }
             }

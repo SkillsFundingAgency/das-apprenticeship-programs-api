@@ -4,21 +4,21 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models
 {
     public class AnalyticsService : IAnalyticsService
     {
-        private readonly ILog _logger;
+        private readonly ILogger<AnalyticsService> _logger;
         private const string GaCollectPrefixUrl = "https://www.google-analytics.com/collect";
         private readonly string _gaTrackingCode;
 
-        public AnalyticsService(ILog logger, IConfigurationSettings settings)
+        public AnalyticsService(ILogger<AnalyticsService> logger, IConfigurationSettings settings)
         {
             _logger = logger;
             _gaTrackingCode = settings.GaTrackingCode;
@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models
 
                 var collectUrl = $"{GaCollectPrefixUrl}{qs}";
 
-                _logger.Debug(collectUrl);
+                _logger.LogDebug(collectUrl);
 
                 var gaReq = WebRequest.Create(collectUrl);
                 gaReq.Headers = new WebHeaderCollection { gaRouteArgs.OriginalRequestHeaders };
@@ -42,7 +42,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error with GA collection call.");
+                _logger.LogError(ex, "Error with GA collection call.");
             }
         }
 

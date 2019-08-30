@@ -2,12 +2,9 @@
 using System.Linq;
 using System.Net;
 using Elasticsearch.Net;
-using FeatureToggle.Core.Fluent;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Extensions;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
@@ -22,18 +19,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IElasticClient Create()
         {
-            if (Is<IgnoreSslCertificateFeature>.Enabled)
-            {
-                using (var settings = new ConnectionSettings(
-                    new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First()),
-                    new MyCertificateIgnoringHttpConnection()))
-                {
-                    SetDefaultSettings(settings);
-
-                    return new ElasticClient(settings);
-                }
-            }
-
+            // TODO: LWA - Should this be the list of client/co-ordinating nodes
             using (var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First())))
             {
                 SetDefaultSettings(settings);
@@ -49,7 +35,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
             }
 
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
             settings.DisableDirectStreaming();
         }

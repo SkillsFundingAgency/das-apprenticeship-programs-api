@@ -1,11 +1,11 @@
-﻿using SFA.DAS.NLog.Logger;
-
+﻿
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     using System;
     using System.Diagnostics;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using Microsoft.Extensions.Logging;
     using Nest;
     using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Logging;
 
@@ -13,11 +13,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     {
         private readonly IElasticsearchClientFactory _elasticsearchClientFactory;
 
-        private readonly ILog _logger;
+        private readonly ILogger<ElasticsearchCustomClient> _logger;
 
         public ElasticsearchCustomClient(
             IElasticsearchClientFactory elasticsearchClientFactory,
-            ILog logger)
+            ILogger<ElasticsearchCustomClient> logger)
         {
             _elasticsearchClientFactory = elasticsearchClientFactory;
             _logger = logger;
@@ -64,8 +64,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 Url = result.ApiCall?.Uri?.AbsoluteUri
             };
 
-            _logger.Debug("Elastic Search Requested", logEntry);
-            _logger.Debug("Dependency Elasticsearch", dependencyLogEntry);
+            _logger.LogDebug("Elastic Search Requested", logEntry);
+            _logger.LogDebug("Dependency Elasticsearch", dependencyLogEntry);
         }
     }
 }
