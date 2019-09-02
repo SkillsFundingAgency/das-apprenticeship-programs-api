@@ -23,8 +23,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         public void Init()
         {
             _mockProvidersService = new Mock<IGetProviderApprenticeshipLocationsV3>();
-            _mockProvidersService.Setup(x => x.SearchStandardProviders(12, It.Is<Coordinate>(a => a.Lat == 0.5 && a.Lon == 50), 1, 20, false, false, null)).Returns(GetStubResults());
-            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.Is<Coordinate>(a => a.Lat == 0.5 && a.Lon == 50), 1, 20, false, false, null)).Returns(GetStubResults());
+            _mockProvidersService.Setup(x => x.SearchStandardProviders(12, It.Is<Coordinate>(a => a.Lat == 0.5 && a.Lon == 50), 1, 20, false, false, null, 0)).Returns(GetStubResults());
+            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.Is<Coordinate>(a => a.Lat == 0.5 && a.Lon == 50), 1, 20, false, false, null, 0)).Returns(GetStubResults());
 
             _sut = new ProvidersV3Controller(
                 _mockProvidersService.Object,
@@ -49,7 +49,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         {
             List<DeliveryMode> passedDeliveryModes = null;
 
-            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>()))
+            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0))
             .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>>((a, b, c, d, e, f, g) =>
             {
                 passedDeliveryModes = g;
@@ -67,11 +67,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             const string FrameworkId = "420-2-1";
             _mockProvidersService.Reset();
 
-            _mockProvidersService.Setup(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>())).Returns(GetStubResults());
+            _mockProvidersService.Setup(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0)).Returns(GetStubResults());
 
             _sut.GetByApprenticeshipIdAndLocation(FrameworkId, 0.5, 50, deliveryModes: "0, 2");
 
-            _mockProvidersService.Verify(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>()));
+            _mockProvidersService.Verify(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0));
 
         }
 
@@ -80,11 +80,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         {
             const int StandardId = 30;
             _mockProvidersService.Reset();
-            _mockProvidersService.Setup(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>())).Returns(GetStubResults());
+            _mockProvidersService.Setup(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0)).Returns(GetStubResults());
 
             _sut.GetByApprenticeshipIdAndLocation(StandardId.ToString(), 0.5, 50, deliveryModes: "0, 2");
 
-            _mockProvidersService.Verify(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>()));
+            _mockProvidersService.Verify(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0));
         }
 
         [TestCase("abc")]
@@ -95,7 +95,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         {
             List<DeliveryMode> passedDeliveryModes = null;
 
-            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>()))
+            _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0))
                 .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>>((a, b, c, d, e, f, g) =>
                 {
                     passedDeliveryModes = g;

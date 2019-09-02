@@ -81,6 +81,7 @@
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\Responses\ProviderNameSearchResponseCodes.cs" />
     <Compile Include="Models\Responses\StandardProviderSearchResultsItemResponse.cs" />
+    <Compile Include="Models\SortBy.cs" />
     <Compile Include="Models\StandardProviderSearchResultsItem.cs" />
     <Compile Include="Models\TrainingLocation.cs" />
     <Compile Include="Models\IApprenticeshipProviderSearchResultsItem.cs" />

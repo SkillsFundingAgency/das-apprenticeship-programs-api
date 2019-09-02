@@ -27,26 +27,26 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             _elasticsearchCustomClient = elasticsearchCustomClient;
         }
 
-        public ProviderApprenticeshipLocationSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        public ProviderApprenticeshipLocationSearchResult SearchStandardProviders(int standardId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes, int orderBy = 0)
         {
-            var qryStr = CreateStandardProviderSearchQuery(standardId.ToString(), coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+            var qryStr = CreateStandardProviderSearchQuery(standardId.ToString(), coordinates, showForNonLevyOnly, showNationalOnly, deliverModes, orderBy);
             return PerformStandardProviderSearchWithQuery(qryStr, page, pageSize);
         }
 
-        public ProviderApprenticeshipLocationSearchResult SearchFrameworkProviders(string frameworkId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        public ProviderApprenticeshipLocationSearchResult SearchFrameworkProviders(string frameworkId, Coordinate coordinates, int page, int pageSize, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes, int orderBy = 0)
         {
-            var qryStr = CreateFrameworkProviderSearchQuery(frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+            var qryStr = CreateFrameworkProviderSearchQuery(frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes, orderBy);
             return PerformFrameworkProviderSearchWithQuery(qryStr, page, pageSize);
         }
 
-        private SearchDescriptor<StandardProviderSearchResultsItem> CreateStandardProviderSearchQuery(string standardId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        private SearchDescriptor<StandardProviderSearchResultsItem> CreateStandardProviderSearchQuery(string standardId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes, int orderBy)
         {
-            return CreateProviderQuery<StandardProviderSearchResultsItem>(x => x.StandardCode, standardId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+            return CreateProviderQuery<StandardProviderSearchResultsItem>(x => x.StandardCode, standardId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes, orderBy);
         }
 
-        private SearchDescriptor<FrameworkProviderSearchResultsItem> CreateFrameworkProviderSearchQuery(string frameworkId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes)
+        private SearchDescriptor<FrameworkProviderSearchResultsItem> CreateFrameworkProviderSearchQuery(string frameworkId, Coordinate coordinates, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliverModes, int orderBy)
         {
-            return CreateProviderQuery<FrameworkProviderSearchResultsItem>(x => x.FrameworkId, frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes);
+            return CreateProviderQuery<FrameworkProviderSearchResultsItem>(x => x.FrameworkId, frameworkId, coordinates, showForNonLevyOnly, showNationalOnly, deliverModes, orderBy);
         }
 
         private ProviderApprenticeshipLocationSearchResult PerformStandardProviderSearchWithQuery(SearchDescriptor<StandardProviderSearchResultsItem> qryStr, int page, int pageSize)
@@ -77,7 +77,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return MapToProviderApprenticeshipLocationSearchResult(results, page, pageSize);
         }
 
-        private SearchDescriptor<T> CreateProviderQuery<T>(Expression<Func<T, object>> selector, string code, Coordinate location, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
+        private SearchDescriptor<T> CreateProviderQuery<T>(Expression<Func<T, object>> selector, string code, Coordinate location, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes, int orderBy)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
             var descriptor =
@@ -87,7 +87,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         .Bool(ft => ft
                             .Filter(GenerateFilters(selector, code, showForNonLevyOnly, showNationalOnly, deliveryModes))
                             .Must(NestedLocationsQuery<T>(location))))
-                    .Sort(SortByDistanceFromGivenLocation<T>(location))
+                    .Sort(SortBy<T>(new SortBy { Order = orderBy, Coordinate = location }))
                     .Aggregations(GetProviderSearchAggregationsSelector<T>())
                     .PostFilter(pf => GeneratePostFilter(pf, deliveryModes?.Select(x => x.GetMemberDescription() ?? string.Empty), showNationalOnly));
 
@@ -167,13 +167,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return f => f.GeoShapePoint(gp => gp.Field(fd => fd.TrainingLocations.First().Location).Coordinates(location.Lon, location.Lat));
         }
 
-        private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortByDistanceFromGivenLocation<T>(Coordinate location)
-            where T : class, IApprenticeshipProviderSearchResultsItem
+        private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortBy<T>(SortBy sortBy)
+             where T : class, IApprenticeshipProviderSearchResultsItem
         {
-            return f => f.GeoDistance(g => g
+            if (sortBy.Order == 1)
+            {
+                return s => s.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Ascending());
+            }
+
+            if (sortBy.Order == 2)
+            {
+                return s => s.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Descending());
+            }
+
+            return s => s.GeoDistance(g => g
                 .NestedPath(x => x.TrainingLocations)
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(location.Lat, location.Lon))
+                .PinTo(new GeoLocation(sortBy.Coordinate.Lat, sortBy.Coordinate.Lon))
                 .Unit(DistanceUnit.Miles)
                 .Ascending());
         }
@@ -233,7 +243,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private static ProviderSearchResultItem MapHitToProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
         {
-            return new ProviderSearchResultItem
+            var item = new ProviderSearchResultItem
             {
                 Ukprn = hit.Source.Ukprn,
                 Location = hit.InnerHits.First().Value.Hits.Hits.First().Source.As<SFA.DAS.Apprenticeships.Api.Types.V3.TrainingLocation>(),
@@ -241,7 +251,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 OverallAchievementRate = hit.Source.OverallAchievementRate,
                 NationalProvider = hit.Source.NationalProvider,
                 DeliveryModes = hit.Source.DeliveryModes,
-                Distance = hit.Sorts != null ? Math.Round(double.Parse(hit.Sorts.DefaultIfEmpty(0).First().ToString()), 1) : 0,
                 EmployerSatisfaction = hit.Source.EmployerSatisfaction,
                 LearnerSatisfaction = hit.Source.LearnerSatisfaction,
                 NationalOverallAchievementRate = hit.Source.NationalOverallAchievementRate,
@@ -251,6 +260,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 CurrentlyNotStartingNewApprentices = hit.Source.CurrentlyNotStartingNewApprentices,
                 IsHigherEducationInstitute = hit.Source.IsHigherEducationInstitute
             };
+
+            if (hit.Sorts != null
+                && hit.Sorts.DefaultIfEmpty(0).First() != null
+                && hit.Sorts.DefaultIfEmpty(0).First().GetType().IsAssignableFrom(typeof(double)))
+            {
+                item.Distance = Math.Round(double.Parse(hit.Sorts.DefaultIfEmpty(0).First().ToString()), 1);
+            }
+
+            return item;
         }
     }
 }

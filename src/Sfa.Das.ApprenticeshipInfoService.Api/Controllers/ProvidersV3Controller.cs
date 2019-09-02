@@ -42,13 +42,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="showForNonLevyOnly">Show only Non-Levy Providers</param>
         /// <param name="showNationalOnly">Show only National Providers</param>
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
+        /// <param name="orderBy">0 = distance (Default), 1 = provider name A-Z, 2 = provider name Z-A.  Note only sorting by distance will fill the distance field in the results.</param>
         /// <returns>a paginated search result</returns>
         [SwaggerOperation("GetByApprenticeshipIdAndLocation")]
         [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
         [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("apprenticeships/{id}/providers")]
-        public IHttpActionResult GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
+        public IHttpActionResult GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null, int orderBy = 0)
         {
             try
             {
@@ -61,11 +62,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
                 int standardId;
                 if (int.TryParse(id, out standardId))
                 {
-                    responseContent = _getProviders.SearchStandardProviders(standardId, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                    responseContent = _getProviders.SearchStandardProviders(standardId, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes, orderBy);
                 }
                 else
                 {
-                    responseContent = _getProviders.SearchFrameworkProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes);
+                    responseContent = _getProviders.SearchFrameworkProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes, orderBy);
                 }
 
                 return Ok(responseContent);
