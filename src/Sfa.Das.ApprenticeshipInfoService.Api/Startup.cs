@@ -11,7 +11,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution;
 
-namespace Sfa.Das.ApprenticeshipInfoService.Api_core
+namespace Sfa.Das.ApprenticeshipInfoService.Api
 {
     public class Startup
     {

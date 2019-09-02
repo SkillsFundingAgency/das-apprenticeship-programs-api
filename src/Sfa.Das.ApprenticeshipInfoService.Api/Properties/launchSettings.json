@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Sfa.Das.ApprenticeshipInfoService.Api_core": {
+    "Sfa.Das.ApprenticeshipInfoService.Api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",
