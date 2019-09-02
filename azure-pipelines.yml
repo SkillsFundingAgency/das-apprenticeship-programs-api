@@ -1,0 +1,69 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+
+pr: none
+
+variables:
+  buildConfiguration: 'release'
+  buildPlatform: 'anycpu'
+
+pool:
+  name: 'DAS - Continuous Integration'
+workspace:
+  clean: all
+steps:
+- task: gittools.gitversion.gitversion-task.GitVersion@5
+  displayName: GitVersion
+  inputs:
+    updateAssemblyInfo: true
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'src/**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: 'src/**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+    
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: 'src/**/*.UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Website'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'src/Sfa.Das.ApprenticeshipInfoService.Api-core/Sfa.Das.ApprenticeshipInfoService.Api-core.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: '**/SFA.DAS.Providers.Api.Client.csproj;**/SFA.DAS.Apprenticeships.Api.Client.csproj;**/SFA.DAS.Apprenticeships.Api.Types.csproj'
+    packDirectory: '$(build.artifactstagingdirectory)/publish'
+    versioningScheme: byBuildNumber
+    buildProperties: 'Version="$(Build.BuildNumber)"'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    contents: |
+      azure/**
+    targetFolder: '$(build.artifactstagingdirectory)/publish'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    pathtoPublish: '$(build.artifactstagingdirectory)/publish'
