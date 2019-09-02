@@ -50,7 +50,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             List<DeliveryMode> passedDeliveryModes = null;
 
             _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0))
-            .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>>((a, b, c, d, e, f, g) =>
+            .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>, int>((a, b, c, d, e, f, g, h) =>
             {
                 passedDeliveryModes = g;
             });
@@ -96,7 +96,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             List<DeliveryMode> passedDeliveryModes = null;
 
             _mockProvidersService.Setup(x => x.SearchFrameworkProviders("420-2-1", It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0))
-                .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>>((a, b, c, d, e, f, g) =>
+                .Callback<string, Coordinate, int, int, bool, bool, List<DeliveryMode>, int>((a, b, c, d, e, f, g, h) =>
                 {
                     passedDeliveryModes = g;
                 });
