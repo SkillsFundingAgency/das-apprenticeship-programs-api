@@ -44,7 +44,7 @@ steps:
   inputs:
     command: publish
     publishWebProjects: false
-    projects: 'src/Sfa.Das.ApprenticeshipInfoService.Api-core/Sfa.Das.ApprenticeshipInfoService.Api-core.csproj'
+    projects: 'src/Sfa.Das.ApprenticeshipInfoService.Api/Sfa.Das.ApprenticeshipInfoService.Api.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
 
 - task: DotNetCoreCLI@2
