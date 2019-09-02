@@ -13,12 +13,6 @@
 
         List<Uri> ElasticServerUrls { get; }
 
-        string EnvironmentName { get; }
-
-        string ApplicationName { get; }
-
-        string GaTrackingCode { get; }
-
         int ApprenticeshipProviderElements { get; }
 
         string ElasticsearchUsername { get; }

@@ -40,7 +40,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             services.AddScoped<IGetProviderApprenticeshipLocationsV3, ElasticsearchProviderLocationSearchProviderV3>();
             services.AddScoped<IElasticsearchCustomClient, ElasticsearchCustomClient>();
             services.AddScoped<IControllerHelper, ControllerHelper>();
-            services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<IQueryHelper, Elasticsearch.QueryHelper>();
             services.AddScoped<IActiveApprenticeshipChecker, ActiveApprenticeshipChecker>();
             services.AddScoped<IFundingCapCalculator, FundingCapCalculator>();

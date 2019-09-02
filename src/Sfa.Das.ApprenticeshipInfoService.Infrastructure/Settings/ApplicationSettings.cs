@@ -14,12 +14,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Settings
 
         public List<Uri> ElasticServerUrls { get; set; }
 
-        public string EnvironmentName { get; set; }
-
-        public string ApplicationName { get; set; }
-
-        public string GaTrackingCode { get; set; }
-
         public int ApprenticeshipProviderElements { get; set; }
 
         public string ElasticsearchUsername { get; set; }
