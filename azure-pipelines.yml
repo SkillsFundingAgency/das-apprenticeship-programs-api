@@ -7,7 +7,7 @@ trigger:
 pr: none
 
 variables:
-  buildConfiguration: 'release'
+  buildConfiguration: 'Release'
   buildPlatform: 'anycpu'
 
 pool:
