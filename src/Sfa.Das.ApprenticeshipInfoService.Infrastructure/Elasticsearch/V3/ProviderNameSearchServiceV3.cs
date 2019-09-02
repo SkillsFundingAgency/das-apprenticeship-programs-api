@@ -24,7 +24,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3
             _providerNameSearchProviderQuery = providerNameSearchProviderQuery;
         }
 
-        public async Task<ProviderSearchResults> SearchProviderNameAndAliases(string searchTerm, int page, int take)
+        public ProviderSearchResults SearchProviderNameAndAliases(string searchTerm, int page, int take)
         {
             var formattedSearchTerm = Core.Helpers.QueryHelper.FormatQueryReturningEmptyStringIfEmptyOrNull(searchTerm).Trim();
 

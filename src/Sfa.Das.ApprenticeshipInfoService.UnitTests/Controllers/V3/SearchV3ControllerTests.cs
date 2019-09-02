@@ -99,9 +99,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         [Test]
         public void SearchProviderNameV3Return200StatusCodeOnSuccessfulSearch()
         {
-            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(TestSearchProviderNameResult());
+            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(TestSearchProviderNameResult());
 
-            var result = _sut.SearchProviders("Lon", 2, 30).Result;
+            var result = _sut.SearchProviders("Lon", 2, 30);
 
             result.Value.Should().BeOfType<ProviderSearchResults>();
         }
@@ -109,7 +109,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         [Test]
         public void SearchProviderNameV3PassesRequestParametersToSearchService()
         {
-            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(TestSearchProviderNameResult());
+            _providerNameSearchServiceV3.Setup(x => x.SearchProviderNameAndAliases(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(TestSearchProviderNameResult());
 
             var result = _sut.SearchProviders("test", 2, 30).Result;
 

@@ -68,11 +68,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         //[ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [HttpGet("providers/search", Name="SearchForProviders")]
-        public async Task<ActionResult<ProviderSearchResults>> SearchProviders(string keywords, int page = 1, int pageSize = 20)
+        public ActionResult<ProviderSearchResults> SearchProviders(string keywords, int page = 1, int pageSize = 20)
         {
             try
             {
-                var response = await _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, pageSize);
+                var response = _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, pageSize);
 
                 foreach (var providerSearchResponseItem in response.Results)
                 {
