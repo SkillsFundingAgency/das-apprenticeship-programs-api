@@ -48,7 +48,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/core-api.sln",
+                "${workspaceFolder}/api.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
