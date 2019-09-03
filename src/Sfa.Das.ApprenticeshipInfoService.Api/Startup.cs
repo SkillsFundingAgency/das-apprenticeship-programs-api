@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Sfa.Das.ApprenticeshipInfoService.Api.Middleware;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api
@@ -82,6 +83,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 app.UseHsts();
             }
             
+            app.UseRootRedirect("/swagger/index.html");
+
             app.UseCors(CorsPolicyName);
             
             app.UseMvc();
