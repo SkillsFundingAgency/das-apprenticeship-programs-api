@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -91,8 +92,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
 
             app.UseCors(CorsPolicyName);
 
-            app.UseHealthChecks("/health");
-            
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
+            });
+
             app.UseMvc();
 
             app.UseSwagger();

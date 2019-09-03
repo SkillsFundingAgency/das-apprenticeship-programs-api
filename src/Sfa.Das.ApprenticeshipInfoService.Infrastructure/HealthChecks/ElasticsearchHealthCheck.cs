@@ -35,11 +35,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.HealthChecks
             if (healthCheckResultHealthy)
             {
                 return Task.FromResult(
-                    HealthCheckResult.Healthy("Elasticsearch responded as expected."));
+                    HealthCheckResult.Healthy());
             }
 
             return Task.FromResult(
-                HealthCheckResult.Unhealthy("Elasticsearch didn't respond as expected."));
+                HealthCheckResult.Unhealthy());
         }
     }
 }

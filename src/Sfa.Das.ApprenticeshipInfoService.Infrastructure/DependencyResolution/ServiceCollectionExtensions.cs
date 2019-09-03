@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
@@ -52,7 +54,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             services.AddScoped<IProviderNameSearchMapping, ProviderNameSearchMapping>();
 
             services.AddHealthChecks()
-                .AddCheck<ElasticsearchHealthCheck>("elasticsearch-check");
+                .AddRedis(configuration.GetConnectionString("Redis"), "redis-check")
+                .AddElasticsearch(opt => 
+                {
+                    opt.UseServer(settings.ElasticServerUrls.First().ToString());
+                    opt.UseBasicAuthentication(settings.ElasticsearchUsername, settings.ElasticsearchPassword);
+                }, "elasticsearch-check")
+                .AddCheck<ElasticsearchHealthCheck>("elasticsearch-query-check");
         }
     }
 }
