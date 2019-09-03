@@ -39,6 +39,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 });
             });
 
+            services.AddApplicationInsightsTelemetry();
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options => 
@@ -75,6 +77,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
         {
             if (env.IsDevelopment())
             {
+                var configuration = app.ApplicationServices.GetService<Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration>();
+                configuration.DisableTelemetry = true;
+                
                 app.UseDeveloperExceptionPage();
             }
             else

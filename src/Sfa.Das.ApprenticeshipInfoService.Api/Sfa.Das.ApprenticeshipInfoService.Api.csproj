@@ -24,6 +24,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2"/>
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1"/>
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77"/>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.1"/>
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config">
