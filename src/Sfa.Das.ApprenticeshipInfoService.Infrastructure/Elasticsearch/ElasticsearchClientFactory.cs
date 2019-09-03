@@ -10,6 +10,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     public sealed class ElasticsearchClientFactory : IElasticsearchClientFactory
     {
+        private ElasticClient _client;
+
         private readonly IConfigurationSettings _applicationSettings;
 
         public ElasticsearchClientFactory(IConfigurationSettings applicationSettings)
@@ -19,21 +21,23 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IElasticClient Create()
         {
-            // TODO: LWA - Should this be the list of client/co-ordinating nodes
-            using (var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First())))
+            if (_client == null)
             {
+                var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First()));
                 SetDefaultSettings(settings);
 
-                return new ElasticClient(settings);
+                _client = new ElasticClient(settings);
             }
+
+            return _client;
         }
 
         private void SetDefaultSettings(ConnectionSettings settings)
         {
-            if (!Debugger.IsAttached)
-            {
+            //if (!Debugger.IsAttached)
+           // {
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
-            }
+            //}
 
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 

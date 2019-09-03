@@ -20,9 +20,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
         {
             var settings = new ApplicationSettings();
             configuration.GetSection("ApplicationSettings").Bind(settings);
-            services.AddScoped<IConfigurationSettings>(x => settings);
+            services.AddSingleton<IConfigurationSettings>(x => settings);
             
-            services.AddScoped<IElasticsearchClientFactory, ElasticsearchClientFactory>();
+            services.AddSingleton<IElasticsearchClientFactory, ElasticsearchClientFactory>();
             services.AddScoped<IApprenticeshipSearchServiceV1, ApprenticeshipSearchServiceV1>();
             services.AddScoped<IApprenticeshipSearchServiceV3, ApprenticeshipSearchServiceV3>();
             services.AddScoped<IProviderSearchService, ProviderSearchService>();
