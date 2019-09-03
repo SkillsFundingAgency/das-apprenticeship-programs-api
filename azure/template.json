@@ -30,12 +30,6 @@
         "loggingRedisConnectionString": {
             "type": "securestring"
         },
-        "elasticsearchUsername": {
-            "type": "string"
-        },
-        "elasticsearchPassword": {
-            "type": "securestring"
-        },
         "certificateName": {
             "type": "string"
         },
@@ -53,26 +47,8 @@
             "type": "array",
             "defaultValue": []
         },
-        "apprenticeshipIndexAlias": {
-            "type": "string"
-        },
-        "providerIndexAlias": {
-            "type": "string"
-        },
-        "assessmentOrgsIndexAlias": {
-            "type": "string"
-        },
-        "elasticServerUrls": {
-            "type": "string"
-        },
-        "frameworksExpiredRequired": {
-            "type": "string"
-        },
-        "standardsExpiredRequired": {
-            "type": "string"
-        },
-        "allowedCorsUrls": {
-            "type": "string"
+        "configurationStorageConnectionString": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -174,7 +150,7 @@
                     "appServiceAppSettings": {
                         "value": [
                             {
-                                "name": "ApplicationSettings:EnvironmentName",
+                                "name": "EnvironmentName",
                                 "value": "[parameters('environmentName')]"
                             },
                             {
@@ -182,40 +158,8 @@
                                 "value": "[reference('app-insights').outputs.InstrumentationKey.value]"
                             },
                             {
-                                "name": "ApplicationSettings:ElasticsearchUsername",
-                                "value": "[parameters('elasticsearchUsername')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:ElasticsearchPassword",
-                                "value": "[parameters('elasticsearchPassword')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:ApprenticeshipIndexAlias",
-                                "value": "[parameters('apprenticeshipIndexAlias')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:ProviderIndexAlias",
-                                "value": "[parameters('providerIndexAlias')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:AssessmentOrgsIndexAlias",
-                                "value": "[parameters('assessmentOrgsIndexAlias')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:ElasticServerUrls",
-                                "value": "[parameters('elasticServerUrls')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:FrameworksExpiredRequired",
-                                "value": "[parameters('frameworksExpiredRequired')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:StandardsExpiredRequired",
-                                "value": "[parameters('standardsExpiredRequired')]"
-                            },
-                            {
-                                "name": "ApplicationSettings:AllowedCorsUrls",
-                                "value": "[parameters('allowedCorsUrls')]"
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
                             }
                         ]
                     },
