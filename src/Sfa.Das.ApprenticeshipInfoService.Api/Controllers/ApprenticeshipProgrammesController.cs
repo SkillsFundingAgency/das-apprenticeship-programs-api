@@ -47,9 +47,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Do we have apprenticeships?
         /// </summary>
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpHead("/apprenticeship-programmes")]
         public void Head()
         {

@@ -38,6 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="levels">Levels, coma separated</param>
         /// <returns>a search result object</returns>
         //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [HttpGet("apprenticeship-programmes/search/", Name="SearchApprenticeships")]
         public ActionResult<ApprenticeshipSearchResults> SearchApprenticeships(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
@@ -66,6 +67,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// </summary>
         /// <returns>a search result object</returns>
         //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [HttpGet("providers/search", Name="SearchForProviders")]
         public ActionResult<ProviderSearchResults> SearchProviders(string keywords, int page = 1, int pageSize = 20)
@@ -100,6 +102,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="searchString">String to search for</param>
         /// <returns>a search result object</returns>
         //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [HttpGet("apprenticeship-programmes/autocomplete/", Name="SearchActiveApprenticeshipsAutocomplete")]
         public ActionResult<ApprenticeshipAutocompleteSearchResults> ApprenticeshipsAutocomplete(string searchString)

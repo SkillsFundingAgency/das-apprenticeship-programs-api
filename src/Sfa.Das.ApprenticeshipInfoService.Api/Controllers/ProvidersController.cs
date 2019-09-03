@@ -88,7 +88,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Do we have providers?
         /// </summary>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpHead("/providers")]
@@ -151,7 +151,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -177,7 +177,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// </summary>
         /// <param name="frameworkId">Framework id</param>
         /// <returns>A list of Providers</returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -251,7 +251,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         //}
 
         // GET standards/5/providers?lat=<latitude>&long=<longitude>&page=#
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [HttpGet("/standards/{id}/providers", Name="GetByStandardIdAndLocation")]
@@ -270,7 +270,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         }
 
         // GET frameworks/5/providers?lat=<latitude>&long=<longitude>&page=#
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [HttpGet("/frameworks/{id}/providers", Name="GetByFrameworkIdAndLocation")]
@@ -289,7 +289,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         }
 
         // GET standards/<standardId>/providers?ukprn=<ukprn>&location=<locationId>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("/standards/{standardCode}/providers", Name="GetStandardProviderDetails")]
@@ -309,7 +309,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         }
 
         // GET frameworks/<frameworkId>/providers?ukprn=<ukprn>&location=<locationId>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("/frameworks/{frameworkId}/providers", Name="GetFrameworkProviderDetails")]

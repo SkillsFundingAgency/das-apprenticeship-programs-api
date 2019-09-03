@@ -86,7 +86,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Do we have frameworks?
         /// </summary>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpHead("/frameworks")]
@@ -99,7 +99,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// framework exists?
         /// </summary>
         /// <param name="id">{FrameworkCode}-{ProgType}-{PathwayId}</param>
-        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpHead("/frameworks/{id}")]
@@ -158,7 +157,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// Do we have frameworks?
         /// </summary>
         /// /// <param name="frameworkCode">Framework code</param>
-        [ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = false)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpHead("/frameworks/codes/{frameworkCode}")]
