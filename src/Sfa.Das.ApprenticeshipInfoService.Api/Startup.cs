@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
@@ -79,7 +78,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             {
                 var configuration = app.ApplicationServices.GetService<Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration>();
                 configuration.DisableTelemetry = true;
-                
+
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -91,6 +90,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             app.UseRootRedirect("/swagger/index.html");
 
             app.UseCors(CorsPolicyName);
+
+            app.UseHealthChecks("/health");
             
             app.UseMvc();
 

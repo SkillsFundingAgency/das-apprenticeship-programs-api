@@ -6,6 +6,7 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.HealthChecks;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
@@ -49,6 +50,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             services.AddScoped<IProviderNameSearchServiceV3, ProviderNameSearchServiceV3>();
             services.AddScoped<IProviderNameSearchProviderQuery, ProviderNameSearchProviderQuery>();
             services.AddScoped<IProviderNameSearchMapping, ProviderNameSearchMapping>();
+
+            services.AddHealthChecks()
+                .AddCheck<ElasticsearchHealthCheck>("elasticsearch-check");
         }
     }
 }
