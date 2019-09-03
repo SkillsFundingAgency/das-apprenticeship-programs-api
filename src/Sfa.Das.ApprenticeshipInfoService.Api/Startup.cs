@@ -45,6 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options => 
                 {
+                    options.UseMemberCasing();
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
