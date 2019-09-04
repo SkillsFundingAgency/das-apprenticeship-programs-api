@@ -34,14 +34,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private void SetDefaultSettings(ConnectionSettings settings)
         {
-            //if (!Debugger.IsAttached)
-           // {
+            if (HasAuthenticationSettings())
+            {
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
-            //}
-
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            }
 
             settings.DisableDirectStreaming();
+        }
+
+        private bool HasAuthenticationSettings()
+        {
+            if (string.IsNullOrWhiteSpace(_applicationSettings.ElasticsearchUsername) && string.IsNullOrWhiteSpace(_applicationSettings.ElasticsearchPassword))
+                return false;
+            else 
+                return true;
         }
     }
 }
