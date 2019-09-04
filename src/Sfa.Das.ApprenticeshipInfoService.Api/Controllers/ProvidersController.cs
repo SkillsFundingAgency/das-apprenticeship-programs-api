@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Sfa.Das.ApprenticeshipInfoService.Api.Conventions;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
@@ -255,8 +254,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [HttpGet("/standards/{id}/providers", Name="GetByStandardIdAndLocation")]
-        public ActionResult<List<StandardProviderSearchResultsItemResponse>> GetByStandardIdAndLocation(int id, double? lat = null,
-            double? lon = null, int page = 1)
+        public ActionResult<List<StandardProviderSearchResultsItemResponse>> GetByStandardIdAndLocation(int id, [RequiredFromQuery]double? lat = null,
+            [RequiredFromQuery]double? lon = null, int page = 1)
         {
             // TODO 404 if standard doesn't exists
             var actualPage = _controllerHelper.GetActualPage(page);
@@ -274,8 +273,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [HttpGet("/frameworks/{id}/providers", Name="GetByFrameworkIdAndLocation")]
-        public ActionResult<List<FrameworkProviderSearchResultsItemResponse>> GetByFrameworkIdAndLocation(int id, double? lat = null,
-            double? lon = null, int page = 1)
+        public ActionResult<List<FrameworkProviderSearchResultsItemResponse>> GetByFrameworkIdAndLocation(int id, [RequiredFromQuery]double? lat = null,
+            [RequiredFromQuery]double? lon = null, int page = 1)
         {
             // TODO 404 if framework doesn't exists
             var actualPage = _controllerHelper.GetActualPage(page);
@@ -293,7 +292,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("/standards/{standardCode}/providers", Name="GetStandardProviderDetails")]
-        public ActionResult<ApprenticeshipDetails> GetStandardProviderDetails(string standardCode, int ukprn, int location)
+        public ActionResult<ApprenticeshipDetails> GetStandardProviderDetails(string standardCode, [RequiredFromQuery]int ukprn, [RequiredFromQuery]int location)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByStandardCode(
                 ukprn,
@@ -313,7 +312,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("/frameworks/{frameworkId}/providers", Name="GetFrameworkProviderDetails")]
-        public ActionResult<ApprenticeshipDetails> GetFrameworkProviderDetails(string frameworkId, int ukprn, int location)
+        public ActionResult<ApprenticeshipDetails> GetFrameworkProviderDetails(string frameworkId, [RequiredFromQuery]int ukprn, [RequiredFromQuery]int location)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByFrameworkId(
                 ukprn,
