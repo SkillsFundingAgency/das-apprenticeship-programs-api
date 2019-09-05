@@ -6,7 +6,6 @@ using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.V3;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
 
@@ -87,7 +86,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         .Bool(ft => ft
                             .Filter(GenerateFilters(selector, code, showForNonLevyOnly, showNationalOnly, deliveryModes))
                             .Must(NestedLocationsQuery<T>(location))))
-                    .Sort(SortBy<T>(new SortBy { Order = orderBy, Coordinate = location }))
+                    .Sort(GetSortDescriptor<T>(orderBy, location))
                     .Aggregations(GetProviderSearchAggregationsSelector<T>())
                     .PostFilter(pf => GeneratePostFilter(pf, deliveryModes?.Select(x => x.GetMemberDescription() ?? string.Empty), showNationalOnly));
 
@@ -167,25 +166,33 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return f => f.GeoShapePoint(gp => gp.Field(fd => fd.TrainingLocations.First().Location).Coordinates(location.Lon, location.Lat));
         }
 
-        private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortBy<T>(SortBy sortBy)
+        private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> GetSortDescriptor<T>(int orderBy, Coordinate location)
              where T : class, IApprenticeshipProviderSearchResultsItem
         {
-            if (sortBy.Order == 1)
+            var sortDescriptor = new SortDescriptor<T>();
+
+            if (orderBy == 1)
             {
-                return s => s.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Ascending());
+                sortDescriptor.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Ascending());
             }
 
-            if (sortBy.Order == 2)
+            if (orderBy == 2)
             {
-                return s => s.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Descending());
+                sortDescriptor.Field(f => f.Field(fd => fd.ProviderName.Suffix("keyword")).Descending());
             }
 
-            return s => s.GeoDistance(g => g
+            return s => sortDescriptor.GeoDistance(GetGeoDistanceSearch<T>(location));
+        }
+
+        private static Func<SortGeoDistanceDescriptor<T>, IGeoDistanceSort> GetGeoDistanceSearch<T>(Coordinate location)
+            where T : class, IApprenticeshipProviderSearchResultsItem
+        {
+            return g => g
                 .NestedPath(x => x.TrainingLocations)
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(sortBy.Coordinate.Lat, sortBy.Coordinate.Lon))
+                .PinTo(new GeoLocation(location.Lat, location.Lon))
                 .Unit(DistanceUnit.Miles)
-                .Ascending());
+                .Ascending();
         }
 
         private static ProviderApprenticeshipLocationSearchResult MapToProviderApprenticeshipLocationSearchResult(ISearchResponse<StandardProviderSearchResultsItem> searchResponse, int page, int pageSize)
@@ -262,10 +269,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             };
 
             if (hit.Sorts != null
-                && hit.Sorts.DefaultIfEmpty(0).First() != null
-                && hit.Sorts.DefaultIfEmpty(0).First().GetType().IsAssignableFrom(typeof(double)))
+                && hit.Sorts.DefaultIfEmpty(0).Last() != null
+                && hit.Sorts.DefaultIfEmpty(0).Last().GetType().IsAssignableFrom(typeof(double)))
             {
-                item.Distance = Math.Round(double.Parse(hit.Sorts.DefaultIfEmpty(0).First().ToString()), 1);
+                item.Distance = Math.Round(double.Parse(hit.Sorts.DefaultIfEmpty(0).Last().ToString()), 1);
             }
 
             return item;
