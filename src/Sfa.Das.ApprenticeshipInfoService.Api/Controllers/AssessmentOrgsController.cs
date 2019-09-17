@@ -158,7 +158,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
                 new Link
                 {
                     Title = "Standards",
-                    Href = Url.Link("GetStandardsByOrganisationId", new { organisationId = organisationId })
+                    Href = Url.Link("GetStandardsByAssessmentOrgId", new { organisationId = organisationId })
                 }
             };
         }
