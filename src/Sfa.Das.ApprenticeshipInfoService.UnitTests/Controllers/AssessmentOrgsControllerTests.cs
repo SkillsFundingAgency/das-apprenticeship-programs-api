@@ -31,7 +31,7 @@
             _mockUrlHelper = new Mock<IUrlHelper>();
             _mockUrlHelper.Setup(x => x.Link("GetAssessmentOrgById", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/assessment-organisations/{o.id}"; });
             _mockUrlHelper.Setup(x => x.Link("GetStandardById", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/Standards/{o.id}"; });
-            _mockUrlHelper.Setup(x => x.Link("GetStandardsByOrganisationId", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/assessment-organisations/{o.organisationId}/standards"; });
+            _mockUrlHelper.Setup(x => x.Link("GetStandardsByAssessmentOrgId", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/assessment-organisations/{o.organisationId}/standards"; });
 
             _sut = new AssessmentOrgsController(
                 _mockGetAssessmentOrgs.Object,
