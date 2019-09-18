@@ -5,25 +5,25 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
     public class ApprenticeshipSearchResultDocumentMapping : IApprenticeshipSearchResultDocumentMapping
     {
-        public ApprenticeshipSearchResultsItem MapToApprenticeshipSearchResultsItem(ApprenticeshipSearchResultsDocument d)
+        public ApprenticeshipSearchResultsItem MapToApprenticeshipSearchResultsItem(ApprenticeshipSearchResultsDocument document)
         {
             return new ApprenticeshipSearchResultsItem
             {
-                Duration = d.Duration,
-                EffectiveFrom = d.EffectiveFrom,
-                EffectiveTo = d.EffectiveTo,
-                FrameworkId = d.FrameworkId,
-                FrameworkName = d.FrameworkName,
-                JobRoleItems = d.JobRoleItems,
-                JobRoles = d.JobRoles,
-                Keywords = d.Keywords,
-                LastDateForNewStarts = d.LastDateForNewStarts,
-                Level = d.Level,
-                PathwayName = d.PathwayName,
-                Published = d.Published,
-                StandardId = d.StandardId?.ToString(),
-                Title = d.Title,
-                TitleKeyword = d.TitleKeyword
+                Duration = document.Duration,
+                EffectiveFrom = document.EffectiveFrom,
+                EffectiveTo = document.EffectiveTo,
+                FrameworkId = document.FrameworkId,
+                FrameworkName = document.FrameworkName,
+                JobRoleItems = document.JobRoleItems,
+                JobRoles = document.JobRoles,
+                Keywords = document.Keywords,
+                LastDateForNewStarts = document.LastDateForNewStarts,
+                Level = document.Level,
+                PathwayName = document.PathwayName,
+                Published = document.Published,
+                StandardId = document.StandardId?.ToString(),
+                Title = document.Title,
+                TitleKeyword = document.TitleKeyword
             };
         }
     }
