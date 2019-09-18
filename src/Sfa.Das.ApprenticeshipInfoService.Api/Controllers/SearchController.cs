@@ -80,9 +80,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
             }
         }
 
-        private string ResolveProviderUri(string id)
+        private string ResolveProviderUri(string ukprn)
         {
-            return Url.Link("DefaultApi", new { controller = "Providers", id = id });
+            return Url.Link("GetProviderByUkprn", new { ukprn = ukprn });
         }
     }
 }
