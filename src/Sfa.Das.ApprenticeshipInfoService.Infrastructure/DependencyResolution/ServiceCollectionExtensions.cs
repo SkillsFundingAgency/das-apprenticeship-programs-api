@@ -35,6 +35,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             services.AddScoped<IGetAssessmentOrgs, AssessmentOrgsRepository>();
             services.AddScoped<IApprenticeshipProviderRepository, ApprenticeshipProviderRepository>();
             services.AddScoped<IApprenticeshipMapping, ApprenticeshipMapping>();
+            services.AddScoped<IApprenticeshipSearchResultDocumentMapping, ApprenticeshipSearchResultDocumentMapping>();
             services.AddScoped<IStandardMapping, StandardMapping>();
             services.AddScoped<IFrameworkMapping, FrameworkMapping>();
             services.AddScoped<IProviderMapping, ProviderMapping>();

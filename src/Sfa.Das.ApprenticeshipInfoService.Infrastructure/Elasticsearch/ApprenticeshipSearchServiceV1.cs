@@ -10,23 +10,27 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using Core.Services;
     using Mapping;
     using Nest;
+    using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 
     public sealed class ApprenticeshipSearchServiceV1 : IApprenticeshipSearchServiceV1
     {
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IStandardMapping _standardMapping;
+        private readonly IApprenticeshipSearchResultDocumentMapping _resultDocumentMapping;
         private readonly IQueryHelper _queryHelper;
 
         public ApprenticeshipSearchServiceV1(
             IElasticsearchCustomClient elasticsearchCustomClient,
             IConfigurationSettings applicationSettings,
             IStandardMapping standardMapping,
+            IApprenticeshipSearchResultDocumentMapping resultDocumentMapping,
             IQueryHelper queryHelper)
         {
             _elasticsearchCustomClient = elasticsearchCustomClient;
             _applicationSettings = applicationSettings;
             _standardMapping = standardMapping;
+            _resultDocumentMapping = resultDocumentMapping;
             _queryHelper = queryHelper;
         }
 
@@ -38,12 +42,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             var searchDescriptor = GetSearchDescriptor(page, takeElements, formattedKeywords);
 
-            var results = _elasticsearchCustomClient.Search<ApprenticeshipSearchResultsItem>(s => searchDescriptor);
+            var results = _elasticsearchCustomClient.Search<ApprenticeshipSearchResultsDocument>(s => searchDescriptor);
 
-            return results.Documents.ToList();
+            return results.Documents.Select(_resultDocumentMapping.MapToApprenticeshipSearchResultsItem).ToList();
         }
 
-        private SearchDescriptor<ApprenticeshipSearchResultsItem> GetSearchDescriptor(
+        private SearchDescriptor<ApprenticeshipSearchResultsDocument> GetSearchDescriptor(
             int page, int take, string formattedKeywords)
         {
             return formattedKeywords == "*"
@@ -51,12 +55,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 : GetKeywordSearchDescriptor(page, take, formattedKeywords);
         }
 
-        private SearchDescriptor<ApprenticeshipSearchResultsItem> GetAllSearchDescriptor(
+        private SearchDescriptor<ApprenticeshipSearchResultsDocument> GetAllSearchDescriptor(
             int page, int take, string formattedKeywords)
         {
             var skip = (page - 1) * take;
 
-            var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
+            var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsDocument>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
                 .Skip(skip)
                 .Take(take)
@@ -83,16 +87,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return searchDescriptor;
         }
 
-        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> AllTypesOfApprenticeship()
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsDocument>, QueryContainer> AllTypesOfApprenticeship()
         {
             return f => f.Terms(t => t.Field("documentType").Terms<string>("frameworkdocument", "standarddocument"));
         }
 
-        private SearchDescriptor<ApprenticeshipSearchResultsItem> GetKeywordSearchDescriptor(
+        private SearchDescriptor<ApprenticeshipSearchResultsDocument> GetKeywordSearchDescriptor(
             int page, int take, string formattedKeywords)
         {
             var skip = (page - 1) * take;
-            var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsItem>()
+            var searchDescriptor = new SearchDescriptor<ApprenticeshipSearchResultsDocument>()
                     .Index(_applicationSettings.ApprenticeshipIndexAlias)
                     .Skip(skip)
                     .Take(take)
@@ -131,7 +135,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return searchDescriptor;
         }
 
-        private void GetSortingOrder(SearchDescriptor<ApprenticeshipSearchResultsItem> searchDescriptor)
+        private void GetSortingOrder(SearchDescriptor<ApprenticeshipSearchResultsDocument> searchDescriptor)
         {
             searchDescriptor.Sort(s => s
                 .Descending(SortSpecialField.Score)
@@ -139,14 +143,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 .Descending(f => f.Level));
         }
 
-        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> PublishedApprenticeship()
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsDocument>, QueryContainer> PublishedApprenticeship()
         {
             return f => f
                 .Term(t => t
                     .Field(fi => fi.Published).Value(true));
         }
 
-        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> MustBeNonExpiredApprenticceship()
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsDocument>, QueryContainer> MustBeNonExpiredApprenticceship()
         {
             return m1 => m1
                 .Bool(mb1 => mb1
@@ -162,7 +166,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                                                .Field(f => f.EffectiveTo))))));
         }
 
-        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsItem>, QueryContainer> MustBeStartedApprenticeship()
+        private static Func<QueryContainerDescriptor<ApprenticeshipSearchResultsDocument>, QueryContainer> MustBeStartedApprenticeship()
         {
             return m0 => m0
                 .Bool(mb0 => mb0

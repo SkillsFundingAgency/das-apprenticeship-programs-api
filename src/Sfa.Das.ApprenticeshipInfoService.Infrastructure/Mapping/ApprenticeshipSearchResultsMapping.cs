@@ -1,14 +1,14 @@
-﻿using SFA.DAS.Apprenticeships.Api.Types;
+﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
+using SFA.DAS.Apprenticeships.Api.Types;
 using System;
 using System.Linq;
-using V1ApprenticeshipSearchResultsItem = SFA.DAS.Apprenticeships.Api.Types.ApprenticeshipSearchResultsItem;
 using V2ApprenticeshipSearchResultsItem = SFA.DAS.Apprenticeships.Api.Types.V3.ApprenticeshipSearchResultsItem;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 {
     public class ApprenticeshipSearchResultsMapping : IApprenticeshipSearchResultsMapping
     {
-        public V2ApprenticeshipSearchResultsItem MapToApprenticeshipSearchResult(V1ApprenticeshipSearchResultsItem document)
+        public V2ApprenticeshipSearchResultsItem MapToApprenticeshipSearchResult(ApprenticeshipSearchResultsDocument document)
         {
             var isStandard = IsStandard(document.StandardId.ToString());
 
@@ -20,7 +20,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             return CreateFrameworkVersion(document);
         }
 
-        private static V2ApprenticeshipSearchResultsItem CreateStandardVersion(V1ApprenticeshipSearchResultsItem document)
+        private static V2ApprenticeshipSearchResultsItem CreateStandardVersion(ApprenticeshipSearchResultsDocument document)
         {
             return new V2ApprenticeshipSearchResultsItem
             {
@@ -38,7 +38,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
             };
         }
 
-        private static V2ApprenticeshipSearchResultsItem CreateFrameworkVersion(V1ApprenticeshipSearchResultsItem document)
+        private static V2ApprenticeshipSearchResultsItem CreateFrameworkVersion(ApprenticeshipSearchResultsDocument document)
         {
             return new V2ApprenticeshipSearchResultsItem
             {
