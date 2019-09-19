@@ -1,10 +1,6 @@
-﻿using SFA.DAS.NLog.Logger;
-
-namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Logging
+﻿namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Logging
 {
-    
-
-    public class DependencyLogEntry : ILogEntry
+    public class DependencyLogEntry
     {
         public string Identifier { get; set; }
 

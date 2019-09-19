@@ -115,7 +115,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             return f => f.GeoDistance(g => g
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(location.Lat, location.Lon))
+                .Points(new GeoLocation(location.Lat, location.Lon))
                 .Unit(DistanceUnit.Miles)
                 .Ascending());
         }
@@ -123,16 +123,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         private static Func<QueryContainerDescriptor<T>, QueryContainer> FilterByLocation<T>(Coordinate location)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
-            return f => f.GeoShapePoint(gp => gp.Field(fd => fd.TrainingLocations.First().Location).Coordinates(location.Lon, location.Lat));
+            return f => f.GeoShape(gp => 
+                    gp.Field(fd => fd.TrainingLocations.First().Location)
+                        .Shape(s => s.Point(new GeoCoordinate(location.Lat, location.Lon))));
         }
 
         private static Func<SortDescriptor<T>, IPromise<IList<ISort>>> SortByDistanceFromGivenLocation<T>(Coordinate location)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
             return f => f.GeoDistance(g => g
-                .NestedPath(x => x.TrainingLocations)
+                .Nested(x => x.Path(s => s.TrainingLocations))
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)
-                .PinTo(new GeoLocation(location.Lat, location.Lon))
+                .Points(new GeoLocation(location.Lat, location.Lon))
                 .Unit(DistanceUnit.Miles)
                 .Ascending());
         }

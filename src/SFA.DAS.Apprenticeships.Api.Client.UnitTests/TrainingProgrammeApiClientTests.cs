@@ -240,7 +240,7 @@ namespace SFA.DAS.Apprenticeships.Api.Client.UnitTests
 
         public TrainingProgrammeApiClientTestFixtures WithFramework(string id)
         {
-            _frameworks.Add(new Framework {FrameworkId = id, Title = $"Title {id}"});
+            _frameworks.Add(new Framework {FrameworkId = id, Title = $"Title {id}", FrameworkName = $"Framework{id}" , PathwayName = $"Pathway{id}"});
             return this;
         }
 

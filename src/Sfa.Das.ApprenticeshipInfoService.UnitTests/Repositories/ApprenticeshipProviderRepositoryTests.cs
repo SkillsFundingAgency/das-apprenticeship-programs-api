@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using Elasticsearch.Net;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using Nest;
 using NUnit.Framework;
@@ -8,7 +10,6 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 {
@@ -17,7 +18,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
     {
         private Mock<IQueryHelper> _queryHelper;
 
-        private Mock<ILog> _log;
+        private Mock<ILogger<ApprenticeshipProviderRepository>> _log;
 
         private Mock<IElasticsearchCustomClient> _elasticClient;
 
@@ -25,9 +26,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
         public void Setup()
         {
             _elasticClient = new Mock<IElasticsearchCustomClient>();
-            _log = new Mock<ILog>();
-            _log.Setup(x => x.Warn(It.IsAny<string>())).Verifiable();
-            _log.Setup(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>())).Verifiable();
+            _log = new Mock<ILogger<ApprenticeshipProviderRepository>>();
             _queryHelper = new Mock<IQueryHelper>();
             _queryHelper.Setup(x => x.GetProvidersByFrameworkTotalAmount(It.IsAny<string>())).Returns(1);
             _queryHelper.Setup(x => x.GetProvidersByStandardTotalAmount(It.IsAny<string>())).Returns(1);
@@ -51,8 +50,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
                 Mock.Of<IProviderMapping>());
 
             Assert.Throws<ApplicationException>(() => repo.GetCourseByStandardCode(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
 
-            _log.Verify(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -73,7 +72,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Repositories
 
             Assert.Throws<ApplicationException>(() => repo.GetCourseByFrameworkId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
-            _log.Verify(x => x.Error(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
+            _log.Verify(x => x.Log(Microsoft.Extensions.Logging.LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+
         }
     }
 }

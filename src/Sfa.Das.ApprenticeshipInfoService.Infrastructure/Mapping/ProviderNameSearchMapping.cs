@@ -17,7 +17,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 var details = new ProviderSearchResultItem
                 {
                     ProviderName = item.ProviderName,
-                    Ukprn = Convert.ToInt32(item.UkPrn),
+                    Ukprn = Convert.ToInt32(item.Ukprn),
                     NationalProvider = item.NationalProvider,
                     HasNonLevyContract = item.HasNonLevyContract,
                     IsLevyPayerOnly = item.IsLevyPayerOnly,

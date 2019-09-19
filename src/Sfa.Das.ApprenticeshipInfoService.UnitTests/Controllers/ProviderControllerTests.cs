@@ -9,19 +9,18 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     using System.Linq;
     using System.Net;
     using System.Net.Http;
-    using System.Web.Http;
-    using System.Web.Http.Routing;
     using Api.Controllers;
     using Core.Helpers;
     using Core.Models;
     using Core.Models.Responses;
     using Core.Services;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Constraints;
+    using Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.NLog.Logger;
 
     [TestFixture]
     public class ProviderControllerTests
@@ -31,13 +30,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         private Mock<IControllerHelper> _mockControllerHelper;
         private Mock<IGetStandards> _mockGetStandards;
         private Mock<IGetFrameworks> _mockGetFrameworks;
-           [SetUp]
+        private Mock<IUrlHelper> _mockUrlHelper;
+
+        [SetUp]
         public void Init()
         {
             _mockGetProviders = new Mock<IGetProviders>();
             _mockControllerHelper = new Mock<IControllerHelper>();
             _mockGetStandards = new Mock<IGetStandards>();
             _mockGetFrameworks = new Mock<IGetFrameworks>();
+            _mockUrlHelper = new Mock<IUrlHelper>();
+            _mockUrlHelper.Setup(x => x.Link("GetProviderByUkprn", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/providers/{o.ukprn}"; });
 
             _sut = new ProvidersController(
                 _mockGetProviders.Object,
@@ -45,22 +48,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                 _mockGetStandards.Object,
                 _mockGetFrameworks.Object,
                 Mock.Of<IApprenticeshipProviderRepository>()
-                )
-            {
-                Request = new HttpRequestMessage
-                {
-                    RequestUri = new Uri("http://localhost/providers")
-                },
-                Configuration = new HttpConfiguration()
-            };
+                );
 
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.RequestContext.RouteData = new HttpRouteData(
-                route: new HttpRoute(),
-                values: new HttpRouteValueDictionary { { "controller", "providers" } });
+            _sut.Url = _mockUrlHelper.Object;
         }
 
         [Test]
@@ -75,22 +65,22 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var actual = _sut.Get(ukprn);
 
-            actual.ShouldBeEquivalentTo(expected);
-            actual.Uri.Should().Be($"http://localhost/providers/{ukprn}");
+            actual.Value.Should().BeEquivalentTo(expected);
+            actual.Value.Uri.Should().Be($"http://localhost/providers/{ukprn}");
         }
 
         [Test]
         public void ShouldReturnProvidersNotFound()
         {
-            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(12345679));
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            var result = _sut.Get(12345679);
+            result.Result.Should().BeAssignableTo<NotFoundObjectResult>();
         }
 
         [Test]
         public void AnInvalidUkprnShouldReturnABadRequest()
         {
-            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get(123456));
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            var result = _sut.Get(123456);
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
 
         [Test]
@@ -111,15 +101,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var response = _sut.GetByStandardIdAndLocation(1, 2, 3, 1);
 
-            response.Should().NotBeNull();
-            response.Should().BeOfType<List<StandardProviderSearchResultsItemResponse>>();
-            response.Should().NotBeEmpty();
-            response.Should().BeEquivalentTo(expected);
-            response.First().Should().NotBe(null);
-            response.First().Should().Be(element);
-            response.First().ProviderName.Should().Be(element.ProviderName);
-            response.First().LegalName.Should().Be(element.LegalName);
-            response.First().ApprenticeshipInfoUrl.Should().Be(element.ApprenticeshipInfoUrl);
+            response.Value.Should().NotBeNull();
+            response.Value.Should().BeOfType<List<StandardProviderSearchResultsItemResponse>>();
+            response.Value.Should().NotBeEmpty();
+            response.Value.Should().BeEquivalentTo(expected);
+            response.Value.First().Should().NotBe(null);
+            response.Value.First().Should().Be(element);
+            response.Value.First().ProviderName.Should().Be(element.ProviderName);
+            response.Value.First().LegalName.Should().Be(element.LegalName);
+            response.Value.First().ApprenticeshipInfoUrl.Should().Be(element.ApprenticeshipInfoUrl);
         }
 
         [Test]
@@ -140,15 +130,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var response = _sut.GetByFrameworkIdAndLocation(1, 2, 3, 1);
 
-            response.Should().NotBeNull();
-            response.Should().BeOfType<List<FrameworkProviderSearchResultsItemResponse>>();
-            response.Should().NotBeEmpty();
-            response.Should().BeEquivalentTo(expected);
-            response.First().Should().NotBe(null);
-            response.First().Should().Be(element);
-            response.First().ProviderName.Should().Be(element.ProviderName);
-            response.First().LegalName.Should().Be(element.LegalName);
-            response.First().ApprenticeshipInfoUrl.Should().Be(element.ApprenticeshipInfoUrl);
+            response.Value.Should().NotBeNull();
+            response.Value.Should().BeOfType<List<FrameworkProviderSearchResultsItemResponse>>();
+            response.Value.Should().NotBeEmpty();
+            response.Value.Should().BeEquivalentTo(expected);
+            response.Value.First().Should().NotBe(null);
+            response.Value.First().Should().Be(element);
+            response.Value.First().ProviderName.Should().Be(element.ProviderName);
+            response.Value.First().LegalName.Should().Be(element.LegalName);
+            response.Value.First().ApprenticeshipInfoUrl.Should().Be(element.ApprenticeshipInfoUrl);
         }
 
         [Test]
@@ -209,22 +199,21 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
                     x.GetActiveApprenticeshipTrainingByProvider(ukprn, 1)).Returns(expected);
 
            var result = _sut.GetActiveApprenticeshipTrainingByProvider(ukprn);
-           var providerApprenticeships = result.ApprenticeshipTrainingItems.ToArray();
+           var providerApprenticeships = result.Value.ApprenticeshipTrainingItems.ToArray();
            Assert.AreEqual(apprenticeshipTrainingList.Count, providerApprenticeships.Length);
-           Assert.AreEqual(totalCount, result.PaginationDetails.TotalCount);
-           Assert.AreEqual(numberPerPage, result.PaginationDetails.NumberPerPage);
-           Assert.AreEqual(numberReturned, result.ApprenticeshipTrainingItems.Count());
-           Assert.AreEqual(page, result.PaginationDetails.Page);
-           Assert.AreEqual(lastPage, result.PaginationDetails.LastPage);
+           Assert.AreEqual(totalCount, result.Value.PaginationDetails.TotalCount);
+           Assert.AreEqual(numberPerPage, result.Value.PaginationDetails.NumberPerPage);
+           Assert.AreEqual(numberReturned, result.Value.ApprenticeshipTrainingItems.Count());
+           Assert.AreEqual(page, result.Value.PaginationDetails.Page);
+           Assert.AreEqual(lastPage, result.Value.PaginationDetails.LastPage);
            Assert.AreEqual(providerApprenticeships[0].Identifier, apprenticeshipTraining.Identifier);
         }
 
         [Test]
         public void ShouldReturnBadRequestIfRequestingActiveApprenticeshipsWithBadlyFormedUkprn()
         {
-            TestDelegate action = () => _sut.GetActiveApprenticeshipTrainingByProvider(1);
-            var ex = Assert.Throws<HttpResponseException>(action);
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            var result = _sut.GetActiveApprenticeshipTrainingByProvider(1);
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
 
 
@@ -242,8 +231,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long>()), Times.Once);
 
-            response.Should().NotBeNull();
-            response.Should().BeEmpty();
+            response.Value.Should().NotBeNull();
+            response.Value.Should().BeEmpty();
         }
 
         [Test]
@@ -251,10 +240,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             var standardCode = 1;
 
-            TestDelegate action = () => _sut.GetStandardProviders(standardCode.ToString());
+            var result = _sut.GetStandardProviders(standardCode.ToString());
 
-            var ex = Assert.Throws<HttpResponseException>(action);
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            result.Result.Should().BeAssignableTo<NotFoundObjectResult>();
         }
 
         [Test]
@@ -291,8 +279,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             _mockGetProviders.Verify(x => x.GetProviderByUkprnList(new List<long> { }), Times.Once);
 
-            response.Should().NotBeNull();
-            response.Should().BeEmpty();
+            response.Value.Should().NotBeNull();
+            response.Value.Should().BeEmpty();
         }
 
         [Test]
@@ -300,10 +288,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             var frameworkId = 500;
 
-            TestDelegate action = () => _sut.GetFrameworkProviders(frameworkId.ToString());
+            var result = _sut.GetFrameworkProviders(frameworkId.ToString());
 
-            var ex = Assert.Throws<HttpResponseException>(action);
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            result.Result.Should().BeAssignableTo<NotFoundObjectResult>();
         }
 
         //[Test]
@@ -381,9 +368,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             _mockControllerHelper.Setup(x => x.GetActualPage(It.IsAny<int>())).Returns(1);
 
-            ActualValueDelegate<object> test = () => _sut.GetByStandardIdAndLocation(1, null, null, 1);
+            var result = _sut.GetByStandardIdAndLocation(1, null, null, 1);
 
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
 
         [Test]
@@ -391,9 +378,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             _mockControllerHelper.Setup(x => x.GetActualPage(It.IsAny<int>())).Returns(1);
 
-            ActualValueDelegate<object> test = () => _sut.GetByFrameworkIdAndLocation(1, null, null, 1);
+            var result = _sut.GetByFrameworkIdAndLocation(1, null, null, 1);
 
-            Assert.That(test, Throws.TypeOf<HttpResponseException>());
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
 
         [Test]

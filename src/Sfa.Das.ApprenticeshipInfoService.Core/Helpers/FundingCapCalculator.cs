@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 
@@ -18,7 +17,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Helpers
 
         public int CalculateCurrentFundingBand(StandardSearchResultsItem standard)
         {
-            return _activeApprenticeshipChecker.CheckActiveStandard(standard.StandardId, standard.EffectiveFrom, standard.EffectiveTo) ? GetFundingCapFromPeriods(standard.FundingPeriods) : 0;
+            return _activeApprenticeshipChecker.CheckActiveStandard(standard.StandardId.ToString(), standard.EffectiveFrom, standard.EffectiveTo) ? GetFundingCapFromPeriods(standard.FundingPeriods) : 0;
         }
 
         public int CalculateCurrentFundingBand(FrameworkSearchResultsItem framework)

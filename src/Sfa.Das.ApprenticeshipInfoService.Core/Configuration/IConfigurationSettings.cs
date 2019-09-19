@@ -11,13 +11,7 @@
 
         string AssessmentOrgsIndexAlias { get; }
 
-        IEnumerable<Uri> ElasticServerUrls { get; }
-
-        string EnvironmentName { get; }
-
-        string ApplicationName { get; }
-
-        string GaTrackingCode { get; }
+        List<Uri> ElasticServerUrls { get; }
 
         int ApprenticeshipProviderElements { get; }
 
@@ -29,7 +23,7 @@
 
         List<string> StandardsExpiredRequired { get; }
 
-         int PageSizeApprenticeshipSummary { get; }
+        int PageSizeApprenticeshipSummary { get; }
 
         string IfaStandardApiUrl { get; }
     }

@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
 using SFA.DAS.Apprenticeships.Api.Types;
 using System.Linq;
 
@@ -21,11 +22,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
         [Test]
         public void ShouldPopulatePropertiesForStandard()
         {
-            ApprenticeshipSearchResultsItem source = CreateTestStandardSourceItem();
+            ApprenticeshipSearchResultsDocument source = CreateTestStandardSourceItem();
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
 
-            result.Id.Should().Be(source.StandardId);
+            result.Id.Should().Be(source.StandardId.ToString());
             result.ProgrammeType.Should().Be(ApprenticeshipTrainingType.Standard);
             result.Title.Should().Be(source.Title);
             result.Level.Should().Be(source.Level);
@@ -43,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
         [Test]
         public void ShouldPopulatePropertiesForFrameworkWithoutSubgroups()
         {
-            ApprenticeshipSearchResultsItem source = CreateTestFrameworkSourceItem();
+            ApprenticeshipSearchResultsDocument source = CreateTestFrameworkSourceItem();
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
 
@@ -65,7 +66,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
         [Test]
         public void ShouldPopulatePropertiesForFrameworkWithSubgroups()
         {
-            ApprenticeshipSearchResultsItem source = CreateTestFrameworkSourceItem(true);
+            ApprenticeshipSearchResultsDocument source = CreateTestFrameworkSourceItem(true);
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
 
@@ -87,7 +88,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
         [Test]
         public void ShouldNotPopulateJobRolesForFrameworkWhenJobRoleItemsIsNull()
         {
-            ApprenticeshipSearchResultsItem source = CreateTestFrameworkSourceItem();
+            ApprenticeshipSearchResultsDocument source = CreateTestFrameworkSourceItem();
             source.JobRoleItems = null;
 
             var result = _sut.MapToApprenticeshipSearchResult(source);
@@ -95,13 +96,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
             result.JobRoles.Should().BeNullOrEmpty();
         }
 
-        private ApprenticeshipSearchResultsItem CreateTestStandardSourceItem()
+        private ApprenticeshipSearchResultsDocument CreateTestStandardSourceItem()
         {
-            var fakeResult = new Faker<ApprenticeshipSearchResultsItem>()
+            var fakeResult = new Faker<ApprenticeshipSearchResultsDocument>()
                 .StrictMode(false)
                 .Rules((f, o) =>
                     {
-                        o.StandardId = "123";
+                        o.StandardId = 123;
                         o.Duration = f.Random.Number(24);
                         o.EffectiveFrom = f.Date.Past();
                         o.EffectiveTo = f.Date.Future();
@@ -121,7 +122,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
             return fakeResult.Generate();
         }
 
-        private ApprenticeshipSearchResultsItem CreateTestFrameworkSourceItem(bool hasSubGroups = false)
+        private ApprenticeshipSearchResultsDocument CreateTestFrameworkSourceItem(bool hasSubGroups = false)
         {
             var fakeJobRoleItem = new Faker<JobRoleItem>()
                 .Rules((f, o) =>
@@ -130,7 +131,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Infrastructure.Mapping
                     o.Description = f.Lorem.Sentence();
                 });
 
-            var fakeResult = new Faker<ApprenticeshipSearchResultsItem>()
+            var fakeResult = new Faker<ApprenticeshipSearchResultsDocument>()
                 .StrictMode(false)
                 .Rules((f, o) =>
                 {

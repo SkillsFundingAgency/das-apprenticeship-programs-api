@@ -2,7 +2,7 @@
 {
    public class ProviderStandardDto
     {
-        public string Ukprn { get; set; }
+        public int Ukprn { get; set; }
         public int StandardCode { get; set; }
     }
 }

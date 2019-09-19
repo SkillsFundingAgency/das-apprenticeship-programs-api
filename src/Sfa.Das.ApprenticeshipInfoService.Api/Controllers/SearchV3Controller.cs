@@ -1,31 +1,27 @@
-﻿using Microsoft.Web.Http;
-using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using SFA.DAS.Apprenticeships.Api.Types.V3;
-using SFA.DAS.NLog.Logger;
-using Swashbuckle.Swagger.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Description;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using SFA.DAS.Apprenticeships.Api.Types.V3;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
 {
-    [ApiVersion("3.0")]
-    [RoutePrefix("v{version:apiVersion}")]
-    public class SearchV3Controller : ApiController
+    [ApiExplorerSettings(GroupName = "v3")]   
+    [Route("v3")]   
+    public class SearchV3Controller : ControllerBase
     {
         private readonly IApprenticeshipSearchServiceV3 _apprenticeshipSearchServiceV3;
         private readonly IProviderNameSearchServiceV3 _providerNameSearchService;
-        private readonly ILog _logger;
+        private readonly ILogger<SearchV3Controller> _logger;
 
         public SearchV3Controller(
             IApprenticeshipSearchServiceV3 apprenticeshipSearchServiceV2,
-            ILog logger, IProviderNameSearchServiceV3 providerNameSearchService)
+            ILogger<SearchV3Controller> logger, IProviderNameSearchServiceV3 providerNameSearchService)
         {
             _apprenticeshipSearchServiceV3 = apprenticeshipSearchServiceV2;
             _logger = logger;
@@ -41,20 +37,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="order">1 - Best match, 2 - Level (desc), 3 - Level (asc)</param>
         /// <param name="levels">Levels, coma separated</param>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchActiveApprenticeships")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipSearchResults))]
-        [Route("apprenticeship-programmes/search/")]
-        [HttpGet]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult SearchApprenticeships(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("apprenticeship-programmes/search/", Name="SearchApprenticeships")]
+        public ActionResult<ApprenticeshipSearchResults> SearchApprenticeships(string keywords, int page = 1, int pageSize = 20, int order = 0, string levels = null)
         {
             try
             {
                 var selectedLevels = ParseForLevels(levels);
                 var response = _apprenticeshipSearchServiceV3.SearchApprenticeships(keywords, page, pageSize, order, selectedLevels);
 
-                return Ok(response);
+                return response;
             }
             catch (ArgumentException)
             {
@@ -62,7 +55,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/apprenticeship-programmes/search");
+                _logger.LogError(e, "/apprenticeship-programmes/search");
                 throw;
             }
 
@@ -72,35 +65,31 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// Search for providers
         /// </summary>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchProviders")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderSearchResults))]
-        [Route("providers/search")]
-        [HttpGet]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IHttpActionResult> SearchProviders(string keywords, int page = 1, int pageSize = 20)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("providers/search", Name="SearchForProviders")]
+        public ActionResult<ProviderSearchResults> SearchProviders(string keywords, int page = 1, int pageSize = 20)
         {
             try
             {
-
-
-                var response = await _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, pageSize);
+                var response = _providerNameSearchService.SearchProviderNameAndAliases(keywords, page, pageSize);
 
                 foreach (var providerSearchResponseItem in response.Results)
                 {
                     providerSearchResponseItem.Uri = ResolveProviderUri(providerSearchResponseItem.Ukprn.ToString());
                 }
 
-                return Ok(response);
+                return response;
             }
             catch (ValidationException ex)
             {
-                _logger.Error(ex, "/providers/search");
+                _logger.LogError(ex, "/providers/search");
+                
                 return BadRequest(ex.ToString());
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/providers/search");
+                _logger.LogError(e, "/providers/search");
                 throw;
             }
         }
@@ -110,23 +99,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// </summary>
         /// <param name="searchString">String to search for</param>
         /// <returns>a search result object</returns>
-        [SwaggerOperation("SearchActiveApprenticeshipsAutocomplete")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipAutocompleteSearchResults))]
-        [Route("apprenticeship-programmes/autocomplete/")]
-        [HttpGet]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult ApprenticeshipsAutocomplete(string searchString)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("apprenticeship-programmes/autocomplete/", Name="SearchActiveApprenticeshipsAutocomplete")]
+        public ActionResult<ApprenticeshipAutocompleteSearchResults> ApprenticeshipsAutocomplete(string searchString)
         {
             try
             {
                 var response = _apprenticeshipSearchServiceV3.GetCompletions(searchString);
 
-                return Ok(response);
+                return response;
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/apprenticeship-programmes/autocomplete");
+                _logger.LogError(e, "/apprenticeship-programmes/autocomplete");
                 throw;
             }
         }
