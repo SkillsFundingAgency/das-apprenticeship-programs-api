@@ -186,8 +186,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             return s => sortDescriptor.GeoDistance(GetGeoDistanceSearch<T>(location));
         }
 
-        private static Func<SortGeoDistanceDescriptor<T>, IGeoDistanceSort> GetGeoDistanceSearch<T>(Coordinate location)
+        private static Func<GeoDistanceSortDescriptor<T>, IGeoDistanceSort> GetGeoDistanceSearch<T>(Coordinate location)
             where T : class, IApprenticeshipProviderSearchResultsItem
+        { 
             return g => g
                 .Nested(x => x.Path(p => p.TrainingLocations))
                 .Field(fd => fd.TrainingLocations.First().LocationPoint)

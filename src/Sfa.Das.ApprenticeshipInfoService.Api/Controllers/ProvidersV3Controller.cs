@@ -48,7 +48,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("apprenticeships/{id}/providers", Name="GetByApprenticeshipIdAndLocation")]
-        public ActionResult<ProviderApprenticeshipLocationSearchResult> GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
+        public ActionResult<ProviderApprenticeshipLocationSearchResult> GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null, int orderBy = 0)
         {
             try
             {
