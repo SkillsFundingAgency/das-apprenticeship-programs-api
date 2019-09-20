@@ -56,11 +56,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
 
             services.AddHealthChecks()
                 .AddRedis(configuration.GetConnectionString("Redis"), "redis-check")
-                .AddElasticsearch(opt => 
-                {
-                    opt.UseServer(settings.ElasticServerUrls.First().ToString());
-                    opt.UseBasicAuthentication(settings.ElasticsearchUsername, settings.ElasticsearchPassword);
-                }, "elasticsearch-check")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch-query-check");
         }
     }
