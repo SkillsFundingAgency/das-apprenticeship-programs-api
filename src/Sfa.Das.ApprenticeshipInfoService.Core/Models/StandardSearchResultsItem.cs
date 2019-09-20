@@ -7,7 +7,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
 
     public sealed class StandardSearchResultsItem
     {
-        public string StandardId { get; set; }
+        public int StandardId { get; set; }
 
         public string Title { get; set; }
 

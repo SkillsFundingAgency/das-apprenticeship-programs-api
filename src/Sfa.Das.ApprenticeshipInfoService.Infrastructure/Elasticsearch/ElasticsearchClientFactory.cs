@@ -2,17 +2,16 @@
 using System.Linq;
 using System.Net;
 using Elasticsearch.Net;
-using FeatureToggle.Core.Fluent;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Extensions;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
     public sealed class ElasticsearchClientFactory : IElasticsearchClientFactory
     {
+        private ElasticClient _client;
+
         private readonly IConfigurationSettings _applicationSettings;
 
         public ElasticsearchClientFactory(IConfigurationSettings applicationSettings)
@@ -22,40 +21,33 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public IElasticClient Create()
         {
-            if (Is<IgnoreSslCertificateFeature>.Enabled)
+            if (_client == null)
             {
-                using (var settings = new ConnectionSettings(
-                    new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First()),
-                    new MyCertificateIgnoringHttpConnection()))
-                {
-                    SetDefaultSettings(settings);
-
-                    return new ElasticClient(settings);
-                }
-            }
-
-            using (var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First())))
-            {
+                var settings = new ConnectionSettings(new SingleNodeConnectionPool(_applicationSettings.ElasticServerUrls.First()));
                 SetDefaultSettings(settings);
 
-                return new ElasticClient(settings);
+                _client = new ElasticClient(settings);
             }
+
+            return _client;
         }
 
         private void SetDefaultSettings(ConnectionSettings settings)
         {
-            if (!Debugger.IsAttached)
+            if (HasAuthenticationSettings())
             {
                 settings.BasicAuthentication(_applicationSettings.ElasticsearchUsername, _applicationSettings.ElasticsearchPassword);
             }
 
-	        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            settings.DisableDirectStreaming();
+        }
 
-			settings.DisableDirectStreaming();
-            settings.MapDefaultTypeNames(d => d.Add(typeof(StandardSearchResultsItem), "standarddocument"));
-            settings.MapDefaultTypeNames(d => d.Add(typeof(FrameworkSearchResultsItem), "frameworkdocument"));
-            settings.MapDefaultTypeNames(d => d.Add(typeof(StandardProviderSearchResultsItem), "standardprovider"));
-            settings.MapDefaultTypeNames(d => d.Add(typeof(FrameworkProviderSearchResultsItem), "frameworkprovider"));
+        private bool HasAuthenticationSettings()
+        {
+            if (string.IsNullOrWhiteSpace(_applicationSettings.ElasticsearchUsername) && string.IsNullOrWhiteSpace(_applicationSettings.ElasticsearchPassword))
+                return false;
+            else 
+                return true;
         }
     }
 }

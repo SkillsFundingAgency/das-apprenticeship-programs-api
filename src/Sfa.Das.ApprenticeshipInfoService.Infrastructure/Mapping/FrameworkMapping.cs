@@ -10,7 +10,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
 
     public class FrameworkMapping : IFrameworkMapping
     {
-         private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
+        private readonly IActiveApprenticeshipChecker _activeApprenticeshipChecker;
         private readonly IFundingCapCalculator _fundingCapCalculator;
 
         public FrameworkMapping(IActiveApprenticeshipChecker activeApprenticeshipChecker, IFundingCapCalculator fundingCapCalculator)

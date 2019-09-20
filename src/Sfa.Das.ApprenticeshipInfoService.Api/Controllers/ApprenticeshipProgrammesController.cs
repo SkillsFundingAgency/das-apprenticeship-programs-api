@@ -1,31 +1,28 @@
-﻿using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Web.Http;
-    using System.Web.Http.Description;
-    using Microsoft.Web.Http;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using SFA.DAS.Apprenticeships.Api.Types;
-    using SFA.DAS.NLog.Logger;
-    using Swashbuckle.Swagger.Annotations;
-
-    public class ApprenticeshipProgrammesController : ApiController
+    [ApiExplorerSettings(GroupName = "v1")]
+    public class ApprenticeshipProgrammesController : ControllerBase
     {
         private readonly IGetFrameworks _getFrameworks;
         private readonly IGetStandards _getStandards;
         private readonly IApprenticeshipMapping _apprenticeshipMapping;
-        private readonly ILog _logger;
+        private readonly ILogger<ApprenticeshipProgrammesController> _logger;
 
         public ApprenticeshipProgrammesController(
             IGetFrameworks getFrameworks,
             IGetStandards getStandards,
             IApprenticeshipMapping apprenticeshipMapping,
-            ILog logger)
+            ILogger<ApprenticeshipProgrammesController> logger)
         {
             _getFrameworks = getFrameworks;
             _getStandards = getStandards;
@@ -37,12 +34,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// Get all the active apprenticeships
         /// </summary>
         /// <returns>a collection of apprenticeships</returns>
-        [SwaggerOperation("GetAllApprenticeships")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipSummary>))]
-        [Route("v{version:apiVersion}/apprenticeship-programmes")]
-        [Route("apprenticeship-programmes")]
-        [ExceptionHandling]
-        public IEnumerable<ApprenticeshipSummary> Get()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/apprenticeship-programmes", Name="GetAllApprenticeships")]
+        public ActionResult<IEnumerable<ApprenticeshipSummary>> Get()
         {
             var response = GetActiveFrameworks();
             response.AddRange(GetActiveStandards());
@@ -53,12 +47,10 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
         /// <summary>
         /// Do we have apprenticeships?
         /// </summary>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/apprenticeship-programmes")]
-        [Route("apprenticeship-programmes")]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/apprenticeship-programmes")]
         public void Head()
         {
             Get();
@@ -90,12 +82,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
 
         private string ResolveFrameworkUri(string id)
         {
-            return Url.Link("DefaultApi", new { controller = "frameworks", id = id });
+            return Url.Link("GetFrameworkById", new { id = id });
         }
 
         private string ResolveStandardUri(string id)
         {
-            return Url.Link("DefaultApi", new { controller = "standards", id = id });
+            return Url.Link("GetStandardById", new { id = id });
         }
     }
 }

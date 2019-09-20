@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Net;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Models;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services
 {
     public class GetIfaStandardsUrlService : IGetIfaStandardsUrlService
     {
-        private readonly ILog _logger;
+        private readonly ILogger<GetIfaStandardsUrlService> _logger;
         private readonly IConfigurationSettings _applicationSettings;
 
-        public GetIfaStandardsUrlService(ILog logger, IConfigurationSettings applicationSettings)
+        public GetIfaStandardsUrlService(ILogger<GetIfaStandardsUrlService> logger, IConfigurationSettings applicationSettings)
         {
             _logger = logger;
             _applicationSettings = applicationSettings;
@@ -33,7 +33,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warn(ex, $"IFA Url [{urlToCall}] failed to return details");
+                    _logger.LogWarning(ex, $"IFA Url [{urlToCall}] failed to return details");
                     return string.Empty;
                 }
             }

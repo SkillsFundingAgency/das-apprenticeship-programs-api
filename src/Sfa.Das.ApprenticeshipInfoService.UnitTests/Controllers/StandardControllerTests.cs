@@ -6,16 +6,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Web.Http;
-    using System.Web.Http.Routing;
     using Api.Controllers;
     using Core.Services;
     using FluentAssertions;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using NUnit.Framework;
-    using NUnit.Framework.Constraints;
+    using Sfa.Das.ApprenticeshipInfoService.UnitTests.Helpers;
     using SFA.DAS.Apprenticeships.Api.Types;
-    using SFA.DAS.NLog.Logger;
     using Assert = NUnit.Framework.Assert;
 
     [TestFixture]
@@ -23,7 +22,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
     {
         private StandardsController _sut;
         private Mock<IGetStandards> _mockGetStandards;
-        private Mock<ILog> _mockLogger;
+        private Mock<ILogger<StandardsController>> _mockLogger;
+        private Mock<IUrlHelper> _mockUrlHelper;
         private DateTime? _lastDateForNewStarts;
 
         [SetUp]
@@ -31,24 +31,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             _lastDateForNewStarts = DateTime.Today.AddDays(100);
             _mockGetStandards = new Mock<IGetStandards>();
-            _mockLogger = new Mock<ILog>();
+            _mockLogger = new Mock<ILogger<StandardsController>>();
+            _mockUrlHelper = new Mock<IUrlHelper>();
+            _mockUrlHelper.Setup(x => x.Link("GetStandardById", It.IsAny<object>())).Returns<string, dynamic>((a, b) => { var o = DynamicObjectHelper.ToExpandoObject(b); return $"http://localhost/standards/{o.id}"; });
+
+
             _sut = new StandardsController(_mockGetStandards.Object, _mockLogger.Object);
-            _sut.Request = new HttpRequestMessage
-            {
-                RequestUri = new Uri("http://localhost/standards")
-            };
-            _sut.Configuration = new HttpConfiguration();
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.Configuration.Routes.MapHttpRoute(
-                name: "GetStandardProviders",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-            _sut.RequestContext.RouteData = new HttpRouteData(
-                route: new HttpRoute(),
-                values: new HttpRouteValueDictionary { { "controller", "standards" } });
+            _sut.Url = _mockUrlHelper.Object;
         }
 
         [Test]
@@ -58,11 +47,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
 
             var standards = _sut.Get();
 
-            Assert.NotNull(standards);
-            standards.Count().Should().Be(2);
-            standards.First().Id.Should().Be("2");
-            standards.Last().Id.Should().Be("3");
-            standards.First().LastDateForNewStarts.Should().Be(_lastDateForNewStarts);
+            Assert.NotNull(standards.Value);
+            standards.Value.Count().Should().Be(2);
+            standards.Value.First().Id.Should().Be("2");
+            standards.Value.Last().Id.Should().Be("3");
+            standards.Value.First().LastDateForNewStarts.Should().Be(_lastDateForNewStarts);
         }
 
         private IEnumerable<StandardSummary> LoadStandardSummaryData()
@@ -96,8 +85,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
         {
             _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title" });
 
-            var ex = Assert.Throws<HttpResponseException>(() => _sut.Get("-2"));
-            Assert.That(ex.Response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            var result = _sut.Get("-2");
+            result.Result.Should().BeAssignableTo<NotFoundResult>();
         }
 
         [Test]
@@ -107,11 +96,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers
             _mockGetStandards.Setup(m => m.GetStandardById("42")).Returns(new Standard { StandardId = "42", Title = "test title", IsActiveStandard = true, LastDateForNewStarts = todaysDate});
             var standard = _sut.Get("42");
 
-            Assert.NotNull(standard);
-            standard.StandardId.Should().Be("42");
-            standard.Title.Should().Be("test title");
-            standard.Uri.ToLower().Should().Be("http://localhost/standards/42");
-            standard.LastDateForNewStarts.Should().Be(todaysDate);
+            Assert.NotNull(standard.Value);
+            standard.Value.StandardId.Should().Be("42");
+            standard.Value.Title.Should().Be("test title");
+            standard.Value.Uri.ToLower().Should().Be("http://localhost/standards/42");
+            standard.Value.LastDateForNewStarts.Should().Be(todaysDate);
         }
 
         [Test]

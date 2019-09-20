@@ -22,7 +22,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         {
             return new Standard
             {
-                StandardId = document.StandardId,
+                StandardId = document.StandardId.ToString(),
                 Title = document.Title,
                 StandardPdf = document.StandardPdf,
                 AssessmentPlanPdf = document.AssessmentPlanPdf,
@@ -45,7 +45,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 StandardSectorCode = document.StandardSectorCode,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo),
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId.ToString(), document.EffectiveFrom, document.EffectiveTo),
                 LastDateForNewStarts = document.LastDateForNewStarts,
                 RegulatedStandard = document.RegulatedStandard
             };
@@ -55,7 +55,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
         {
             return new StandardSummary
             {
-                Id = document.StandardId,
+                Id = document.StandardId.ToString(),
                 Title = document.Title,
                 Level = document.Level,
                 StandardSectorCode = document.StandardSectorCode,
@@ -68,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping
                 Ssa2 = document.SectorSubjectAreaTier2,
                 EffectiveFrom = document.EffectiveFrom,
                 EffectiveTo = document.EffectiveTo,
-                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId, document.EffectiveFrom, document.EffectiveTo),
+                IsActiveStandard = _activeApprenticeshipChecker.CheckActiveStandard(document.StandardId.ToString(), document.EffectiveFrom, document.EffectiveTo),
                 LastDateForNewStarts = document.LastDateForNewStarts,
                 RegulatedStandard = document.RegulatedStandard
             };

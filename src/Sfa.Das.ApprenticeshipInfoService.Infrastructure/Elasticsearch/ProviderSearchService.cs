@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FeatureToggle.Core.Fluent;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
@@ -63,18 +61,17 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
         {
             var skip = (page - 1) * take;
 
-	        var searchDescriptor = new SearchDescriptor<ProviderSearchResultsItem>()
-		        .Index(_applicationSettings.ProviderIndexAlias)
-		        .Type(Types.Parse("providerapidocument"))
-		        .Skip(skip)
-		        .Take(take)
-		        .Analyzer(typeof(KeywordAnalyzer).ToString())
-		        .Query(q => q
-			        .QueryString(qs => qs
-				        .Fields(fs => fs
-					        .Field(f => f.ProviderName)
-					        .Field(p => p.Aliases))
-				        .Query(formattedKeywords)));
+            var searchDescriptor = new SearchDescriptor<ProviderSearchResultsItem>()
+                .Index(_applicationSettings.ProviderIndexAlias)
+                .Skip(skip)
+                .Take(take)
+                .Analyzer(typeof(KeywordAnalyzer).ToString())
+                .Query(q => q
+                    .QueryString(qs => qs
+                        .Fields(fs => fs
+                            .Field(f => f.ProviderName)
+                            .Field(p => p.Aliases))
+                        .Query(formattedKeywords)) && +q.Term("documentType", "providerapidocument"));
 
             return searchDescriptor;
         }
@@ -86,15 +83,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             var skip = (page - 1) * take;
             var searchDescriptor = new SearchDescriptor<ProviderSearchResultsItem>()
                     .Index(_applicationSettings.ProviderIndexAlias)
-                    .Type(Types.Parse("providerapidocument"))
                     .Skip(skip)
                     .Take(take)
-					.Query(q => q
-						.QueryString(qs => qs
-							.Fields(fs => fs
-								.Field(f => f.ProviderName)
-								.Field(p => p.Aliases))
-							.Query(keywords)));
+                    .Query(q => +q.Term("documentType", "providerapidocument") && q
+                        .QueryString(qs => qs
+                            .Fields(fs => fs
+                                .Field(f => f.ProviderName)
+                                .Field(p => p.Aliases))
+                            .Query(keywords)));
 
 			return searchDescriptor;
         }

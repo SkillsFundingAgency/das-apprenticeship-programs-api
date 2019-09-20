@@ -13,16 +13,16 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using Core.Models.Responses;
     using Core.Services;
     using Mapping;
+    using Microsoft.Extensions.Logging;
     using Nest;
     using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using SFA.DAS.NLog.Logger;
 
     public sealed class ProviderRepository : IGetProviders
     {
         private const string ProviderIndexType = "providerapidocument";
 
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
-        private readonly ILog _applicationLogger;
+        private readonly ILogger<ProviderRepository> _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IProviderLocationSearchProvider _providerLocationSearchProvider;
         private readonly IProviderMapping _providerMapping;
@@ -32,7 +32,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         public ProviderRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
-            ILog applicationLogger,
+            ILogger<ProviderRepository> applicationLogger,
             IConfigurationSettings applicationSettings,
             IProviderLocationSearchProvider providerLocationSearchProvider,
             IProviderMapping providerMapping,
@@ -57,15 +57,14 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                     s.Index(_applicationSettings.ProviderIndexAlias)
-                        .Type(Types.Parse(ProviderIndexType))
                         .From(0)
                         .Sort(sort => sort.Ascending(f => f.Ukprn))
                         .Take(take)
-                        .MatchAll());
+                        .Query(q => +q.Term("documentType", ProviderIndexType)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
+                _applicationLogger.LogWarning($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query all providers");
             }
 
@@ -78,24 +77,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(100)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn))));
+                            .Query(q => +q.Term("documentType", ProviderIndexType) && +q.Term(t => t.Ukprn, ukprn)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
+                _applicationLogger.LogWarning($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
             if (results.Documents.Count > 1)
             {
-                _applicationLogger.Debug($"found {results.Documents.Count} providers for the ukprn {ukprn}");
+                _applicationLogger.LogDebug($"found {results.Documents.Count} providers for the ukprn {ukprn}");
             }
 
             return results.Documents.FirstOrDefault();
@@ -107,24 +102,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<Provider>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse(ProviderIndexType))
                             .From(0)
                             .Sort(sort => sort.Ascending(f => f.Ukprn))
                             .Take(ukprns.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprns))));
+                            .Query(q => +q.Term("documentType", ProviderIndexType) && +q.Terms(t => t.Field(f => f.Ukprn).Terms(ukprns))));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
+                _applicationLogger.LogWarning($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query provider by ukprn");
             }
 
             if (results.Documents.Count > 1)
             {
-                _applicationLogger.Debug($"found {results.Documents.Count} providers for the ukprns provided");
+                _applicationLogger.LogDebug($"found {results.Documents.Count} providers for the ukprns provided");
             }
 
             return results.Documents;
@@ -138,17 +129,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderFrameworkDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("frameworkprovider"))
                             .From(0)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn)))
+                            .Query(q => +q.Term("documentType", "frameworkprovider") && +q.Term(t => t.Ukprn, ukprn))
                             .Aggregations(agg => agg.Terms(aggregateKeyName, frm => frm.Size(totalTakeForFrameworkDocuments).Field(fi => fi.FrameworkId))));
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider frameworks for ukprn [{ukprn}]");
+                _applicationLogger.LogWarning($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider frameworks for ukprn [{ukprn}]");
                 throw new ApplicationException($"Failed to query provider frameworks for ukprn [{ukprn}]");
             }
 
@@ -158,17 +145,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderFramework>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("frameworkdocument"))
                             .From(0)
                             .Take(matchingFrameworkIds.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.FrameworkId)
-                                    .Terms(matchingFrameworkIds))));
+                            .Query(q => +q.Term("documentType", "frameworkdocument") && +q.Terms(t => t.Field(f => f.FrameworkId).Terms(matchingFrameworkIds))));
 
             if (providerFrameworks.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {providerFrameworks.ApiCall.HttpStatusCode} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]");
+                _applicationLogger.LogWarning($"httpStatusCode was {providerFrameworks.ApiCall.HttpStatusCode} when querying provider frameworks apprenticeship details for ukprn [{ukprn}]");
                 throw new ApplicationException($"Failed to query provider frameworks apprenticeship details for ukprn [{ukprn}]");
             }
 
@@ -183,12 +166,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderStandardDto>(
                     s =>
                         s.Index(_applicationSettings.ProviderIndexAlias)
-                            .Type(Types.Parse("standardprovider"))
                             .From(0)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.Ukprn)
-                                    .Terms(ukprn)))
+                            .Query(q => +q.Term("documentType", "standardprovider") && +q.Term(t => t.Ukprn, ukprn))
                             .Aggregations(agg => agg
                                 .Terms(aggregateKeyName, frm => frm
                                     .Size(totalTakeForStandardDocuments)
@@ -196,7 +175,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (matchedIds.ApiCall.HttpStatusCode != 200)
             {
-                 _applicationLogger.Warn($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider standards for ukprn [{ukprn}]");
+                 _applicationLogger.LogWarning($"httpStatusCode was {matchedIds.ApiCall.HttpStatusCode} when querying provider standards for ukprn [{ukprn}]");
                  throw new ApplicationException($"Failed to query provider standards for ukprn [{ukprn}]");
             }
 
@@ -206,17 +185,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<ProviderStandard>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("standarddocument"))
                             .From(0)
                             .Take(matchingStandardIds.Count)
-                            .Query(q => q
-                                .Terms(t => t
-                                    .Field(f => f.StandardId)
-                                    .Terms(matchingStandardIds))));
+                            .Query(q => +q.Term("documentType", "standarddocument") && +q.Terms(t => t.Field(f => f.StandardId).Terms(matchingStandardIds))));
 
             if (providerStandards.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {providerStandards.ApiCall.HttpStatusCode} when querying provider standards apprenticeship details for ukprn [{ukprn}]");
+                _applicationLogger.LogWarning($"httpStatusCode was {providerStandards.ApiCall.HttpStatusCode} when querying provider standards apprenticeship details for ukprn [{ukprn}]");
                 throw new ApplicationException($"Failed to query provider standards apprenticeship details for ukprn [{ukprn}]");
             }
 
@@ -267,13 +242,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
+                _applicationLogger.LogWarning($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query providers by standard code");
             }
 
             if (results.Documents.Count > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count} providers for the standard {standardId}");
+                _applicationLogger.LogWarning($"found {results.Documents.Count} providers for the standard {standardId}");
             }
 
             return results.Documents;
@@ -297,13 +272,13 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
-                _applicationLogger.Warn($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
+                _applicationLogger.LogWarning($"httpStatusCode was {results.ApiCall.HttpStatusCode}");
                 throw new ApplicationException("Failed query providers by standard code");
             }
 
             if (results.Documents.Count > 1)
             {
-                _applicationLogger.Warn($"found {results.Documents.Count} providers for the framework {frameworkId}");
+                _applicationLogger.LogWarning($"found {results.Documents.Count} providers for the framework {frameworkId}");
             }
 
             return results.Documents;

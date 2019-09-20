@@ -20,12 +20,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys
         {
             return _elasticsearchCustomClient.Search<ProviderNameSearchResult>(s => s
                 .Index(_applicationSettings.ProviderIndexAlias)
-                .Type("providerapidocument")
                 .Skip(skip)
                 .Take(take)
                 .Query(q => q
                     .Bool(b => b
-                        .Filter(IsNotEmployerProvider())
+                        .Filter(IsApiDocument(), IsNotEmployerProvider())
                         .Must(mu => mu
                             .QueryString(qs => qs
                                 .Fields(fs => fs
@@ -39,10 +38,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys
         {
             var initialDetails = _elasticsearchCustomClient.Search<ProviderNameSearchResult>(s => s
                 .Index(_applicationSettings.ProviderIndexAlias)
-                .Type("providerapidocument")
                 .Query(q => q
                     .Bool(b => b
-                        .Filter(IsNotEmployerProvider())
+                        .Filter(IsApiDocument(), IsNotEmployerProvider())
                         .Must(mu => mu
                             .QueryString(qs => qs
                                 .Fields(fs => fs
@@ -51,7 +49,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys
                                 .Query(term)))
                     )));
 
-            return initialDetails.HitsMetaData.Total;
+            return initialDetails.HitsMetadata.Total.Value;
         }
 
         private static Func<QueryContainerDescriptor<ProviderNameSearchResult>, QueryContainer> IsNotEmployerProvider()
@@ -59,6 +57,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch.Querys
             return f => f
                 .Term(t => t
                     .Field(fi => fi.IsEmployerProvider).Value(false));
+        }
+
+        private static Func<QueryContainerDescriptor<ProviderNameSearchResult>, QueryContainer> IsApiDocument()
+        {
+            return f => f
+                .Term("documentType", "providerapidocument");
         }
     }
 }

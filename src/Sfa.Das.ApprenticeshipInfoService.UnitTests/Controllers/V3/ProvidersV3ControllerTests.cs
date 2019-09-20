@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http.Results;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3;
@@ -9,7 +10,6 @@ using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Helpers;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 {
@@ -29,16 +29,15 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             _sut = new ProvidersV3Controller(
                 _mockProvidersService.Object,
                 new ControllerHelper(),
-                Mock.Of<ILog>());
+                Mock.Of<ILogger<ProvidersV3Controller>>());
         }
 
         [Test]
         public void ApprenticeshipSearch_ReturnsListOfSearchResultItemResponses()
         {
             var response = _sut.GetByApprenticeshipIdAndLocation("420-2-1", 0.5, 50);
-
-            response.Should().BeOfType<OkNegotiatedContentResult<ProviderApprenticeshipLocationSearchResult>>();
-            var results = (response as OkNegotiatedContentResult<ProviderApprenticeshipLocationSearchResult>).Content;
+            response.Value.Should().BeOfType<ProviderApprenticeshipLocationSearchResult>();
+            var results = response.Value;
 
             results.Results.Should().HaveCount(2);
             _mockProvidersService.Verify();
@@ -103,7 +102,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 
             var response = _sut.GetByApprenticeshipIdAndLocation("420-2-1", 0.5, 50, deliveryModes: deliveryModes);
 
-            response.Should().BeOfType<BadRequestResult>();
+            response.Result.Should().BeOfType<BadRequestResult>();
         }
 
         private ProviderApprenticeshipLocationSearchResult GetStubResults()

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FeatureToggle.Core.Fluent;
 using Nest;
 using Sfa.Das.ApprenticeshipInfoService.Application.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Configuration;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using Sfa.Das.ApprenticeshipInfoService.Infrastructure.Mapping;
 using SFA.DAS.Apprenticeships.Api.Types.AssessmentOrgs;
 
@@ -56,13 +54,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<OrganisationDocument>(
                     s =>
                     s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                        .Type(Types.Parse("organisationdocument"))
                         .From(0)
                         .Take(1)
-                        .Query(q => q
-                            .Match(m => m
-                                .Field(f => f.EpaOrganisationIdentifier)
-                                .Query(organisationId))));
+                        .Query(q => +q.Term(t => t.EpaOrganisationIdentifierKeyword, organisationId) && +q.Term("documentType", "organisationdocument")));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -80,13 +74,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
                     s =>
                     s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                        .Type(Types.Parse("standardorganisationdocument"))
                         .From(0)
                         .Take(take)
-                        .Query(q => q
-                            .Match(m => m
-                                .Field(f => f.StandardCode)
-                                .Query(standardId))));
+                        .Query(q => +q.Term("documentType", "standardorganisationdocument") && +q.Term(f => f.StandardCode.Suffix("keyword"), standardId)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {
@@ -100,24 +90,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 
         private ISearchRequest GetAllAssessmentOrgsSearchDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<OrganisationDocument>()
-                    .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                    .Type(Types.Parse("organisationdocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
             return new SearchDescriptor<OrganisationDocument>()
                 .Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                .Type(Types.Parse("organisationdocument"))
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifier))
+                .Sort(sort => sort.Ascending(f => f.EpaOrganisationIdentifierKeyword))
                 .Take(take)
-                .MatchAll();
+                .Query(q => +q.Term("documentType", "organisationdocument"));
         }
 
         public IEnumerable<StandardOrganisationSummary> GetStandardsByOrganisationIdentifier(string organisationId)
@@ -127,13 +105,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<StandardOrganisationDocument>(
                     s =>
                         s.Index(_applicationSettings.AssessmentOrgsIndexAlias)
-                            .Type(Types.Parse("standardorganisationdocument"))
                             .From(0)
                             .Take(take)
-                            .Query(q => q
-                                .Match(m => m
-                                    .Field(f => f.EpaOrganisationIdentifier)
-                                    .Query(organisationId))));
+                            .Query(q => +q.Term("documentType", "standardorganisationdocument") && +q.Term(t => t.EpaOrganisationIdentifier.Suffix("keyword"), organisationId)));
 
             if (results.ApiCall.HttpStatusCode != 200)
             {

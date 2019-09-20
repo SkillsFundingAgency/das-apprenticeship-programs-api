@@ -1,23 +1,22 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Web.Http;
-    using System.Web.Http.Description;
-    using Sfa.Das.ApprenticeshipInfoService.Api.Attributes;
-    using Sfa.Das.ApprenticeshipInfoService.Core.Services;
-    using SFA.DAS.Apprenticeships.Api.Types;
-    using SFA.DAS.NLog.Logger;
-    using Swashbuckle.Swagger.Annotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using SFA.DAS.Apprenticeships.Api.Types;
 
-    public class StandardsController : ApiController
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+{
+    [ApiExplorerSettings(GroupName = "v1")]   
+    public class StandardsController : ControllerBase
     {
         private readonly IGetStandards _getStandards;
-        private readonly ILog _logger;
+        private readonly ILogger<StandardsController> _logger;
 
-        public StandardsController(IGetStandards getStandards, ILog logger)
+        public StandardsController(IGetStandards getStandards, ILogger<StandardsController> logger)
         {
             _getStandards = getStandards;
             _logger = logger;
@@ -27,12 +26,9 @@
         /// Get all the active standards
         /// </summary>
         /// <returns>a collection of standards</returns>
-        [SwaggerOperation("GetAllActiveStandards")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
-        [Route("v{version:apiVersion}/standards")]
-        [Route("standards")]
-        [ExceptionHandling]
-        public IEnumerable<StandardSummary> Get()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/standards", Name="GetAllActiveStandards")]
+        public ActionResult<IEnumerable<StandardSummary>> Get()
         {
             try
             {
@@ -43,11 +39,11 @@
                     item.Uri = Resolve(item.Id);
                 }
 
-                return response;
+                return response.ToList();
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/standards");
+                _logger.LogError(e, "/standards");
                 throw;
             }
         }
@@ -56,12 +52,9 @@
         /// Get all standards
         /// </summary>
         /// <returns>a collection of standards</returns>
-        [SwaggerOperation("GetAllStandards")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardSummary>))]
-        [Route("v{version:apiVersion}/standards/v2")]
-        [Route("standards/v2")]
-        [ExceptionHandling]
-        public IEnumerable<StandardSummary> GetAll()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/standards/v2", Name="GetAllStandards")]
+        public ActionResult<IEnumerable<StandardSummary>> GetAll()
         {
             try
             {
@@ -72,11 +65,11 @@
                     item.Uri = Resolve(item.Id);
                 }
 
-                return response;
+                return response.ToList();
             }
             catch (Exception e)
             {
-                _logger.Error(e, "/standards");
+                _logger.LogError(e, "/standards");
                 throw;
             }
         }
@@ -86,19 +79,16 @@
         /// </summary>
         /// <param name="id">{standardid}</param>
         /// <returns>a standard</returns>
-        [SwaggerOperation("GetStandardById")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Standard))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/standards/{id}")]
-        [Route("standards/{id}")]
-        [ExceptionHandling]
-        public Standard Get(string id)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpGet("/standards/{id}", Name="GetStandardById")]
+        public ActionResult<Standard> Get(string id)
         {
             var standard = _getStandards.GetStandardById(id);
 
             if (standard == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
 
             standard.Uri = Resolve(standard.StandardId);
@@ -112,13 +102,10 @@
         /// <param name="ids">Standard ids, coma separated</param>
         /// <param name="page">Page you want to get</param>
         /// <returns>a list of standard</returns>
-        [SwaggerOperation("GetStandardsById")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<Standard>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/standards/getlistbyids")]
-        [Route("standards/getlistbyids")]
-        [ExceptionHandling]
-        public List<Standard> Get(string ids, int page = 1)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpGet("/standards/getlistbyids", Name="GetStandardsById")]
+        public ActionResult<List<Standard>> Get(string ids, int page = 1)
         {
             var listIds = ValidateIds(ids);
 
@@ -136,12 +123,10 @@
         /// <summary>
         /// Do we have standards?
         /// </summary>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/standards")]
-        [Route("standards")]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/standards", Name="StandardssExists")]
         public void Head()
         {
             Get();
@@ -151,11 +136,9 @@
         /// Standard exists?
         /// </summary>
         /// <param name="id">{standardid}</param>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/standards/{id}")]
-        [Route("standards/{id}")]
-        [ExceptionHandling]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/standards/{id}", Name="StandardsExistsById")]
         public void Head(string id)
         {
             Get(id);
@@ -184,7 +167,7 @@
 
         private string Resolve(string id)
         {
-            return Url.Link("DefaultApi", new { controller = "standards", id = id });
+            return Url.Link("GetStandardById", new { id = id });
         }
 
         private ProvidersHref ResolveProvidersUrl(string id)

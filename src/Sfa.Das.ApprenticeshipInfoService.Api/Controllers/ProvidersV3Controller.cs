@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Web.Http;
-using System.Web.Http.Description;
-using Microsoft.Web.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
 using Sfa.Das.ApprenticeshipInfoService.Core.Models;
 using Sfa.Das.ApprenticeshipInfoService.Core.Services;
 using SFA.DAS.Apprenticeships.Api.Types.V3;
-using SFA.DAS.NLog.Logger;
-using Swashbuckle.Swagger.Annotations;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
 {
-    [ApiVersion("3.0")]
-    [RoutePrefix("v{version:apiVersion}")]
-    public class ProvidersV3Controller : ApiController
+    //[ApiVersion("3.0")]
+    //[RoutePrefix("v{version:apiVersion}")]
+    [ApiExplorerSettings(GroupName = "v3")]
+    [Route("/v3")]
+    public class ProvidersV3Controller : ControllerBase
     {
         private readonly IGetProviderApprenticeshipLocationsV3 _getProviders;
         private readonly IControllerHelper _controllerHelper;
-        private readonly ILog _logger;
+        private readonly ILogger<ProvidersV3Controller> _logger;
 
         public ProvidersV3Controller(
             IGetProviderApprenticeshipLocationsV3 getProviders,
             IControllerHelper controllerHelper,
-            ILog logger)
+            ILogger<ProvidersV3Controller> logger)
         {
             _getProviders = getProviders;
             _controllerHelper = controllerHelper;
@@ -44,12 +44,11 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
         /// <param name="orderBy">0 = distance (Default), 1 = provider name A-Z, 2 = provider name Z-A.  Note only sorting by distance will fill the distance field in the results.</param>
         /// <returns>a paginated search result</returns>
-        [SwaggerOperation("GetByApprenticeshipIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ProviderApprenticeshipLocationSearchResult))]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("apprenticeships/{id}/providers")]
-        public IHttpActionResult GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null, int orderBy = 0)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpGet("apprenticeships/{id}/providers", Name="GetByApprenticeshipIdAndLocation")]
+        public ActionResult<ProviderApprenticeshipLocationSearchResult> GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null)
         {
             try
             {
@@ -69,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
                     responseContent = _getProviders.SearchFrameworkProviders(id, coordinates, actualPage, pageSize, showForNonLevyOnly, showNationalOnly, selectedDeliveryModes, orderBy);
                 }
 
-                return Ok(responseContent);
+                return responseContent;
             }
             catch (ArgumentException)
             {
@@ -77,7 +76,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, Request.RequestUri.PathAndQuery);
+                _logger.LogError(ex, Request.GetEncodedPathAndQuery());
                 throw;
             }
         }

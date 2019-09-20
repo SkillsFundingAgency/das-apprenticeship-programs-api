@@ -1,20 +1,18 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Web.Http;
-    using System.Web.Http.Description;
-    using Attributes;
-    using Core.Models;
-    using Core.Models.Responses;
-    using Core.Services;
-    using Helpers;
-    using SFA.DAS.Apprenticeships.Api.Types.Providers;
-    using Swashbuckle.Swagger.Annotations;
-    using IControllerHelper = Core.Helpers.IControllerHelper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Sfa.Das.ApprenticeshipInfoService.Api.Conventions;
+using Sfa.Das.ApprenticeshipInfoService.Core.Helpers;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models;
+using Sfa.Das.ApprenticeshipInfoService.Core.Models.Responses;
+using Sfa.Das.ApprenticeshipInfoService.Core.Services;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
-    public class ProvidersController : ApiController
+namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers
+{
+    [ApiExplorerSettings(GroupName = "v1")]
+    public class ProvidersController : ControllerBase
     {
         private const string BadUkprnMessage = "A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999";
 
@@ -43,12 +41,9 @@
         /// Get all the active providers
         /// </summary>
         /// <returns>a collection of providers</returns>
-        [SwaggerOperation("GetAllProviders")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ProviderSummary>))]
-        [Route("v{version:apiVersion}/providers")]
-        [Route("providers")]
-        [ExceptionHandling]
-        public IEnumerable<ProviderSummary> Get()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [HttpGet("/providers", Name="GetAllProviders")]
+        public ActionResult<IEnumerable<ProviderSummary>> Get()
         {
             var response = _getProviders.GetAllProviders();
 
@@ -57,7 +52,7 @@
                 provider.Uri = Resolve(provider.Ukprn);
             }
 
-            return response;
+            return response.ToList();
         }
 
         /// <summary>
@@ -65,27 +60,23 @@
         /// </summary>
         /// <param name="ukprn">UKPRN</param>
         /// <returns>A Provider</returns>
-        [SwaggerOperation("GetProviderByUkprn")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(Provider))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("v{version:apiVersion}/providers/{ukprn:long}")]
-        [Route("providers/{ukprn:long}")]
-        [ExceptionHandling]
-        public Provider Get(long ukprn)
+        /// <response code="400">A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999</response>
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpGet("/providers/{ukprn:long}", Name="GetProviderByUkprn")]
+        public ActionResult<Provider> Get(long ukprn)
         {
             if (ukprn.ToString().Length != 8)
             {
-                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+                return BadRequest(BadUkprnMessage);
             }
 
             var response = _getProviders.GetProviderByUkprn(ukprn);
 
             if (response == null)
             {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"No provider with Ukprn {ukprn} found");
+                return NotFound($"No provider with Ukprn {ukprn} found");
             }
 
             response.Uri = Resolve(response.Ukprn);
@@ -96,12 +87,10 @@
         /// <summary>
         /// Do we have providers?
         /// </summary>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/providers")]
-        [Route("providers")]
-        [ExceptionHandling]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpHead("/providers")]
         public void Head()
         {
             Get();
@@ -111,12 +100,10 @@
         /// Provider exists?
         /// </summary>
         /// <param name="ukprn">UKPRN</param>
-        [SwaggerResponse(HttpStatusCode.NoContent)]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [Route("v{version:apiVersion}/providers/{ukprn:long}")]
-        [Route("providers/{ukprn:long}")]
-        [ExceptionHandling]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpHead("/providers/{ukprn:long}")]
         public void Head(long ukprn)
         {
             Get(ukprn);
@@ -127,13 +114,12 @@
         /// </summary>
         /// <param name="ukprn">unique id</param>
         /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
-        [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [Route("v{version:apiVersion}/providers/{ukprn:long}/active-apprenticeship-training")]
-        [Route("providers/{ukprn:long}/active-apprenticeship-training", Name = "GetActiveApprenticeshipsByProvider")]
-        [ExceptionHandling]
-        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn)
+        /// <response code="400">A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999</response>
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpGet("/providers/{ukprn:long}/active-apprenticeship-training", Name="GetActiveApprenticeshipsByProvider")]
+        public ActionResult<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProvider(long ukprn)
         {
             return GetActiveApprenticeshipTrainingByProvider(ukprn, 1);
         }
@@ -144,18 +130,16 @@
         /// <param name="ukprn">unique id</param>
         /// <param name="page">number of page for which results are returned (default 1)</param>
         /// <returns>A list of active apprenticeships sorted by name alphabetically, then type, then level</returns>
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<ApprenticeshipTraining>))]
-        [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        [SwaggerResponse(HttpStatusCode.BadRequest, BadUkprnMessage)]
-        [SwaggerOperation("GetActiveApprenticeshipTrainingByProviderAndPage")]
-        [Route("v{version:apiVersion}/providers/{ukprn:long}/active-apprenticeship-training/{page}")]
-        [Route("providers/{ukprn:long}/active-apprenticeship-training/{page}", Name = "GetActiveApprenticeshipsByProviderByPage")]
-        [ExceptionHandling]
-        public ApprenticeshipTrainingSummary GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
+        /// <response code="400">A valid UKPRN as defined in the UK Register of Learning Providers (UKRLP) is 8 digits in the format 10000000 - 99999999</response>
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpGet("/providers/{ukprn:long}/active-apprenticeship-training/{page}", Name="GetActiveApprenticeshipsByProviderByPage")]
+        public ActionResult<ApprenticeshipTrainingSummary> GetActiveApprenticeshipTrainingByProvider(long ukprn, int page)
         {
             if (ukprn.ToString().Length != 8)
             {
-                throw HttpResponseFactory.RaiseException(HttpStatusCode.BadRequest, BadUkprnMessage);
+                return BadRequest(BadUkprnMessage);
             }
 
             return _getProviders.GetActiveApprenticeshipTrainingByProvider(ukprn, page);
@@ -166,21 +150,16 @@
         /// </summary>
         /// <param name="apprenticeshipId">Standard id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetProvidersByStandardId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        [Route("v{version:apiVersion}/providers/standard/{standardId}")]
-        [Route("providers/standard/{standardId}", Name = "GetStandardProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ExceptionHandling]
-        public IEnumerable<Provider> GetStandardProviders(string standardId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [HttpGet("/providers/standard/{standardId}", Name="GetStandardProviders")]
+        public ActionResult<IEnumerable<Provider>> GetStandardProviders(string standardId)
         {
             if (_getStandards.GetStandardById(standardId) == null)
             {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"The standard {standardId} is not found");
+                return NotFound($"The standard {standardId} is not found");
             }
 
             var response = _getProviders.GetProvidersByStandardId(standardId);
@@ -189,7 +168,7 @@
 
             var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long) dummy).ToList();
 
-            return _getProviders.GetProviderByUkprnList(ukprns);
+            return _getProviders.GetProviderByUkprnList(ukprns).ToList();
         }
 
         /// <summary>
@@ -197,21 +176,16 @@
         /// </summary>
         /// <param name="frameworkId">Framework id</param>
         /// <returns>A list of Providers</returns>
-        [SwaggerOperation("GetProvidersByFrameworkId")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<Provider>))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [SwaggerResponse(HttpStatusCode.InternalServerError)]
-        [Route("v{version:apiVersion}/providers/framework/{frameworkId}")]
-        [Route("providers/framework/{frameworkId}", Name = "GetFrameworkProviders")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ExceptionHandling]
-        public IEnumerable<Provider> GetFrameworkProviders(string frameworkId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [HttpGet("/providers/framework/{frameworkId}", Name="GetFrameworkProviders")]
+        public ActionResult<IEnumerable<Provider>> GetFrameworkProviders(string frameworkId)
         {
             if (_getFrameworks.GetFrameworkById(frameworkId) == null)
             {
-                throw HttpResponseFactory.RaiseException(
-                    HttpStatusCode.NotFound,
-                    $"The framework {frameworkId} is not found, it should be in the format {{framework code}}-{{program type}}-{{pathway code}}");
+                return NotFound($"The framework {frameworkId} is not found, it should be in the format {{framework code}}-{{program type}}-{{pathway code}}");
             }
 
             var response = _getProviders.GetProvidersByFrameworkId(frameworkId);
@@ -220,15 +194,15 @@
 
             var ukprns = providersList.Select(item => item.Ukprn).Select(dummy => (long)dummy).ToList();
 
-            return _getProviders.GetProviderByUkprnList(ukprns);
+            return _getProviders.GetProviderByUkprnList(ukprns).ToList();
         }
 
-        /// <summary>
-        /// Get a list of providers locations for an specific standard
-        /// TODO update url
-        /// </summary>
-        /// <param name="apprenticeshipId">Standard id</param>
-        /// <returns>A list of Providers</returns>
+        // /// <summary>
+        // /// Get a list of providers locations for an specific standard
+        // /// TODO update url
+        // /// </summary>
+        // /// <param name="apprenticeshipId">Standard id</param>
+        // /// <returns>A list of Providers</returns>
         //[SwaggerOperation("GetProviderLocationByStandardId")]
         //[SwaggerResponse(HttpStatusCode.OK, "OK", typeof(IEnumerable<StandardProviderSearchResultsItem>))]
         //[SwaggerResponse(HttpStatusCode.NotFound)]
@@ -276,14 +250,12 @@
         //}
 
         // GET standards/5/providers?lat=<latitude>&long=<longitude>&page=#
-        [SwaggerOperation("GetByStandardIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<StandardProviderSearchResultsItem>))]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("v{version:apiVersion}/standards/{id}/providers")]
-        [Route("standards/{id}/providers")]
-        public List<StandardProviderSearchResultsItemResponse> GetByStandardIdAndLocation(int id, double? lat = null,
-            double? lon = null, int page = 1)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpGet("/standards/{id}/providers", Name="GetByStandardIdAndLocation")]
+        public ActionResult<List<StandardProviderSearchResultsItemResponse>> GetByStandardIdAndLocation(int id, [RequiredFromQuery]double? lat = null,
+            [RequiredFromQuery]double? lon = null, int page = 1)
         {
             // TODO 404 if standard doesn't exists
             var actualPage = _controllerHelper.GetActualPage(page);
@@ -293,21 +265,16 @@
                 return _getProviders.GetByStandardIdAndLocation(id, lat.Value, lon.Value, actualPage);
             }
 
-            throw HttpResponseFactory.RaiseException(
-                HttpStatusCode.BadRequest,
-                "A valid Latitude and Longitude is required");
+            return BadRequest("A valid Latitude and Longitude is required");
         }
 
         // GET frameworks/5/providers?lat=<latitude>&long=<longitude>&page=#
-        [SwaggerOperation("GetByFrameworkIdAndLocation")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(List<FrameworkProviderSearchResultsItem>))]
-        [SwaggerResponse(HttpStatusCode.BadRequest)]
-        [Route("v{version:apiVersion}/frameworks/{id}/providers")]
-        [Route("frameworks/{id}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ExceptionHandling]
-        public List<FrameworkProviderSearchResultsItemResponse> GetByFrameworkIdAndLocation(int id, double? lat = null,
-            double? lon = null, int page = 1)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpGet("/frameworks/{id}/providers", Name="GetByFrameworkIdAndLocation")]
+        public ActionResult<List<FrameworkProviderSearchResultsItemResponse>> GetByFrameworkIdAndLocation(int id, [RequiredFromQuery]double? lat = null,
+            [RequiredFromQuery]double? lon = null, int page = 1)
         {
             // TODO 404 if framework doesn't exists
             var actualPage = _controllerHelper.GetActualPage(page);
@@ -317,20 +284,15 @@
                 return _getProviders.GetByFrameworkIdAndLocation(id, lat.Value, lon.Value, actualPage);
             }
 
-            throw HttpResponseFactory.RaiseException(
-                HttpStatusCode.BadRequest,
-                "A valid Latitude and Longitude is required");
+            return BadRequest("A valid Latitude and Longitude is required");
         }
 
         // GET standards/<standardId>/providers?ukprn=<ukprn>&location=<locationId>
-        [SwaggerOperation("GetStandardProviderDetails")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipDetails))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/standards/{standardCode}/providers")]
-        [Route("standards/{standardCode}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ExceptionHandling]
-        public ApprenticeshipDetails GetStandardProviderDetails(string standardCode, int ukprn, int location)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpGet("/standards/{standardCode}/providers", Name="GetStandardProviderDetails")]
+        public ActionResult<ApprenticeshipDetails> GetStandardProviderDetails(string standardCode, [RequiredFromQuery]int ukprn, [RequiredFromQuery]int location)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByStandardCode(
                 ukprn,
@@ -342,18 +304,15 @@
                 return model;
             }
 
-            throw new HttpResponseException(HttpStatusCode.NotFound);
+            return NotFound();
         }
 
         // GET frameworks/<frameworkId>/providers?ukprn=<ukprn>&location=<locationId>
-        [SwaggerOperation("GetFrameworkProviderDetails")]
-        [SwaggerResponse(HttpStatusCode.OK, "OK", typeof(ApprenticeshipDetails))]
-        [SwaggerResponse(HttpStatusCode.NotFound)]
-        [Route("v{version:apiVersion}/frameworks/{frameworkId}/providers")]
-        [Route("frameworks/{frameworkId}/providers")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [ExceptionHandling]
-        public ApprenticeshipDetails GetFrameworkProviderDetails(string frameworkId, int ukprn, int location)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [HttpGet("/frameworks/{frameworkId}/providers", Name="GetFrameworkProviderDetails")]
+        public ActionResult<ApprenticeshipDetails> GetFrameworkProviderDetails(string frameworkId, [RequiredFromQuery]int ukprn, [RequiredFromQuery]int location)
         {
             var model = _apprenticeshipProviderRepository.GetCourseByFrameworkId(
                 ukprn,
@@ -365,12 +324,12 @@
                 return model;
             }
 
-            throw new HttpResponseException(HttpStatusCode.NotFound);
+            return NotFound();
         }
 
         private string Resolve(long ukprn)
         {
-            return Url.Link("DefaultApi", new { controller = "providers", id = ukprn });
+            return Url.Link("GetProviderByUkprn", new { ukprn = ukprn });
         }
     }
 }

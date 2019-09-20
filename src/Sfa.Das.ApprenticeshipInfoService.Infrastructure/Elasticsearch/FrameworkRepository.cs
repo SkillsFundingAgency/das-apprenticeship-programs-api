@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FeatureToggle.Core.Fluent;
-using Sfa.Das.ApprenticeshipInfoService.Infrastructure.FeatureToggles;
 using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.NLog.Logger;
 
 namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
 {
@@ -12,19 +9,20 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     using Core.Models;
     using Core.Services;
     using Mapping;
+    using Microsoft.Extensions.Logging;
     using Nest;
 
     public sealed class FrameworkRepository : IGetFrameworks
     {
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
-        private readonly ILog _applicationLogger;
+        private readonly ILogger<FrameworkRepository> _applicationLogger;
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IFrameworkMapping _frameworkMapping;
         private readonly IQueryHelper _queryHelper;
 
         public FrameworkRepository(
             IElasticsearchCustomClient elasticsearchCustomClient,
-            ILog applicationLogger,
+            ILogger<FrameworkRepository> applicationLogger,
             IConfigurationSettings applicationSettings,
             IFrameworkMapping frameworkMapping,
             IQueryHelper queryHelper)
@@ -61,13 +59,9 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
                     s =>
                     s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                        .Type(Types.Parse("frameworkdocument"))
                         .From(0)
                         .Size(1)
-                        .Query(q => q
-                        .Bool(b => b
-                            .Must(m => m
-                                .Term("frameworkId", id)))));
+                        .Query(q => +q.Term("documentType", "frameworkdocument") && +q.Term("frameworkId", id)));
 
             var document = results.Documents.Any() ? results.Documents.First() : null;
 
@@ -87,39 +81,21 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 _elasticsearchCustomClient.Search<FrameworkSearchResultsItem>(
                     s =>
                         s.Index(_applicationSettings.ApprenticeshipIndexAlias)
-                            .Type(Types.Parse("frameworkdocument"))
                             .From(0)
                             .Size(1)
-                            .Query(q => q
-                                .MultiMatch(m => m
-                                    .Type(TextQueryType.Phrase)
-                                    .Fields(fs => fs
-                                        .Field(e => e.FrameworkCode))
-                                    .Query(frameworkCode.ToString()))));
+                            .Query(q => +q.Term("documentType", "frameworkdocument") && +q.Term(t => t.FrameworkCode, frameworkCode)));
 
 	        return results.Documents.Any() ? _frameworkMapping.MapToFrameworkCodeSummaryFromList(results.Documents.ToList()) : null;
         }
 
         private ISearchRequest GetAllFrameworksSearchDescriptor(int take)
         {
-            if (Is<Elk5Feature>.Enabled)
-            {
-                return new SearchDescriptor<FrameworkSearchResultsItem>()
-                    .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                    .Type(Types.Parse("frameworkdocument"))
-                    .From(0)
-                    .Sort(sort => sort.Ascending(f => f.FrameworkIdKeyword))
-                    .Take(take)
-                    .MatchAll();
-            }
-
             return new SearchDescriptor<FrameworkSearchResultsItem>()
                 .Index(_applicationSettings.ApprenticeshipIndexAlias)
-                .Type(Types.Parse("frameworkdocument"))
                 .From(0)
-                .Sort(sort => sort.Ascending(f => f.FrameworkId))
+                .Sort(sort => sort.Ascending(f => f.FrameworkIdKeyword))
                 .Take(take)
-                .MatchAll();
+                .Query(q => +q.Term("documentType", "frameworkdocument"));
         }
     }
 }
