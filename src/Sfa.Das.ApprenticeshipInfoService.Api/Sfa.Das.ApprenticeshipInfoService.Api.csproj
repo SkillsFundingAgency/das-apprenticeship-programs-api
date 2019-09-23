@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <RootNamespace>Sfa.Das.ApprenticeshipInfoService.Api</RootNamespace>
     <AssemblyName>Sfa.Das.ApprenticeshipInfoService.Api</AssemblyName>
     <UserSecretsId>fat-api</UserSecretsId>
