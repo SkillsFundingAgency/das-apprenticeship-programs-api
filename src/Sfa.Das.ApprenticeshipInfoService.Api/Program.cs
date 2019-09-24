@@ -41,7 +41,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                     var environmentName = hostingContext.HostingEnvironment.EnvironmentName;
                     config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: false);
-                    config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: false);
                     config.AddAzureTableStorage(options => {
                         options.ConfigurationKeys = new[] { "SFA.DAS.ApprenticeshipProgramsAPI" };
                         options.EnvironmentNameEnvironmentVariableName = "APPSETTING_EnvironmentName";
