@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 
 namespace SFA.DAS.Providers.Api.Client
 {
     public interface IProviderApiClient : IDisposable
     {
+        /// <summary>
+        /// Makes an inexpensive ping request
+        /// </summary>
+        /// <returns>Task</returns>
+        Task Ping();
+
         /// <summary>
         /// Get a provider details
         /// GET /providers/{provider-ukprn}

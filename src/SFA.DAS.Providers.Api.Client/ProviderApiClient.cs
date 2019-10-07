@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -206,6 +207,20 @@ namespace SFA.DAS.Providers.Api.Client
             using (var request = new HttpRequestMessage(HttpMethod.Get, $"providers/{ukprn}/active-apprenticeship-training/{pageNumber}"))
             {
                 return await RequestAndDeserialiseAsync<ApprenticeshipTrainingSummary>(request);
+            }
+        }
+
+        public async Task Ping()
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"ping"))
+            {
+                using (var response = await _httpClient.SendAsync(request))
+                {
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        RaiseResponseError("Error calling ping endpoint", request, response);
+                    }
+                }
             }
         }
     }
