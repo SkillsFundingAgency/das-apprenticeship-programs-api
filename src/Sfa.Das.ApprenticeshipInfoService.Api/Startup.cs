@@ -102,7 +102,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
             });
 
-            app.Map("/ping", x => x.Run(async context => context.Response.StatusCode = (int)HttpStatusCode.NoContent));
+            app.Map("/ping", x => x.Run(async context => context.Response.StatusCode = (int)HttpStatusCode.NoContent ));
 
             app.UseMvc();
 
