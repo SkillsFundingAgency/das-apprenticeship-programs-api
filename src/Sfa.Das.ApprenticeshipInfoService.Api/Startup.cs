@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +32,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var corsWhitelist = Configuration.GetSection("AllowedCorsUrls").Get<string[]>();
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy(CorsPolicyName,
@@ -98,6 +101,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                 Predicate = _ => true,
                 ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
             });
+
+            app.Map("/ping", x => x.Run(async context => context.Response.StatusCode = (int)HttpStatusCode.NoContent));
 
             app.UseMvc();
 
