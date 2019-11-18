@@ -35,7 +35,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
         [Test]
         public void ApprenticeshipSearch_ReturnsListOfSearchResultItemResponses()
         {
-            var response = _sut.GetByApprenticeshipIdAndLocation("420-2-1", 0.5, 50);
+            var response = _sut.GetByApprenticeshipIdAndLatLon("420-2-1", 0.5, 50);
             response.Value.Should().BeOfType<ProviderApprenticeshipLocationSearchResult>();
             var results = response.Value;
 
@@ -54,7 +54,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
                 passedDeliveryModes = g;
             });
 
-            _sut.GetByApprenticeshipIdAndLocation("420-2-1", 0.5, 50, deliveryModes: "0, 2");
+            _sut.GetByApprenticeshipIdAndLatLon("420-2-1", 0.5, 50, deliveryModes: "0, 2");
 
             passedDeliveryModes.Should().Contain(DeliveryMode.DayRelease);
             passedDeliveryModes.Should().Contain(DeliveryMode.HundredPercentEmployer);
@@ -68,7 +68,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
 
             _mockProvidersService.Setup(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0)).Returns(GetStubResults());
 
-            _sut.GetByApprenticeshipIdAndLocation(FrameworkId, 0.5, 50, deliveryModes: "0, 2");
+            _sut.GetByApprenticeshipIdAndLatLon(FrameworkId, 0.5, 50, deliveryModes: "0, 2");
 
             _mockProvidersService.Verify(x => x.SearchFrameworkProviders(FrameworkId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0));
 
@@ -81,7 +81,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
             _mockProvidersService.Reset();
             _mockProvidersService.Setup(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0)).Returns(GetStubResults());
 
-            _sut.GetByApprenticeshipIdAndLocation(StandardId.ToString(), 0.5, 50, deliveryModes: "0, 2");
+            _sut.GetByApprenticeshipIdAndLatLon(StandardId.ToString(), 0.5, 50, deliveryModes: "0, 2");
 
             _mockProvidersService.Verify(x => x.SearchStandardProviders(StandardId, It.IsAny<Coordinate>(), 1, 20, false, false, It.IsAny<List<DeliveryMode>>(), 0));
         }
@@ -100,7 +100,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.UnitTests.Controllers.V3
                     passedDeliveryModes = g;
                 });
 
-            var response = _sut.GetByApprenticeshipIdAndLocation("420-2-1", 0.5, 50, deliveryModes: deliveryModes);
+            var response = _sut.GetByApprenticeshipIdAndLatLon("420-2-1", 0.5, 50, deliveryModes: deliveryModes);
 
             response.Result.Should().BeOfType<BadRequestResult>();
         }
