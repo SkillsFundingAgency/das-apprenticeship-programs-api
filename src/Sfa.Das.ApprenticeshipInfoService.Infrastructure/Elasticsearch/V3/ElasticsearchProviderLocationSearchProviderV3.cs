@@ -15,6 +15,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     {
         private const string TrainingTypeAggregateName = "training_type";
         private const string NationalProviderAggregateName = "national_provider";
+        private const string LocationCollapsedInnerHitsGroupName = "collapsed-locations";
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
 
@@ -210,7 +211,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                         .Bool(ft => ft
                             .Filter(GenerateFilters(selector, code, showForNonLevyOnly))
                             .Must(NestedLocationsQuery<T>(location))))
-                    .Collapse(c => c.Field(f => f.Ukprn).InnerHits(ih => ih.Name("provider-locations")))
+                    .Collapse(c => c.Field(f => f.Ukprn).InnerHits(ih => ih.Name(LocationCollapsedInnerHitsGroupName)))
                     .Sort(s => s.GeoDistance(GetGeoDistanceSearch<T>(location)))
                     .Aggregations(GetProviderSearchAggregationsSelector<T>())
                     .PostFilter(pf => {
@@ -379,9 +380,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 TotalResults = searchResponse.HitsMetadata?.Total.Value ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
-                Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),
-                NationalProvidersAggregation = nationalProvidersAggregation,
-                LocationCount = 0 //LWA Change shape of ES document
+                Results = searchResponse.Hits?.Select(MapHitToUniqueProviderSearchResultItem),
+                NationalProvidersAggregation = nationalProvidersAggregation
             };
 
             return result;
@@ -396,9 +396,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 TotalResults = searchResponse.HitsMetadata?.Total.Value ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
-                Results = searchResponse.Hits?.Select(MapHitToProviderSearchResultItem),
-                NationalProvidersAggregation = nationalProvidersAggregation,
-                LocationCount = 0 // TODO: LWA Change shape of ES document
+                Results = searchResponse.Hits?.Select(MapHitToUniqueProviderSearchResultItem),
+                NationalProvidersAggregation = nationalProvidersAggregation
             };
 
             return result;
@@ -419,6 +418,29 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
             }
 
             return aggregationResult;
+        }
+
+        private static ProviderSearchResultItem MapHitToUniqueProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
+        {
+            return new UniqueProviderApprenticeshipLocationSearchResultItem
+            {
+                Ukprn = hit.Source.Ukprn,
+                Location = hit.InnerHits["trainingLocations"].Hits.Hits.First().Source.As<SFA.DAS.Apprenticeships.Api.Types.V3.TrainingLocation>(),
+                ProviderName = hit.Source.ProviderName,
+                OverallAchievementRate = hit.Source.OverallAchievementRate,
+                NationalProvider = hit.Source.NationalProvider,
+                DeliveryModes = hit.Source.DeliveryModes,
+                Distance = hit.Sorts != null ? Math.Round(double.Parse(hit.Sorts.DefaultIfEmpty(0).Last().ToString()), 1) : 0,
+                EmployerSatisfaction = hit.Source.EmployerSatisfaction,
+                LearnerSatisfaction = hit.Source.LearnerSatisfaction,
+                NationalOverallAchievementRate = hit.Source.NationalOverallAchievementRate,
+                OverallCohort = hit.Source.OverallCohort,
+                HasNonLevyContract = hit.Source.HasNonLevyContract,
+                IsLevyPayerOnly = hit.Source.IsLevyPayerOnly,
+                CurrentlyNotStartingNewApprentices = hit.Source.CurrentlyNotStartingNewApprentices,
+                IsHigherEducationInstitute = hit.Source.IsHigherEducationInstitute,
+                OtherMatchingLocationsCount = (int)hit.InnerHits[LocationCollapsedInnerHitsGroupName].Hits.Total.Value - 1
+            };
         }
 
         private static ProviderSearchResultItem MapHitToProviderSearchResultItem(IHit<IApprenticeshipProviderSearchResultsItem> hit)
