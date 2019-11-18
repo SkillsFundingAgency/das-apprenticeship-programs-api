@@ -10,6 +10,6 @@
 
         public string County { get; set; }
 
-        public string Postcode { get; set; }
+        public string PostCode { get; set; }
     }
 }
