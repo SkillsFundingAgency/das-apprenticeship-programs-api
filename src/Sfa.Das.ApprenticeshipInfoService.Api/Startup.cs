@@ -66,6 +66,12 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
                     Description = "Provides details about apprenticeship programmes, training providers and assessment organisations.",
                     Version = "v3" 
                 });
+                c.SwaggerDoc("v4", new OpenApiInfo 
+                { 
+                    Title = "Apprenticeship Programmes API", 
+                    Description = "Provides details about apprenticeship programmes, training providers and assessment organisations.",
+                    Version = "v4" 
+                });
                 c.CustomSchemaIds((type) => type.FullName);
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -111,6 +117,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api version 1");
                 c.SwaggerEndpoint("/swagger/v3/swagger.json", "Api version 3");
+                c.SwaggerEndpoint("/swagger/v4/swagger.json", "Api version 4");
                 c.EnableValidator();
             });
         }
