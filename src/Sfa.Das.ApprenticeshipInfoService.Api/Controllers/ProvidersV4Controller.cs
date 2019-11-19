@@ -40,7 +40,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="showForNonLevyOnly">Show only Non-Levy Providers</param>
         /// <param name="showNationalOnly">Show only National Providers</param>
         /// <returns>a paginated search result</returns>
-        [ApiExplorerSettings(IgnoreApi = false)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("apprenticeships/{id}/provider-locations/", Name="GetUniqueProviderByApprenticeshipIdAndLocation")]
@@ -86,7 +86,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="page">Requested page</param>
         /// <param name="pageSize">Results per page</param>
         /// <returns>a paginated search result</returns>
-        [ApiExplorerSettings(IgnoreApi = false)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("apprenticeships/{id}/provider/{ukprn}/locations/", Name="GetClosestProviderLocationsThatCoverPointForApprenticeship")]
