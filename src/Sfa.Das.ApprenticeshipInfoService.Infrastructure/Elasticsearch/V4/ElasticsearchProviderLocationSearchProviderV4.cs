@@ -204,7 +204,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 PageNumber = page,
                 PageSize = pageSize,
                 Results = searchResponse.Hits?.Select(MapHitToUniqueProviderSearchResultItem),
-                NationalProvidersAggregation = nationalProvidersAggregation
+                HasNationalProviders = nationalProvidersAggregation["true"] > 0
             };
 
             return result;
@@ -220,7 +220,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 PageNumber = page,
                 PageSize = pageSize,
                 Results = searchResponse.Hits?.Select(MapHitToUniqueProviderSearchResultItem),
-                NationalProvidersAggregation = nationalProvidersAggregation
+                HasNationalProviders = nationalProvidersAggregation["true"] > 0
             };
 
             return result;
