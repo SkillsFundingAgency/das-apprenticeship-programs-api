@@ -15,7 +15,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
     {
         private const string TrainingTypeAggregateName = "training_type";
         private const string NationalProviderAggregateName = "national_provider";
-        private const string LocationCollapsedInnerHitsGroupName = "collapsed-locations";
         private readonly IConfigurationSettings _applicationSettings;
         private readonly IElasticsearchCustomClient _elasticsearchCustomClient;
 

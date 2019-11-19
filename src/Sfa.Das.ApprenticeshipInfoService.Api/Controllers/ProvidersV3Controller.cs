@@ -44,7 +44,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         /// <param name="deliveryModes">Comma separated list of: 0 - Day Release, 1 - Block Release, 2 - At Employers Location</param>
         /// <param name="orderBy">0 = distance (Default), 1 = provider name A-Z, 2 = provider name Z-A.  Note only sorting by distance will fill the distance field in the results.</param>
         /// <returns>a paginated search result</returns>
-        [ApiExplorerSettings(IgnoreApi = false)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [HttpGet("apprenticeships/{id}/providers", Name="GetByApprenticeshipIdAndLatLon")]
