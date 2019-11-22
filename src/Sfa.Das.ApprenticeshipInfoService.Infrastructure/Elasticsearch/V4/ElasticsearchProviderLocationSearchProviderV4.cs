@@ -88,6 +88,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 TotalResults = searchResponse.HitsMetadata?.Total.Value ?? 0,
                 PageNumber = page,
                 PageSize = pageSize,
+                ProviderName = searchResponse.Hits?.First().Source.ProviderName ?? string.Empty,
                 Results = searchResponse.Hits?.Select(MapHitToProviderLocationsSearchResultsItem)
                 
             };
