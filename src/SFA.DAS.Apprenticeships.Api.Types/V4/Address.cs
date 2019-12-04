@@ -1,4 +1,4 @@
-﻿namespace Sfa.Das.ApprenticeshipInfoService.Core.Models
+﻿namespace SFA.DAS.Apprenticeships.Api.Types.V4
 {
     public class Address
     {

@@ -9,3 +9,4 @@ namespace SFA.DAS.Apprenticeships.Api.Types.V3
         public Dictionary<string, long?> NationalProvidersAggregation { get; set; }
     }
 }
+

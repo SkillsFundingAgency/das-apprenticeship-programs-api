@@ -84,7 +84,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                     .Index(_applicationSettings.ProviderIndexAlias)
                     .Query(q => q
                         .Bool(ft => ft
-                            .Filter(GenerateFilters(selector, code, showForNonLevyOnly, showNationalOnly, deliveryModes))
+                            .Filter(GenerateFilters(selector, code, showForNonLevyOnly))
                             .Must(NestedLocationsQuery<T>(location))))
                     .Sort(GetSortDescriptor<T>(orderBy, location))
                     .Aggregations(GetProviderSearchAggregationsSelector<T>())
@@ -129,7 +129,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.Elasticsearch
                 .Terms(NationalProviderAggregateName, tt => tt.Field(fi => fi.NationalProvider).MinimumDocumentCount(0));
         }
 
-        private static IEnumerable<Func<QueryContainerDescriptor<T>, QueryContainer>> GenerateFilters<T>(Expression<Func<T, object>> selector, string apprenticeshipIdentifier, bool showForNonLevyOnly, bool showNationalOnly, List<DeliveryMode> deliveryModes)
+        private static IEnumerable<Func<QueryContainerDescriptor<T>, QueryContainer>> GenerateFilters<T>(Expression<Func<T, object>> selector, string apprenticeshipIdentifier, bool showForNonLevyOnly)
             where T : class, IApprenticeshipProviderSearchResultsItem
         {
             yield return f => f.Term(t => t.Field(selector).Value(apprenticeshipIdentifier));

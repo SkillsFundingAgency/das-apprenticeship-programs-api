@@ -32,7 +32,7 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         }
 
         /// <summary>
-        /// Get Providers for a given apprenticeship at a given location
+        /// Get Providers for a given apprenticeship that has traing that covers a given location (lat/lon point)
         /// </summary>
         /// <param name="id">{StandardCode} OR {FrameworkCode}-{ProgType}-{PathwayId}</param>
         /// <param name="lat">Latitude</param>
@@ -47,8 +47,8 @@ namespace Sfa.Das.ApprenticeshipInfoService.Api.Controllers.V3
         [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [HttpGet("apprenticeships/{id}/providers", Name="GetByApprenticeshipIdAndLocation")]
-        public ActionResult<ProviderApprenticeshipLocationSearchResult> GetByApprenticeshipIdAndLocation(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null, int orderBy = 0)
+        [HttpGet("apprenticeships/{id}/providers", Name="GetByApprenticeshipIdAndLatLon")]
+        public ActionResult<ProviderApprenticeshipLocationSearchResult> GetByApprenticeshipIdAndLatLon(string id, double lat, double lon, int page = 1, int pageSize = 20, bool showForNonLevyOnly = false, bool showNationalOnly = false, string deliveryModes = null, int orderBy = 0)
         {
             try
             {
