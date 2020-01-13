@@ -56,7 +56,6 @@ namespace Sfa.Das.ApprenticeshipInfoService.Infrastructure.DependencyResolution
             services.AddScoped<IProviderNameSearchMapping, ProviderNameSearchMapping>();
 
             services.AddHealthChecks()
-                .AddRedis(configuration.GetConnectionString("Redis"), "redis-check")
                 .AddCheck<ElasticsearchHealthCheck>("elasticsearch-query-check");
         }
     }
